@@ -3,5 +3,5 @@ work
 TODO
 doc.local
 test
-lib
+adafruit*
 *secrets.py
