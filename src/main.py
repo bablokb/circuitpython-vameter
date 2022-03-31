@@ -22,7 +22,7 @@ from View import ValuesView
 OLED_ADDR   = 0x3C
 OLED_WIDTH  = 128
 OLED_HEIGHT = 64
-OLED_BORDER = 3
+OLED_BORDER = 1
 PIN_SDA     = board.GP18
 PIN_SCL     = board.GP19
 
