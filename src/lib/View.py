@@ -32,7 +32,7 @@ class View:
       'NW': ((0.0,0.0),(offset,              offset)),
       'NE': ((1.0,0.0),(display.width-offset,offset)),
       'W':  ((0.0,0.5),(offset,              display.height/2)),
-      'E':  ((0.5,0.5),(display.width-offset,display.height/2)),
+      'E':  ((1.0,0.5),(display.width-offset,display.height/2)),
       'SW': ((0.0,1.0),(offset,              display.height-offset)),
       'SE': ((1.0,1.0),(display.width-offset,display.height-offset)),
       }
@@ -52,6 +52,22 @@ class View:
     self._group.append(t)
     return t
 
+  # --- format a float   -----------------------------------------------------
+
+  def format(self,value,unit):
+    """ format a value """
+
+    if value < 10:
+      fmt = "{0:4.2f}{1:s}"
+      value = round(value,2)
+    elif value < 100:
+      fmt = "{0:4.1f}{1:s}"
+      value = round(value,1)
+    else:
+      fmt = "{0:3.0f}{1:s}"
+      value = round(value,0)
+    return fmt.format(value,unit)
+
   # --- show the view   ------------------------------------------------------
 
   def show(self):
@@ -59,6 +75,7 @@ class View:
 
     self._display.show(self._group)
 
+# ----------------------------------------------------------------------------
 # --- View for current A/V values   ------------------------------------------
 
 class ValuesView(View):
@@ -77,15 +94,36 @@ class ValuesView(View):
   def set_values(self,v,a):
     """ set values for voltage and current """
 
-    if a < 10:
-      fmt = "{0:4.2f}mA"
-      a = round(a,2)
-    elif a < 100:
-      fmt = "{0:4.1f}mA"
-      a = round(a,1)
-    else:
-      fmt = "{0:3.0f}mA"
-      a = round(a,0)
+    self._value_V.text = self.format(v,'V')
+    self._value_A.text = self.format(a,'mA')
 
-    self._value_V.text = "{0:4.2f}V".format(v)
-    self._value_A.text = fmt.format(a)
+# ----------------------------------------------------------------------------
+# --- View for results   -----------------------------------------------------
+
+class ResultView(View):
+
+  # --- constructor   --------------------------------------------------------
+
+  def __init__(self,display,border,unit):
+    """ constructor """
+
+    super(ResultView,self).__init__(display,border)
+    self._unit = unit
+
+    self._label_min = self.add('min:','NW',View.FONT_S)
+    self._value_min = self.add('0.00','NE',View.FONT_S)
+
+    self._label_mean = self.add('mean:','W',View.FONT_S)
+    self._value_mean = self.add('0.00','E',View.FONT_S)
+
+    self._label_max = self.add('max:','SW',View.FONT_S)
+    self._value_max = self.add('0.00','SE',View.FONT_S)
+
+  # --- set values   ---------------------------------------------------------
+
+  def set_values(self,min,mean,max):
+    """ set values for voltage and current """
+
+    self._value_min.text  = self.format(min,self._unit)
+    self._value_mean.text = self.format(mean,self._unit)
+    self._value_max.text  = self.format(max,self._unit)
