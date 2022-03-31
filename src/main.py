@@ -15,7 +15,9 @@ import time
 
 import adafruit_displayio_ssd1306
 
-from View import ValuesView, ResultView
+from ReadyState  import ReadyState
+from ConfigState import ConfigState
+from ActiveState import ActiveState
 
 # --- constants   ------------------------------------------------------------
 
@@ -37,10 +39,9 @@ class VAMeter:
     """ constructor """
 
     self._display     = self._get_display()
-    self._view        = None
-    self.values_view  = ValuesView(self._display,OLED_BORDER)
-    self.resV_view    = ResultView(self._display,OLED_BORDER,'V')
-    self.resA_view    = ResultView(self._display,OLED_BORDER,'mA')
+    self._ready       = ReadyState(self._display,OLED_BORDER)
+    self._active      = ActiveState(self._display,OLED_BORDER)
+    self._config      = ConfigState(self._display,OLED_BORDER)
 
   # --- initialize display   -------------------------------------------------
 
@@ -54,42 +55,18 @@ class VAMeter:
                                               width=OLED_WIDTH,
                                               height=OLED_HEIGHT)
 
-  # --- set current view   ---------------------------------------------------
+  # --- main loop   ----------------------------------------------------------
 
-  def set_view(self,view):
-    """ set current view """
-    self._view = view
+  def run(self):
+    """ main loop """
 
-  # --- show current view   --------------------------------------------------
-
-  def show(self):
-    """ update display and show current view """
-
-    self._view.show()
+    self._config.run()
+    while True:
+      next_state = self._ready.run(self._active,self._config)
+      next_state.run()
 
 # --- main loop   ------------------------------------------------------------
 
 app = VAMeter()
+app.run()
 
-app.resV_view.set_values(4.95,5.01,1025.25)
-app.resA_view.set_values(18,1014.6,1025.25)
-app.set_view(app.resV_view)
-app.show()
-
-time.sleep(5)
-app.set_view(app.resA_view)
-app.show()
-time.sleep(5)
-
-
-v = 4.95
-a = 0
-app.values_view.set_values(v,a)
-app.set_view(app.values_view)
-app.show()
-
-while True:
-  time.sleep(2)
-  app.values_view.set_values(v,a)
-  v += 0.1
-  a += 1
