@@ -127,3 +127,26 @@ class ResultView(View):
     self._value_min.text  = self.format(min,self._unit)
     self._value_mean.text = self.format(mean,self._unit)
     self._value_max.text  = self.format(max,self._unit)
+
+# ----------------------------------------------------------------------------
+# --- View for configurations   ----------------------------------------------
+
+class ConfigView(View):
+
+  # --- constructor   --------------------------------------------------------
+
+  def __init__(self,display,border,header,unit):
+    """ constructor """
+
+    super(ConfigView,self).__init__(display,border)
+    self._unit = unit
+
+    self._header = self.add(header,'NW',View.FONT_S)
+    self._value  = self.add(' ','SE',View.FONT_L)
+
+  # --- set values   ---------------------------------------------------------
+
+  def set_value(self,value):
+    """ set value for config-item """
+
+    self._value.text = self.format(value,self._unit)
