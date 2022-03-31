@@ -26,7 +26,7 @@ class ReadyState:
 
   # --- loop during ready-state   --------------------------------------------
 
-  def run(self):
+  def run(self,active,config):
     """ main-loop during ready-state """
 
     self.result_V.set_values(4.95,5.01,1025.25)
@@ -36,3 +36,5 @@ class ReadyState:
     self.result_A.set_values(18,1014.6,1025.25)
     self.result_A.show()
     time.sleep(5)
+
+    return active
