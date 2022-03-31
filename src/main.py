@@ -15,7 +15,7 @@ import time
 
 import adafruit_displayio_ssd1306
 
-from View import ValuesView
+from View import ValuesView, ResultView
 
 # --- constants   ------------------------------------------------------------
 
@@ -37,8 +37,10 @@ class VAMeter:
     """ constructor """
 
     self._display     = self._get_display()
+    self._view        = None
     self.values_view  = ValuesView(self._display,OLED_BORDER)
-    self._view        = self.values_view
+    self.resV_view    = ResultView(self._display,OLED_BORDER,'V')
+    self.resA_view    = ResultView(self._display,OLED_BORDER,'mA')
 
   # --- initialize display   -------------------------------------------------
 
@@ -52,6 +54,12 @@ class VAMeter:
                                               width=OLED_WIDTH,
                                               height=OLED_HEIGHT)
 
+  # --- set current view   ---------------------------------------------------
+
+  def set_view(self,view):
+    """ set current view """
+    self._view = view
+
   # --- show current view   --------------------------------------------------
 
   def show(self):
@@ -62,11 +70,24 @@ class VAMeter:
 # --- main loop   ------------------------------------------------------------
 
 app = VAMeter()
+
+app.resV_view.set_values(4.95,5.01,1025.25)
+app.resA_view.set_values(18,1014.6,1025.25)
+app.set_view(app.resV_view)
 app.show()
-time.sleep(3)
+
+time.sleep(5)
+app.set_view(app.resA_view)
+app.show()
+time.sleep(5)
+
 
 v = 4.95
 a = 0
+app.values_view.set_values(v,a)
+app.set_view(app.values_view)
+app.show()
+
 while True:
   time.sleep(2)
   app.values_view.set_values(v,a)
