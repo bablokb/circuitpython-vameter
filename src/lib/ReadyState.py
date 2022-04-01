@@ -21,6 +21,7 @@ class ReadyState:
     """ constructor """
 
     self._app     = app
+    self._results = app.results
     self.result_V = ResultView(app.display,app.border,'V')
     self.result_A = ResultView(app.display,app.border,'mA')
 
@@ -29,11 +30,11 @@ class ReadyState:
   def run(self,active,config):
     """ main-loop during ready-state """
 
-    self.result_V.set_values(4.95,5.01,1025.25)
+    self.result_V.set_values(*self._results.V)
     self.result_V.show()
     time.sleep(5)
 
-    self.result_A.set_values(18,1014.6,1025.25)
+    self.result_A.set_values(*self._results.A)
     self.result_A.show()
     time.sleep(5)
 
