@@ -73,7 +73,8 @@ class View:
   def show(self):
     """ show the view """
 
-    self._display.show(self._group)
+    if self._display:
+      self._display.show(self._group)
 
 # ----------------------------------------------------------------------------
 # --- View for current A/V values   ------------------------------------------
