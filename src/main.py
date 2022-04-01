@@ -22,7 +22,7 @@ from ActiveState import ActiveState
 # --- constants   ------------------------------------------------------------
 
 DEF_INTERVAL = 100    # sampling-interval:       100ms
-DEF_DURATION = 0      # measurment-duration:     0s     (i.e. not limited)
+DEF_DURATION = 0      # measurement-duration:    0s     (i.e. not limited)
 DEF_UPDATE   = 0.5    # display update-interval: 0.5s
 
 OLED_ADDR   = 0x3C
@@ -37,9 +37,9 @@ elif hasattr(board,'SDA'):
   PIN_SDA = board.SDA
   PIN_SCL = board.SCL
 
-# --- settings class (value holder)   ----------------------------------------
+# --- ValueHolder class   ----------------------------------------------------
 
-class Settings:
+class ValueHolder:
   pass
 
 # --- application class   ----------------------------------------------------
@@ -55,7 +55,11 @@ class VAMeter:
     self.display = self._get_display()
     self.border  = OLED_BORDER
 
-    self.settings = Settings()
+    self.results   = ValueHolder()
+    self.results.V = [0,0,0]
+    self.results.A = [0,0,0]
+
+    self.settings = ValueHolder()
     self.settings.interval = DEF_INTERVAL
     self.settings.duration = DEF_DURATION
     self.settings.update   = DEF_UPDATE
