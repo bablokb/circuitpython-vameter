@@ -16,8 +16,8 @@ from adafruit_display_shapes.rect import Rect
 # --- base class of all Views   ----------------------------------------------
 
 class View:
-  FONT_S   = bitmap_font.load_font("fonts/DejaVuSansMono-Bold-18-min.bdf")
-  FONT_L   = bitmap_font.load_font("fonts/DejaVuSansMono-Bold-32-min.bdf")
+  FONT_S   = bitmap_font.load_font("fonts/DejaVuSansMono-Bold-18-min.pcf")
+  FONT_L   = bitmap_font.load_font("fonts/DejaVuSansMono-Bold-32-min.pcf")
   FG_COLOR = 0xFFFFFF
 
   # --- constructor   --------------------------------------------------------
