@@ -25,8 +25,13 @@ OLED_ADDR   = 0x3C
 OLED_WIDTH  = 128
 OLED_HEIGHT = 64
 OLED_BORDER = 1
-PIN_SDA     = board.GP18
-PIN_SCL     = board.GP19
+
+if board.board_id == 'raspberry_pi_pico':
+  PIN_SDA = board.GP18
+  PIN_SCL = board.GP19
+elif hasattr(board,'SDA'):
+  PIN_SDA = board.SDA
+  PIN_SCL = board.SCL
 
 # --- application class   ----------------------------------------------------
 
