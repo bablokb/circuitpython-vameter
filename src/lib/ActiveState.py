@@ -16,11 +16,11 @@ class ActiveState:
 
   # --- constructor   --------------------------------------------------------
 
-  def __init__(self,display,border):
+  def __init__(self,app):
     """ constructor """
 
-    self._display = display
-    self._values  = ValuesView(self._display,border)
+    self._app    = app
+    self._values = ValuesView(app.display,app.border)
 
   # --- loop during ready-state   --------------------------------------------
 

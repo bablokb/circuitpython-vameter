@@ -43,10 +43,11 @@ class VAMeter:
   def __init__(self):
     """ constructor """
 
-    self._display     = self._get_display()
-    self._ready       = ReadyState(self._display,OLED_BORDER)
-    self._active      = ActiveState(self._display,OLED_BORDER)
-    self._config      = ConfigState(self._display,OLED_BORDER)
+    self.display = self._get_display()
+    self.border  = OLED_BORDER
+    self._ready  = ReadyState(self)
+    self._active = ActiveState(self)
+    self._config = ConfigState(self)
 
   # --- initialize display   -------------------------------------------------
 

@@ -17,13 +17,13 @@ class ConfigState:
 
   # --- constructor   --------------------------------------------------------
 
-  def __init__(self,display,border):
+  def __init__(self,app):
     """ constructor """
 
-    self._display  = display
-    self._interval = ConfigView(self._display,border,'Interval:','ms')
-    self._duration = ConfigView(self._display,border,'Duration:','s')
-    self._update   = ConfigView(self._display,border,'Update:','s')
+    self._app      = app
+    self._interval = ConfigView(app.display,app.border,'Interval:','ms')
+    self._duration = ConfigView(app.display,app.border,'Duration:','s')
+    self._update   = ConfigView(app.display,app.border,'Update:','s')
 
   # --- loop during config-state   --------------------------------------------
 

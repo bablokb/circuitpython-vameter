@@ -17,12 +17,12 @@ class ReadyState:
 
   # --- constructor   --------------------------------------------------------
 
-  def __init__(self,display,border):
+  def __init__(self,app):
     """ constructor """
 
-    self._display = display
-    self.result_V = ResultView(self._display,border,'V')
-    self.result_A = ResultView(self._display,border,'mA')
+    self._app     = app
+    self.result_V = ResultView(app.display,app.border,'V')
+    self.result_A = ResultView(app.display,app.border,'mA')
 
   # --- loop during ready-state   --------------------------------------------
 
