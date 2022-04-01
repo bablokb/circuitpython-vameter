@@ -21,6 +21,10 @@ from ActiveState import ActiveState
 
 # --- constants   ------------------------------------------------------------
 
+DEF_INTERVAL = 100    # sampling-interval:       100ms
+DEF_DURATION = 0      # measurment-duration:     0s     (i.e. not limited)
+DEF_UPDATE   = 0.5    # display update-interval: 0.5s
+
 OLED_ADDR   = 0x3C
 OLED_WIDTH  = 128
 OLED_HEIGHT = 64
@@ -32,6 +36,11 @@ if board.board_id == 'raspberry_pi_pico':
 elif hasattr(board,'SDA'):
   PIN_SDA = board.SDA
   PIN_SCL = board.SCL
+
+# --- settings class (value holder)   ----------------------------------------
+
+class Settings:
+  pass
 
 # --- application class   ----------------------------------------------------
 
@@ -45,6 +54,12 @@ class VAMeter:
 
     self.display = self._get_display()
     self.border  = OLED_BORDER
+
+    self.settings = Settings()
+    self.settings.interval = DEF_INTERVAL
+    self.settings.duration = DEF_DURATION
+    self.settings.update   = DEF_UPDATE
+
     self._ready  = ReadyState(self)
     self._active = ActiveState(self)
     self._config = ConfigState(self)
