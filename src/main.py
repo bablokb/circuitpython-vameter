@@ -54,11 +54,17 @@ class VAMeter:
     """ initialize hardware """
 
     displayio.release_displays()
-    i2c = busio.I2C(sda=PIN_SDA,scl=PIN_SCL)
-    display_bus = displayio.I2CDisplay(i2c, device_address=OLED_ADDR)
-    return adafruit_displayio_ssd1306.SSD1306(display_bus,
-                                              width=OLED_WIDTH,
-                                              height=OLED_HEIGHT)
+    if hasattr(board,'DISPLAY') and board.DISPLAY:
+      return board.DISPLAY
+    else:
+      try:
+        i2c = busio.I2C(sda=PIN_SDA,scl=PIN_SCL)
+        display_bus = displayio.I2CDisplay(i2c, device_address=OLED_ADDR)
+        return adafruit_displayio_ssd1306.SSD1306(display_bus,
+                                                  width=OLED_WIDTH,
+                                                  height=OLED_HEIGHT)
+      except:
+        return None
 
   # --- main loop   ----------------------------------------------------------
 
