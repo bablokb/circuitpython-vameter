@@ -10,6 +10,7 @@
 
 import time
 import math
+import sys
 from View import ValuesView
 from Data import DataAggregator
 
@@ -41,7 +42,7 @@ class ActiveState:
     if self._settings.duration:
       end = time.monotonic() + self._settings.duration
     else:
-      end = 0
+      end = sys.maxsize
 
     while time.monotonic() < end:
       # reset display-data
