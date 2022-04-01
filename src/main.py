@@ -73,10 +73,10 @@ class VAMeter:
   def _get_display(self):
     """ initialize hardware """
 
-    displayio.release_displays()
     if hasattr(board,'DISPLAY') and board.DISPLAY:
       return board.DISPLAY
     else:
+      displayio.release_displays()
       try:
         i2c = busio.I2C(sda=PIN_SDA,scl=PIN_SCL)
         display_bus = displayio.I2CDisplay(i2c, device_address=OLED_ADDR)
