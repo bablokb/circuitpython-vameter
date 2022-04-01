@@ -21,6 +21,7 @@ class ConfigState:
     """ constructor """
 
     self._app      = app
+    self._settings = app.settings
     self._interval = ConfigView(app.display,app.border,'Interval:','ms')
     self._duration = ConfigView(app.display,app.border,'Duration:','s')
     self._update   = ConfigView(app.display,app.border,'Update:','s')
@@ -30,14 +31,14 @@ class ConfigState:
   def run(self):
     """ main-loop during config-state """
 
-    self._interval.set_value(100)
+    self._interval.set_value(self._settings.interval)
     self._interval.show()
     time.sleep(3)
 
-    self._duration.set_value(120)
+    self._duration.set_value(self._settings.duration)
     self._duration.show()
     time.sleep(3)
 
-    self._update.set_value(0.5)
+    self._update.set_value(self._settings.update)
     self._update.show()
     time.sleep(3)
