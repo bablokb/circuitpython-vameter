@@ -27,17 +27,21 @@ class View:
 
     self._display = display
     self._group   = displayio.Group()
+
     offset = border + 2 if border else 0
+    width  = display.width  if display else 10
+    height = display.height if display else 10
+
     self._pos_map = {
-      'NW': ((0.0,0.0),(offset,              offset)),
-      'NE': ((1.0,0.0),(display.width-offset,offset)),
-      'W':  ((0.0,0.5),(offset,              display.height/2)),
-      'E':  ((1.0,0.5),(display.width-offset,display.height/2)),
-      'SW': ((0.0,1.0),(offset,              display.height-offset)),
-      'SE': ((1.0,1.0),(display.width-offset,display.height-offset)),
+      'NW': ((0.0,0.0),(offset,      offset)),
+      'NE': ((1.0,0.0),(width-offset,offset)),
+      'W':  ((0.0,0.5),(offset,      height/2)),
+      'E':  ((1.0,0.5),(width-offset,height/2)),
+      'SW': ((0.0,1.0),(offset,      height-offset)),
+      'SE': ((1.0,1.0),(width-offset,height-offset)),
       }
     if border:
-      rect = Rect(0,0,display.width,display.height,
+      rect = Rect(0,0,width,height,
                   fill=None,outline=View.FG_COLOR,stroke=border)
       self._group.append(rect)
 
