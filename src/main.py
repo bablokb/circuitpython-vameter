@@ -57,16 +57,13 @@ class VAMeter:
     self.display = self._get_display()
     self.border  = OLED_BORDER
 
-    self.results   = ValueHolder()
-    self.results.V = [0,0,0]
-    self.results.A = [0,0,0]
-
     self.settings = ValueHolder()
     self.settings.interval = DEF_INTERVAL
     self.settings.duration = DEF_DURATION
     self.settings.update   = DEF_UPDATE
 
     self.data_provider = DataProvider(self.settings)
+    self.results = [[0,0,0] for i in range(self.data_provider.get_dim())]
 
     self._ready  = ReadyState(self)
     self._active = ActiveState(self)
