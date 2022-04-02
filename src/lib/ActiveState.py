@@ -9,7 +9,6 @@
 # ----------------------------------------------------------------------------
 
 import time
-import math
 import sys
 from View import ValuesView
 from Data import DataAggregator
@@ -24,6 +23,7 @@ class ActiveState:
 
     self._app      = app
     self._settings = app.settings
+    self._fmt      = app.data_provider.get_fmt()
     self._results = app.results
     self._values = ValuesView(app.display,app.border)
 
@@ -35,46 +35,53 @@ class ActiveState:
     # first level:  aggregate raw-data    -> sample-data (mean)
     # second level: aggregate sample-data -> measurement-data (min,mean,max)
     #               aggregate sample-data -> display-data (mean)
-    s_data = DataAggregator(2)
-    m_data = DataAggregator(2)
-    d_data = DataAggregator(2)
+    dim = self._app.data_provider.get_dim()
+    s_data = DataAggregator(dim)
+    m_data = DataAggregator(dim)
+    d_data = DataAggregator(dim)
 
     if self._settings.duration:
       end = time.monotonic() + self._settings.duration
     else:
       end = sys.maxsize
 
-    while time.monotonic() < end:
+    stop = False
+    while not stop and time.monotonic() < end:
       # reset display-data
       d_data.reset()
       display_next = time.monotonic() + self._settings.update
 
       # sample data while in update-interval
-      while time.monotonic() < display_next:
+      while not stop and time.monotonic() < display_next:
         # reset sample-data
         s_data.reset()
         sample_next = time.monotonic() + self._settings.interval/1000
 
         # sample data while in sample-interval
-        while time.monotonic() < sample_next:
+        while not stop and time.monotonic() < sample_next:
           # TODO: check key-press
-          sample = (5+math.sin(time.monotonic()),
-                    25+math.cos(time.monotonic()))
-          # TODO: check level
-          s_data.add(sample)
-          time.sleep(0.01)
+          try:
+            sample = self._app.data_provider.get_data()
+            s_data.add(sample)
+          except StopIteration:
+            stop = True
+            break
 
-        # TODO: check for successful sampling
+        if stop:
+          break
 
         # sampling finished: log data and add to aggregators
-        _,(v,a),_ = s_data.get()
-        print("{},{},{}".format(time.monotonic(),v,a))
-        m_data.add((v,a))
-        d_data.add((v,a))
+        _,mean,_ = s_data.get()
+        print(self._fmt.format(1000*time.monotonic(),*mean))
+        m_data.add(mean)
+        d_data.add(mean)
+
+      if stop:
+        break
 
       # time to update the display
-      _,(v,a),_ = d_data.get()
-      self._values.set_values(v,a)
+      _,mean,_ = d_data.get()
+      self._values.set_values(*mean)
       self._values.show()
 
     # that's it, save results
