@@ -21,9 +21,10 @@ class ReadyState:
     """ constructor """
 
     self._app     = app
-    self._results = app.results
-    self.result_V = ResultView(app.display,app.border,'V')
-    self.result_A = ResultView(app.display,app.border,'mA')
+    self._views   = []
+    units = app.data_provider.get_units()
+    for unit in units:
+      self._views.append(ResultView(app.display,app.border,unit))
 
   # --- loop during ready-state   --------------------------------------------
 
@@ -31,12 +32,9 @@ class ReadyState:
     """ main-loop during ready-state """
 
     if self._app.display:
-      self.result_V.set_values(*self._results.V)
-      self.result_V.show()
-      time.sleep(5)
-
-      self.result_A.set_values(*self._results.A)
-      self.result_A.show()
-      time.sleep(5)
+      for index,result in enumerate(self._app.results):
+        self._views[index].set_values(*result)
+        self._views[index].show()
+        time.sleep(3)
 
     return active
