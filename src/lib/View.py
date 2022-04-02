@@ -87,22 +87,26 @@ class ValuesView(View):
 
   # --- constructor   --------------------------------------------------------
 
-  def __init__(self,display,border):
+  def __init__(self,display,border,units):
     """ constructor """
 
     super(ValuesView,self).__init__(display,border)
+    self._units = units
     if self._display:
-      self._value_V = self.add('0.00V','NE',View.FONT_L)
-      self._value_A = self.add('0.00mA','SE',View.FONT_L)
+      self._value = []
+      self._value.append(self.add(units[0],'NE',View.FONT_L))
+      self._value.append(self.add(units[1],'SE',View.FONT_L))
 
   # --- set values   ---------------------------------------------------------
 
-  def set_values(self,v,a):
-    """ set values for voltage and current """
+  def set_values(self,values):
+    """ set values """
 
     if self._display:
-      self._value_V.text = self.format(v,'V')
-      self._value_A.text = self.format(a,'mA')
+      for index,value in enumerate(values):
+        if index == len(self._value):
+          break
+        self._value[index].text = self.format(value,self._units[index])
 
 # ----------------------------------------------------------------------------
 # --- View for results   -----------------------------------------------------
