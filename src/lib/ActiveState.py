@@ -25,7 +25,8 @@ class ActiveState:
     self._settings = app.settings
     self._fmt      = app.data_provider.get_fmt()
     self._results = app.results
-    self._values = ValuesView(app.display,app.border)
+    self._values = ValuesView(app.display,app.border,
+                              app.data_provider.get_units())
 
   # --- loop during ready-state   --------------------------------------------
 
@@ -39,6 +40,10 @@ class ActiveState:
     s_data = DataAggregator(dim)
     m_data = DataAggregator(dim)
     d_data = DataAggregator(dim)
+
+    # reset data-provider and wait for first sample
+    self._app.data_provider.reset()
+    self._app.data_provider.get_data()
 
     if self._settings.duration:
       end = time.monotonic() + self._settings.duration
@@ -81,7 +86,7 @@ class ActiveState:
 
       # time to update the display
       _,mean,_ = d_data.get()
-      self._values.set_values(*mean)
+      self._values.set_values(mean)
       self._values.show()
 
     # that's it, save results
