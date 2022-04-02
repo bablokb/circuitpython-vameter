@@ -30,12 +30,13 @@ class ReadyState:
   def run(self,active,config):
     """ main-loop during ready-state """
 
-    self.result_V.set_values(*self._results.V)
-    self.result_V.show()
-    time.sleep(5)
+    if self._app.display:
+      self.result_V.set_values(*self._results.V)
+      self.result_V.show()
+      time.sleep(5)
 
-    self.result_A.set_values(*self._results.A)
-    self.result_A.show()
-    time.sleep(5)
+      self.result_A.set_values(*self._results.A)
+      self.result_A.show()
+      time.sleep(5)
 
     return active

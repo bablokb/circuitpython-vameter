@@ -31,14 +31,15 @@ class ConfigState:
   def run(self):
     """ main-loop during config-state """
 
-    self._interval.set_value(self._settings.interval)
-    self._interval.show()
-    time.sleep(3)
+    if self._app.display:
+      self._interval.set_value(self._settings.interval)
+      self._interval.show()
+      time.sleep(3)
 
-    self._duration.set_value(self._settings.duration)
-    self._duration.show()
-    time.sleep(3)
+      self._duration.set_value(self._settings.duration)
+      self._duration.show()
+      time.sleep(3)
 
-    self._update.set_value(self._settings.update)
-    self._update.show()
-    time.sleep(3)
+      self._update.set_value(self._settings.update)
+      self._update.show()
+      time.sleep(3)
