@@ -39,6 +39,8 @@ class DataAggregator:
 
     self._n += 1
     for index,value in enumerate(values):
+      if index == self._dim:
+        break
       self._sum[index] += value
       if value < self._min[index]:
         self._min[index] = value
