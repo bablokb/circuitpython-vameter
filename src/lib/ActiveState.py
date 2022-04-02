@@ -24,7 +24,6 @@ class ActiveState:
     self._app      = app
     self._settings = app.settings
     self._fmt      = app.data_provider.get_fmt()
-    self._results = app.results
     self._values = ValuesView(app.display,app.border,
                               app.data_provider.get_units())
 
@@ -76,7 +75,7 @@ class ActiveState:
           break
 
         # sampling finished: log data and add to aggregators
-        _,mean,_ = s_data.get()
+        mean = s_data.get_mean()
         print(self._fmt.format(1000*time.monotonic(),*mean))
         m_data.add(mean)
         d_data.add(mean)
@@ -85,10 +84,9 @@ class ActiveState:
         break
 
       # time to update the display
-      _,mean,_ = d_data.get()
+      mean = d_data.get_mean()
       self._values.set_values(mean)
       self._values.show()
 
     # that's it, save results
-    self._results.V = m_data.get(0)
-    self._results.A = m_data.get(1)
+    self._app.results = m_data.get()
