@@ -20,12 +20,25 @@ class DataProvider:
     """ constructor """
 
     self._settings = settings
+    self.reset()
+
+  # --- reset data-provider   ------------------------------------------------
+
+  def reset(self):
+    """ reset data-provider """
+    self._start = None
 
   # --- return dimensions of data   ------------------------------------------
 
   def get_dim(self):
     """ dimension of data """
     return 2
+
+  # --- return units of data   -----------------------------------------------
+
+  def get_units(self):
+    """ units of data """
+    return ['V','mA']
 
   # --- log-format   ---------------------------------------------------------
 
@@ -40,4 +53,8 @@ class DataProvider:
 
     time.sleep(0.01)
     t = time.monotonic()
+    if not self._start:
+      self._start = t
+    if t > self._start + 30:
+      raise StopIteration
     return (5+t/10+math.sin(t),25+t/10+math.cos(t))
