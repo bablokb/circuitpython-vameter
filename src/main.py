@@ -19,6 +19,8 @@ from ReadyState  import ReadyState
 from ConfigState import ConfigState
 from ActiveState import ActiveState
 
+from FakeDataProvider import DataProvider
+
 # --- constants   ------------------------------------------------------------
 
 DEF_INTERVAL = 100    # sampling-interval:       100ms
@@ -63,6 +65,8 @@ class VAMeter:
     self.settings.interval = DEF_INTERVAL
     self.settings.duration = DEF_DURATION
     self.settings.update   = DEF_UPDATE
+
+    self.data_provider = DataProvider(self.settings)
 
     self._ready  = ReadyState(self)
     self._active = ActiveState(self)
