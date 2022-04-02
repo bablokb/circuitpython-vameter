@@ -28,9 +28,7 @@ class DataAggregator:
     """ reset data to initial state """
 
     self._n   = 0
-    self._min = [1e6 for i in range(self._dim)]
-    self._max = [ -1 for i in range(self._dim)]
-    self._sum = [  0 for i in range(self._dim)]
+    self._data = [[1e6,-1,0] for i in range(self._dim)]
 
   # --- add data   -----------------------------------------------------------
 
@@ -41,11 +39,11 @@ class DataAggregator:
     for index,value in enumerate(values):
       if index == self._dim:
         break
-      self._sum[index] += value
-      if value < self._min[index]:
-        self._min[index] = value
-      if value > self._max[index]:
-        self._max[index] = value
+      self._data[index][1] += value
+      if value < self._data[index][0]:
+        self._data[index][0] = value
+      if value > self._data[index][2]:
+        self._data[index][2] = value
 
   # --- get aggregate values   -----------------------------------------------
 
@@ -53,13 +51,18 @@ class DataAggregator:
     """ return aggregate values """
 
     if index is None:
-      return (self._min,
-              [s/self._n for s in self._sum],
-              self._max)
+      return [[data[0],data[1]/self._n,data[2]] for data in self._data]
     else:
-      return (self._min[index],
-              self._sum[index]/self._n,
-              self._max[index])
+      return [self._data[index][0],
+              self._data[index][1]/self._n,
+              self._data[index][2]]
+
+  # --- get mean values   ----------------------------------------------------
+
+  def get_mean(self):
+    """ return mean values """
+
+    return [data[1]/self._n for data in self._data]
 
 # ----------------------------------------------------------------------------
 # --- Data table for plots   -------------------------------------------------
