@@ -31,10 +31,25 @@ class ReadyState:
   def run(self,active,config):
     """ main-loop during ready-state """
 
-    if self._app.display:
-      for index,result in enumerate(self._app.results):
-        self._views[index].set_values(*result)
-        self._views[index].show()
-        time.sleep(3)
+    if not self._app.display:
+      # no config without display, so just start
+      return active
 
-    return active
+    # set results and show first view
+    cur_view = 0
+    n_views  = len(self._views)
+    for index,result in enumerate(self._app.results):
+      self._views[index].set_values(*result)
+    self._views[cur_view].show()
+
+    # query key and process
+    while True:
+      key = self._app.key_events.wait_for_key(self._app.key_events.KEYMAP_READY)
+      if key == 'START':
+        return active
+      elif key == 'CONFIG':
+        return config
+      else:
+        cur_view = (cur_view+1) % n_views
+        self._views[cur_view].show()
+        time.sleep(0.1)
