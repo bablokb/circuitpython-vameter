@@ -63,7 +63,15 @@ class ActiveState:
 
         # sample data while in sample-interval
         while not stop and time.monotonic() < sample_next:
-          # TODO: check key-press
+          key = self._app.key_events.is_key_pressed(
+            self._app.key_events.KEYMAP_ACTIVE)
+          if key == 'TOGGLE':
+            # switch to plot-view
+            pass
+          elif key == 'STOP':
+            stop = True
+            break
+
           try:
             sample = self._app.data_provider.get_data()
             s_data.add(sample)
