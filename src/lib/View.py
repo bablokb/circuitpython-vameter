@@ -99,7 +99,7 @@ class ValuesView(View):
 
   # --- set values   ---------------------------------------------------------
 
-  def set_values(self,values):
+  def set_values(self,values,elapsed):
     """ set values """
 
     if self._display:
@@ -107,6 +107,8 @@ class ValuesView(View):
         if index == len(self._value):
           break
         self._value[index].text = self.format(value,self._units[index])
+
+      # TODO: show elapsed time on larger screens
 
 # ----------------------------------------------------------------------------
 # --- View for results   -----------------------------------------------------

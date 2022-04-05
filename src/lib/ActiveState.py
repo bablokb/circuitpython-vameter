@@ -94,7 +94,7 @@ class ActiveState:
 
       # time to update the display
       mean = d_data.get_mean()
-      self._values.set_values(mean)
+      self._values.set_values(mean,time.monotonic()-start_t)
       self._values.show()
 
     # that's it, save results
