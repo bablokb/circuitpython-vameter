@@ -50,6 +50,7 @@ class ActiveState:
       end = sys.maxsize
 
     stop = False
+    start_t = time.monotonic()                        # for final stats
     while not stop and time.monotonic() < end:
       # reset display-data
       d_data.reset()
@@ -97,4 +98,5 @@ class ActiveState:
       self._values.show()
 
     # that's it, save results
+    self._app.results.time   = time.monotonic() - start_t
     self._app.results.values = m_data.get()
