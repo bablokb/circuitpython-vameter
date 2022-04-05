@@ -38,7 +38,7 @@ class ReadyState:
     # set results and show first view
     cur_view = 0
     n_views  = len(self._views)
-    for index,result in enumerate(self._app.results):
+    for index,result in enumerate(self._app.results.values):
       self._views[index].set_values(*result)
     self._views[cur_view].show()
 

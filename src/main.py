@@ -69,7 +69,9 @@ class VAMeter:
     self.settings.update   = DEF_UPDATE
 
     self.data_provider = DataProvider(self.settings)
-    self.results = [[0,0,0] for i in range(self.data_provider.get_dim())]
+    self.results        = ValueHolder()
+    self.results.values = [[0,0,0] for i in range(self.data_provider.get_dim())]
+    self.results.time   = 0
 
     self.key_events = KeyEventProvider(i2c,self.settings)
 

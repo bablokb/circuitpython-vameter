@@ -97,4 +97,4 @@ class ActiveState:
       self._values.show()
 
     # that's it, save results
-    self._app.results = m_data.get()
+    self._app.results.values = m_data.get()
