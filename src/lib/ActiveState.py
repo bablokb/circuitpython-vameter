@@ -27,10 +27,20 @@ class ActiveState:
     self._values = ValuesView(app.display,app.border,
                               app.data_provider.get_units())
 
+  # --- write settings to serial   -------------------------------------------
+
+  def _log_settings(self):
+    """ write settings """
+
+    for setting in self._settings:
+      print("#{}".format(setting))
+
   # --- loop during ready-state   --------------------------------------------
 
   def run(self):
     """ main-loop during active-state """
+
+    self._log_settings()
 
     # first level:  aggregate raw-data    -> sample-data (mean)
     # second level: aggregate sample-data -> measurement-data (min,mean,max)
@@ -97,6 +107,10 @@ class ActiveState:
       self._values.set_values(mean,time.monotonic()-start_t)
       self._values.show()
 
-    # that's it, save results
+    # that's it, save and log results
     self._app.results.time   = time.monotonic() - start_t
     self._app.results.values = m_data.get()
+
+    print("\n#Min,Mean,Max")
+    for value in self._app.results.values:
+      print("#{.2f},{.2f},{.2f}".format(*value))
