@@ -121,7 +121,8 @@ class ActiveState:
     self._app.results.time   = time.monotonic() - start_t
     self._app.results.values = m_data.get()
 
-    print("\n#Min,Mean,Max")
+    print("\n#Duration: {0:.1f}s".format(self._app.results.time))
+    print("#Min,Mean,Max")
     units = self._app.data_provider.get_units()
     for index,value in enumerate(self._app.results.values):
       print("#{1:.2f}{0:s},{2:.2f}{0:s},{3:.2f}{0:s}".format(units[index],*value))
