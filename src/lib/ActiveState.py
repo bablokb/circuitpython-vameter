@@ -32,9 +32,9 @@ class ActiveState:
   def _log_settings(self):
     """ write settings """
 
-    print("\n#Interval: {0:.2f}ms".format(self._settings.interval))
-    print("#Duration: {0:.1f}s".format(self._settings.duration))
-    print("#Update:   {0:.2f}s\n".format(self._settings.update))
+    print("\n#Interval: {0:d}ms".format(self._settings.interval))
+    print("#Duration:   {0:d}s".format(self._settings.duration))
+    print("#Update:     {0:d}ms\n".format(self._settings.update))
 
   # --- loop during ready-state   --------------------------------------------
 
@@ -65,7 +65,7 @@ class ActiveState:
     while not stop and time.monotonic() < end:
       # reset display-data
       d_data.reset()
-      display_next = time.monotonic() + self._settings.update
+      display_next = time.monotonic() + self._settings.update/1000
 
       # sample data while in update-interval
       while not stop and time.monotonic() < display_next:

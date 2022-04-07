@@ -22,7 +22,7 @@ class ConfigState:
 
     self._app   = app
     headings    = ['Interval:','Duration:','Update:']
-    units       = ['ms','s','s']
+    units       = ['ms','s','ms']
     self._attr  = ['interval','duration','update']
     self._views = [ConfigView(app.display,app.border,
                               headings[i],
@@ -34,29 +34,23 @@ class ConfigState:
   def _upd_value(self,nr):
     """ update value of current setting """
 
-    value = getattr(self._app.settings,self._attr[nr])
-    if int(value) == value:
-      value = int(value)
-    str_value = str(value)
+    value = str(getattr(self._app.settings,self._attr[nr]))
     while True:
-      print("value: %f (%s)" % (value,str_value))
       self._views[nr].set_value(value)
       self._views[nr].show()
       key = self._app.key_events.wait_for_key(self._app.key_events.KEYMAP_CONFIG)
-      print("key: %s" % key)
       if key == 'NEXT':
-        setattr(self._app.settings,self._attr[nr],value)
+        setattr(self._app.settings,self._attr[nr],int(value))
         return
       elif key == 'CLR':
-        str_value = str_value[:-1]
-        if str_value == '0.':
-          str_value = ''
-        value     = float(str_value) if len(str_value) else 0
+        if len(value) > 1:
+          value = value[:-1]
+        else:
+          value = '0'
+      elif value == '0':
+        value = key
       else:
-        str_value = str_value+key
-        value     = float(str_value) if str_value != '.' else 0
-        if int(value) == value:
-          value = int(value)
+        value = value+key
 
   # --- loop during config-state   --------------------------------------------
 

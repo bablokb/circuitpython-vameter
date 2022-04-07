@@ -26,7 +26,7 @@ from Touchpad import KeyEventProvider
 
 DEF_INTERVAL = 100    # sampling-interval:       100ms
 DEF_DURATION = 0      # measurement-duration:    0s     (i.e. not limited)
-DEF_UPDATE   = 0.5    # display update-interval: 0.5s
+DEF_UPDATE   = 500    # display update-interval: 500ms
 
 OLED_ADDR   = 0x3C
 OLED_WIDTH  = 128
