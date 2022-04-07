@@ -30,7 +30,7 @@ class KeyEventProvider:
     6: 'TOGGLE'
     }
   KEYMAP_CONFIG = {
-    0: 'NEXT',   4: 'SHIFT', 8: 'CLR',
+    0: 'NEXT',   4: '0',     8: 'CLR',    # set 4: 'SHIFT' if '.' is needed
     1: '7',      5: '8',     9: '9',
     2: '4',      6: '5',    10: '6',
     3: '1',      7: '2',    11: '3'
@@ -67,13 +67,10 @@ class KeyEventProvider:
       # get current key and check for bouncing
       index = touched.index(True)
       t     = time.monotonic()
-      print("index: %d (%f)" % (index,t),end="")
       if index == self._last_key[0] and t < (
                          self._last_key[1] + KeyEventProvider.DEBOUNCE_TIME):
-        print(" ... ignoring")
         continue
       else:
-        print("... processing")
         self._last_key = (index,time.monotonic())
 
       # check for correct key
