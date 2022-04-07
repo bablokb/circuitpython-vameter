@@ -25,6 +25,13 @@ knobs and buttons instead of the touchpad) you should read the
 [porting guide](porting.md).
 
 
+Hardware
+--------
+
+All components use I2C. Connect the respective SDA, SCL, Vcc and GND
+pins with the relevant pins of the MCU.
+
+
 Installation
 ------------
 
