@@ -18,6 +18,8 @@ import adafruit_mpr121
 class KeyEventProvider:
   """ provide key events """
 
+  DEBOUNCE_TIME = 0.200
+
   KEYMAP_READY = {
     0: 'START',
     4: 'CONFIG',
@@ -28,10 +30,17 @@ class KeyEventProvider:
     6: 'TOGGLE'
     }
   KEYMAP_CONFIG = {
-    0: 'NEXT',   4: '0',   8: 'CLR', 
-    1: '7',      5: '8',   9: '9',
-    2: '4',      6: '5',  10: '6',
-    3: '1',      7: '2',  11: '3'
+    0: 'NEXT',   4: 'SHIFT', 8: 'CLR',
+    1: '7',      5: '8',     9: '9',
+    2: '4',      6: '5',    10: '6',
+    3: '1',      7: '2',    11: '3'
+    }
+  KEYMAP_SHIFT = {
+    0: 'NEXT',
+    4: 'SHIFT',
+    8: 'CLR',
+    5: '0',
+    9: '.'
     }
 
   # --- constructor   --------------------------------------------------------
@@ -41,22 +50,45 @@ class KeyEventProvider:
 
     self._settings = settings
     self._mpr121   = adafruit_mpr121.MPR121(i2c)
+    self._last_key = (-1,time.monotonic())
 
   # --- wait for a key   -----------------------------------------------------
 
   def wait_for_key(self,keymap):
     """ wait for key-press and return it """
 
+    normal_keymap = keymap
+    shift         = False
     while True:
       touched = self._mpr121.touched_pins
       if True not in touched:
         continue
+
+      # get current key and check for bouncing
       index = touched.index(True)
-      if index not in keymap.keys():
+      t     = time.monotonic()
+      print("index: %d (%f)" % (index,t),end="")
+      if index == self._last_key[0] and t < (
+                         self._last_key[1] + KeyEventProvider.DEBOUNCE_TIME):
+        print(" ... ignoring")
         continue
       else:
-        return keymap[index]
+        print("... processing")
+        self._last_key = (index,time.monotonic())
 
+      # check for correct key
+      if index not in keymap.keys():
+        continue
+
+      # process shift
+      if keymap[index] != 'SHIFT':
+        return keymap[index]
+      elif shift:
+        keymap = normal_keymap
+        shift  = False
+      else:
+        keymap = KeyEventProvider.KEYMAP_SHIFT
+        shift  = True
 
   # --- check specific keys   -------------------------------------------------
 
