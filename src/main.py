@@ -26,7 +26,7 @@ from Touchpad import KeyEventProvider
 
 DEF_INTERVAL = 100    # sampling-interval:       100ms
 DEF_DURATION = 0      # measurement-duration:    0s     (i.e. not limited)
-DEF_UPDATE   = 500    # display update-interval: 500ms
+DEF_UPDATE   = 1000   # display update-interval: 1000ms
 
 OLED_ADDR   = 0x3C
 OLED_WIDTH  = 128
@@ -103,10 +103,11 @@ class VAMeter:
   def run(self):
     """ main loop """
 
-    #self._config.run()
     while True:
       next_state = self._ready.run(self._active,self._config)
       next_state.run()
+      while not self.key_events:    # only one iteration (sleep for ever)
+        time.sleep(1)
 
 # --- main loop   ------------------------------------------------------------
 
