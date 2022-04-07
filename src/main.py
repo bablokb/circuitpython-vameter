@@ -73,7 +73,10 @@ class VAMeter:
     self.results.values = [[0,0,0] for i in range(self.data_provider.get_dim())]
     self.results.time   = 0
 
-    self.key_events = KeyEventProvider(i2c,self.settings)
+    try:
+      self.key_events = KeyEventProvider(i2c,self.settings)
+    except:
+      self.key_events = None
 
     self._ready  = ReadyState(self)
     self._active = ActiveState(self)
