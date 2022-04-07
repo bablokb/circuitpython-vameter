@@ -166,4 +166,4 @@ class ConfigView(View):
     """ set value for config-item """
 
     if self._display:
-      self._value.text = self.format(value,self._unit)
+      self._value.text = "{0:s}{1:s}".format(value,self._unit)
