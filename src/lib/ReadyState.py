@@ -31,8 +31,8 @@ class ReadyState:
   def run(self,active,config):
     """ main-loop during ready-state """
 
-    if not self._app.display:
-      # no config without display, so just start
+    if not self._app.display or not self._app.key_events:
+      # no config without display or keys, so just start
       return active
 
     # set results and show first view

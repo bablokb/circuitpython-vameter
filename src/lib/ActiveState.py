@@ -78,14 +78,15 @@ class ActiveState:
 
         # sample data while in sample-interval
         while not stop and time.monotonic() < sample_next:
-          key = self._app.key_events.is_key_pressed(
-            self._app.key_events.KEYMAP_ACTIVE)
-          if key == 'TOGGLE':
-            # switch to next view
-            c_view = (c_view+1) % len(self._values)
-          elif key == 'STOP':
-            stop = True
-            break
+          if self._app.key_events:
+            key = self._app.key_events.is_key_pressed(
+              self._app.key_events.KEYMAP_ACTIVE)
+            if key == 'TOGGLE':
+              # switch to next view
+              c_view = (c_view+1) % len(self._values)
+            elif key == 'STOP':
+              stop = True
+              break
 
           try:
             sample = self._app.data_provider.get_data()
@@ -116,6 +117,9 @@ class ActiveState:
         self._values[c_view].set_values([time.monotonic()-start_t,
                                          self._settings.duration],-1)
       self._values[c_view].show()
+      if not self._app.key_events:
+        # auto toggle view
+        c_view = (c_view+1) % len(self._values)
 
     # that's it, save and log results
     self._app.results.time   = time.monotonic() - start_t
