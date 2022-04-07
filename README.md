@@ -1,5 +1,5 @@
-Project pico-cp-vameter
-=======================
+Project circuitpython-vameter
+=============================
 
 **Note: this is work-in-progress and not usable yet**
 
