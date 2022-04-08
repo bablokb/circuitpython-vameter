@@ -19,7 +19,8 @@ from ReadyState  import ReadyState
 from ConfigState import ConfigState
 from ActiveState import ActiveState
 
-from FakeDataProvider import DataProvider
+#from FakeDataProvider import DataProvider
+from INA219DataProvider import DataProvider
 from Touchpad import KeyEventProvider
 
 # --- constants   ------------------------------------------------------------
@@ -70,7 +71,7 @@ class VAMeter:
     self.settings.duration   = DEF_DURATION
     self.settings.update     = DEF_UPDATE
 
-    self.data_provider = DataProvider(self.settings)
+    self.data_provider  = DataProvider(i2c,self.settings)
     self.results        = ValueHolder()
     self.results.values = [[0,0,0] for i in range(self.data_provider.get_dim())]
     self.results.time   = 0
@@ -108,7 +109,8 @@ class VAMeter:
     while True:
       next_state = self._ready.run(self._active,self._config)
       next_state.run()
-      while not self.key_events:    # only one iteration (sleep for ever)
+      while not self.key_events:
+        # start endless sleeping-loop to prevent restart of measurement
         time.sleep(1)
 
 # --- main loop   ------------------------------------------------------------
