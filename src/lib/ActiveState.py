@@ -79,6 +79,7 @@ class ActiveState:
     stop    = False                            # global stop
     int_t   = self._settings.interval/1000     # interval time in sec
     start_t = time.monotonic()                 # timestamp of start
+    samples = 0                                # total number of samples
 
     # sample until duration (or until manual stop)
     while not stop and time.monotonic() < end_t:
@@ -100,6 +101,7 @@ class ActiveState:
           data_t,data_v = self._get_data()
           print(self._fmt.format(1000*data_t,*data_v))
           m_data.add(data_v)
+          samples += 1
         except StopIteration:
           stop = True
           break
@@ -132,10 +134,13 @@ class ActiveState:
           c_view = (c_view+1) % len(self._values)
 
     # that's it, save and log results
-    self._app.results.time   = data_t - start_t
-    self._app.results.values = m_data.get()
+    self._app.results.time    = data_t - start_t
+    self._app.results.samples = samples
+    self._app.results.values  = m_data.get()
 
     print("\n#Duration: {0:.1f}s".format(self._app.results.time))
+    print("#Samples: {0:d} ({1:.1f}/s)".format(samples,
+                                               samples/self._app.results.time))
     print("#Min,Mean,Max")
     units = self._app.data_provider.get_units()
     for index,value in enumerate(self._app.results.values):
