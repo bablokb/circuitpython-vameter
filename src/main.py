@@ -24,9 +24,10 @@ from Touchpad import KeyEventProvider
 
 # --- constants   ------------------------------------------------------------
 
-DEF_INTERVAL = 100    # sampling-interval:       100ms
-DEF_DURATION = 0      # measurement-duration:    0s     (i.e. not limited)
-DEF_UPDATE   = 1000   # display update-interval: 1000ms
+DEF_INTERVAL   = 100    # sampling-interval:       100ms
+DEF_OVERSAMPLE = 1      # oversampling:            1X
+DEF_DURATION   = 0      # measurement-duration:    0s     (i.e. not limited)
+DEF_UPDATE     = 1000   # display update-interval: 1000ms
 
 OLED_ADDR   = 0x3C
 OLED_WIDTH  = 128
@@ -64,9 +65,10 @@ class VAMeter:
     self.border  = OLED_BORDER
 
     self.settings = ValueHolder()
-    self.settings.interval = DEF_INTERVAL
-    self.settings.duration = DEF_DURATION
-    self.settings.update   = DEF_UPDATE
+    self.settings.interval   = DEF_INTERVAL
+    self.settings.oversample = DEF_OVERSAMPLE
+    self.settings.duration   = DEF_DURATION
+    self.settings.update     = DEF_UPDATE
 
     self.data_provider = DataProvider(self.settings)
     self.results        = ValueHolder()
