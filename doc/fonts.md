@@ -9,6 +9,8 @@ are within the font. These subsets were created following the
 tutorial from
 <https://learn.adafruit.com/custom-fonts-for-pyportal-circuitpython-display>.
 
+Conversion to PCF was done using the online converter from
+<https://adafruit.github.io/web-bdftopcf/>.
 
 Text strings
 ------------
@@ -16,6 +18,7 @@ Text strings
 The program uses the following text strings:
 
   - Interval:
+  - Oversample:
   - Duration:
   - Update:
   - min:
@@ -56,6 +59,7 @@ Character table
 | D    |      |   X   |       |
 | I    |      |   X   |       |
 | M    |   X  |   X   |   X   |
+| O    |      |   X   |       |
 | U    |      |   X   |       |
 | V    |   X  |   X   |   X   |
 | a    |      |   X   |       |
