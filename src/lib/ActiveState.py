@@ -24,6 +24,7 @@ class ActiveState:
     self._app      = app
     self._settings = app.settings
     self._fmt      = app.data_provider.get_fmt()
+    self._dim      = app.data_provider.get_dim()
     if self._app.display:
       self._values   = [ValuesView(app.display,app.border,
                               app.data_provider.get_units()),
@@ -35,9 +36,26 @@ class ActiveState:
   def _log_settings(self):
     """ write settings """
 
-    print("\n#Interval: {0:d}ms".format(self._settings.interval))
-    print("#Duration:   {0:d}s".format(self._settings.duration))
-    print("#Update:     {0:d}ms\n".format(self._settings.update))
+    print("\n#Interval:   {0:d}ms".format(self._settings.interval))
+    print("#Oversampling: {0:d}X".format(self._settings.oversample))
+    print("#Duration:     {0:d}s".format(self._settings.duration))
+    print("#Update:       {0:d}ms\n".format(self._settings.update))
+
+  # --- get data   -----------------------------------------------------------
+
+  def _get_data(self):
+    """ get data using oversampling """
+
+    if self._settings.oversample == 1:
+      return (time.monotonic(),self._app.data_provider.get_data())
+
+    d_sum = [0 for i in range(self._dim)]
+    for o in range(self._settings.oversample):
+      data = self._app.data_provider.get_data()
+      for i in range(self._dim):
+        d_sum[i] += data[i]
+    return (time.monotonic(),
+            [d_sum[i]/self._settings.oversample for i in range(self._dim)])
 
   # --- loop during ready-state   --------------------------------------------
 
@@ -45,80 +63,65 @@ class ActiveState:
     """ main-loop during active-state """
 
     self._log_settings()
-
-    # first level:  aggregate raw-data    -> sample-data (mean)
-    # second level: aggregate sample-data -> measurement-data (min,mean,max)
-    #               aggregate sample-data -> display-data (mean)
-    dim = self._app.data_provider.get_dim()
-    s_data = DataAggregator(dim)
-    m_data = DataAggregator(dim)
-    if self._app.display:
-      c_view = 0
-      d_data = DataAggregator(dim)
+    m_data = DataAggregator(self._dim)
+    c_view = 0
 
     # reset data-provider and wait for first sample
     self._app.data_provider.reset()
     self._app.data_provider.get_data()
 
     if self._settings.duration:
-      end = time.monotonic() + self._settings.duration
+      end_t = time.monotonic() + self._settings.duration
     else:
-      end = sys.maxsize
+      end_t = sys.maxsize
 
-    stop = False
-    start_t = time.monotonic()                        # for final stats
-    while not stop and time.monotonic() < end:
+    data_t0 = 0                                # timestamp before last sample
+    stop    = False                            # global stop
+    int_t   = self._settings.interval/1000     # interval time in sec
+    start_t = time.monotonic()                 # timestamp of start
+
+    # sample until duration (or until manual stop)
+    while not stop and time.monotonic() < end_t:
+
+      # sample until screen-update is necessary
       if self._app.display:
-        # reset display-data
-        d_data.reset()
         display_next = time.monotonic() + self._settings.update/1000
       else:
         display_next = sys.maxsize
-
-      # sample data while in update-interval
       while not stop and time.monotonic() < display_next:
-        # reset sample-data
-        s_data.reset()
-        sample_next = time.monotonic() + self._settings.interval/1000
 
-        # sample data while in sample-interval
-        while not stop and time.monotonic() < sample_next:
-          if self._app.key_events:
-            key = self._app.key_events.is_key_pressed(
-              self._app.key_events.KEYMAP_ACTIVE)
-            if key == 'TOGGLE' and self._app.display:
-              # switch to next view
-              c_view = (c_view+1) % len(self._values)
-            elif key == 'STOP':
-              stop = True
-              break
+        # sleep until next sampling interval starts (int_t minus overhead)
+        if data_t0 > 0:
+          time.sleep(max(int_t - (time.monotonic()-data_t0),0))
 
-          try:
-            sample = self._app.data_provider.get_data()
-            s_data.add(sample)
-          except StopIteration:
-            stop = True
-            break
-
-        if stop:
+        # get, log and save data
+        try:
+          data_t0 = time.monotonic()
+          data_t,data_v = self._get_data()
+          print(self._fmt.format(1000*data_t,*data_v))
+          m_data.add(data_v)
+        except StopIteration:
+          stop = True
           break
 
-        # sampling finished: log data and add to aggregators
-        mean = s_data.get_mean()
-        print(self._fmt.format(1000*time.monotonic(),*mean))
-        m_data.add(mean)
-        if self._app.display:
-          d_data.add(mean)
-
+        # check and process key
+        if self._app.key_events:
+          key = self._app.key_events.is_key_pressed(
+                                           self._app.key_events.KEYMAP_ACTIVE)
+          if key == 'TOGGLE' and self._app.display:
+            # switch to next view
+            c_view = (c_view+1) % len(self._values)
+          elif key == 'STOP':
+            stop = True
+            break
       if stop:
         break
 
+      # update display with current values
       if self._app.display:
-        # time to update the display
         if c_view == 0:
           # measurement values
-          mean = d_data.get_mean()
-          self._values[c_view].set_values(mean,time.monotonic()-start_t)
+          self._values[c_view].set_values(data_v,time.monotonic()-start_t)
         elif c_view == 1:
           # elapsed time
           self._values[c_view].set_values([time.monotonic()-start_t,
@@ -129,7 +132,7 @@ class ActiveState:
           c_view = (c_view+1) % len(self._values)
 
     # that's it, save and log results
-    self._app.results.time   = time.monotonic() - start_t
+    self._app.results.time   = data_t - start_t
     self._app.results.values = m_data.get()
 
     print("\n#Duration: {0:.1f}s".format(self._app.results.time))
