@@ -16,7 +16,7 @@ class DataProvider:
 
   # --- constructor   --------------------------------------------------------
 
-  def __init__(self,settings):
+  def __init__(self,i2c,settings):
     """ constructor """
 
     self._settings = settings
