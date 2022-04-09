@@ -46,6 +46,7 @@ Steps:
     - adafruit_display_shapes
     - adafruit_display_text
     - adafruit_ina219
+    - adafruit_register
     - adafruit_mpr121
 
   3. if you are using a MCU which does not define board-pins for SDA and
