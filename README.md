@@ -46,6 +46,7 @@ Steps:
 
   2. Add the following libraries from the CircuitPython library-bundle to
 `    src/lib`:
+
     - adafruit_bitmap_font
     - adafruit_displayio_ssd1306
     - adafruit_display_shapes
