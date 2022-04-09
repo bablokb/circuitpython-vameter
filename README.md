@@ -1,7 +1,6 @@
 Project circuitpython-vameter
 =============================
 
-**Note: this is work-in-progress and not usable yet**
 
 Overview
 --------
@@ -29,7 +28,13 @@ Hardware
 --------
 
 All components use I2C. Connect the respective SDA, SCL, Vcc and GND
-pins with the relevant pins of the MCU.
+pins with the relevant pins of the MCU. Don't forget pullups, the builtin
+pullups of the MCU are usually too weak.
+
+![](doc/hardware.jpg)
+
+On the left edge: the MCU, a RP2040-Qt-Trinkey. The INA219 is left to the
+barrel-jack on the upper-left side of the breadboard.
 
 
 Installation
