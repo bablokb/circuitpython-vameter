@@ -85,7 +85,7 @@ class ActiveState:
     while not stop and time.monotonic() < end_t:
 
       # sample until screen-update is necessary
-      if self._app.display:
+      if self._app.display and self._settings.update:
         display_next = time.monotonic() + self._settings.update/1000
       else:
         display_next = sys.maxsize
