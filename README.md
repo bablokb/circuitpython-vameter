@@ -45,7 +45,7 @@ Steps:
   1. Clone the repository
 
   2. Add the following libraries from the CircuitPython library-bundle to
-`    src/lib`:
+     `src/lib`
 
     - adafruit_bitmap_font
     - adafruit_displayio_ssd1306
