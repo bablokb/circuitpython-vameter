@@ -12,6 +12,7 @@ import displayio
 from adafruit_display_text import label
 from adafruit_bitmap_font import bitmap_font
 from adafruit_display_shapes.rect import Rect
+from adafruit_display_shapes.sparkline import Sparkline
 
 # --- base class of all Views   ----------------------------------------------
 
@@ -26,16 +27,17 @@ class View:
     """ constructor """
 
     self._display = display
+    self._border  = 1
     if display:
       self._group   = displayio.Group()
-      offset = border + 2 if border else 0
+      self._offset = border + 2 if border else 0
       self._pos_map = {
-        'NW': ((0.0,0.0),(offset,              offset)),
-        'NE': ((1.0,0.0),(display.width-offset,offset)),
-        'W':  ((0.0,0.5),(offset,              display.height/2)),
-        'E':  ((1.0,0.5),(display.width-offset,display.height/2)),
-        'SW': ((0.0,1.0),(offset,              display.height-offset)),
-        'SE': ((1.0,1.0),(display.width-offset,display.height-offset)),
+        'NW': ((0.0,0.0),(self._offset,              self._offset)),
+        'NE': ((1.0,0.0),(display.width-self._offset,self._offset)),
+        'W':  ((0.0,0.5),(self._offset,              display.height/2)),
+        'E':  ((1.0,0.5),(display.width-self._offset,display.height/2)),
+        'SW': ((0.0,1.0),(self._offset,              display.height-self._offset)),
+        'SE': ((1.0,1.0),(display.width-self._offset,display.height-self._offset)),
         }
       if border:
         rect = Rect(0,0,display.width,display.height,
@@ -167,3 +169,45 @@ class ConfigView(View):
 
     if self._display:
       self._value.text = "{0:s}{1:s}".format(value,self._unit)
+
+# ----------------------------------------------------------------------------
+# --- PlotView   -------------------------------------------------------------
+
+class PlotView(View):
+
+  # --- constructor   --------------------------------------------------------
+
+  def __init__(self,display,border,units):
+    """ constructor """
+
+    super(PlotView,self).__init__(display,border)
+    self._units = units
+    self._sparklines = []
+    for i in range(len(units)):
+      sparkline = Sparkline(
+        width=self._display.width-2*self._offset,
+        height=self._display.height-2*self._offset,
+        max_items=64,
+        x=0, y=0)
+      self._sparklines.append(sparkline)
+      self._group.append(sparkline)
+
+  # --- reset state   --------------------------------------------------------
+
+  def reset(self):
+    """ reset state """
+
+    if self._display:
+      for sparkline in self._sparklines:
+        sparkline.clear_values()
+
+  # --- set values   ---------------------------------------------------------
+
+  def set_values(self,values):
+    """ set values """
+
+    if self._display:
+      self._display.auto_refresh = False
+      for index,value in enumerate(values):
+        self._sparklines[index].add_value(value)
+      self._display.auto_refresh = True
