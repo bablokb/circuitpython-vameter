@@ -10,7 +10,7 @@
 
 import time
 import sys
-from View import ValuesView
+from View import ValuesView, PlotView
 from Data import DataAggregator
 
 class ActiveState:
@@ -26,9 +26,12 @@ class ActiveState:
     self._fmt      = app.data_provider.get_fmt()
     self._dim      = app.data_provider.get_dim()
     if self._app.display:
-      self._values   = [ValuesView(app.display,app.border,
-                              app.data_provider.get_units()),
-                        ValuesView(app.display,app.border,['s','s'])] # elapsed
+      self._plot   = PlotView(app.display,app.border,
+                           app.data_provider.get_units())
+      self._views = [ValuesView(app.display,app.border,
+                                 app.data_provider.get_units()),
+                      ValuesView(app.display,app.border,['s','s']),  # elapsed
+                      self._plot]
                       
 
   # --- write settings to serial   -------------------------------------------
@@ -65,6 +68,7 @@ class ActiveState:
     self._log_settings()
     m_data = DataAggregator(self._dim)
     c_view = 0
+    self._plot.reset()
 
     # reset data-provider and wait for first sample
     self._app.data_provider.reset()
@@ -112,7 +116,7 @@ class ActiveState:
                                            self._app.key_events.KEYMAP_ACTIVE)
           if key == 'TOGGLE' and self._app.display:
             # switch to next view
-            c_view = (c_view+1) % len(self._values)
+            c_view = (c_view+1) % len(self._views)
           elif key == 'STOP':
             stop = True
             break
@@ -121,17 +125,18 @@ class ActiveState:
 
       # update display with current values
       if self._app.display:
+        self._plot.set_values(data_v)           # always update plot
         if c_view == 0:
           # measurement values
-          self._values[c_view].set_values(data_v,time.monotonic()-start_t)
+          self._views[c_view].set_values(data_v,time.monotonic()-start_t)
         elif c_view == 1:
           # elapsed time
-          self._values[c_view].set_values([time.monotonic()-start_t,
+          self._views[c_view].set_values([time.monotonic()-start_t,
                                            self._settings.duration],-1)
-        self._values[c_view].show()
+        self._views[c_view].show()
         if not self._app.key_events:
           # auto toggle view
-          c_view = (c_view+1) % len(self._values)
+          c_view = (c_view+1) % len(self._views)
 
     # that's it, save and log results
     self._app.results.time    = data_t - start_t
