@@ -55,6 +55,6 @@ class DataProvider:
     t = time.monotonic()
     if not self._start:
       self._start = t
-    if t > self._start + 60:
+    if self._settings.duration == 0 and t > self._start + 60:
       raise StopIteration
     return (5+t/10+math.sin(t),25+t/10+math.cos(t))
