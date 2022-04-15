@@ -11,6 +11,9 @@
 import time
 import math
 
+#DIM = 2
+DIM = 3
+
 class DataProvider:
   """ provide (fake) data """
 
@@ -32,19 +35,25 @@ class DataProvider:
 
   def get_dim(self):
     """ dimension of data """
-    return 2
+    return DIM
 
   # --- return units of data   -----------------------------------------------
 
   def get_units(self):
     """ units of data """
-    return ['V','mA']
+    if DIM == 2:
+      return ['V','mA']
+    else:
+      return ['V','V','mA']
 
   # --- log-format   ---------------------------------------------------------
 
   def get_fmt(self):
     """ return format for data, must include placeholder for timestamp """
-    return "{0:.1f},{1:.2f},{2:.1f}"
+    if DIM == 2:
+      return "{0:.1f},{1:.2f},{2:.1f}"
+    else:
+      return "{0:.1f},{1:.2f},{2:.1f},{3:.1f}"
 
   # --- provide data   -------------------------------------------------------
 
@@ -57,4 +66,7 @@ class DataProvider:
       self._start = t
     if self._settings.duration == 0 and t > self._start + 60:
       raise StopIteration
-    return (5+t/10+math.sin(t),25+t/10+math.cos(t))
+    if DIM == 2:
+      return (5+t/10+math.sin(t),25+t/10+math.cos(t))
+    else:
+      return (1+t/100+math.sin(t),5+t/10+math.sin(t),25+t/10+math.cos(t))
