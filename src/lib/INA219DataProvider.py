@@ -23,6 +23,8 @@
 import time
 from adafruit_ina219 import ADCResolution, BusVoltageRange, INA219
 
+WITH_SUPPLY_V = True
+
 class DataProvider:
   """ provide data """
 
@@ -56,19 +58,22 @@ class DataProvider:
 
   def get_dim(self):
     """ dimension of data """
-    return 2
+    return 3 if WITH_SUPPLY_V else 2
 
   # --- return units of data   -----------------------------------------------
 
   def get_units(self):
     """ units of data """
-    return ['V','mA']
+    return ['V','mA','V'] if WITH_SUPPLY_V else ['V','mA']
 
   # --- log-format   ---------------------------------------------------------
 
   def get_fmt(self):
     """ return format for data, must include placeholder for timestamp """
-    return "{0:.1f},{1:.2f},{2:.1f}"
+    if WITH_SUPPLY_V:
+      return "{0:.2f},{1:.3f},{2:.3f},{3:.6f}"
+    else:
+      return "{0:.2f},{1:.3f},{2:.3f}"
 
   # --- provide data   -------------------------------------------------------
 
@@ -78,12 +83,16 @@ class DataProvider:
     # Loop until voltage is above threshold.
     # The loop degenerates as long as the voltage is high enough.
     while True:
-      v = self._ina219.bus_voltage  # voltage on V- (load side)
-      a = self._ina219.current      # current in mA
+      v  = self._ina219.bus_voltage   # voltage on V- (load side)
+      vd = self._ina219.shunt_voltage # voltage drop across shunt
+      a  = self._ina219.current       # current in mA
+
+      if self._ina219.overflow:
+        continue
 
       if v > self._settings.v_min:
         self._start = True
-        return (v,a)
+        return (v,a,v+vd) if WITH_SUPPLY_V else (v,a)
       elif self._start:
         # voltage dropped below threshold, so we stop
         raise StopIteration
