@@ -23,7 +23,8 @@
 import time
 from adafruit_ina219 import ADCResolution, BusVoltageRange, INA219
 
-WITH_SUPPLY_V = True
+WITH_SUPPLY_V   = True   # normally False, set to True for calibration
+NO_LOAD_TIMEOUT = 60     # timeout (sec) if there is no load for given duration
 
 class DataProvider:
   """ provide data """
@@ -84,6 +85,7 @@ class DataProvider:
 
     # Loop until voltage is above threshold.
     # The loop degenerates as long as the voltage is high enough.
+    t_start = time.monotonic()
     while True:
       v  = self._ina219.bus_voltage   # voltage on V- (load side)
       vd = self._ina219.shunt_voltage # voltage drop across shunt
@@ -97,4 +99,6 @@ class DataProvider:
         return (v,a,v+vd) if WITH_SUPPLY_V else (v,a)
       elif self._start:
         # voltage dropped below threshold, so we stop
+        raise StopIteration
+      elif time.monotonic() - t_start > NO_LOAD_TIMEOUT:
         raise StopIteration

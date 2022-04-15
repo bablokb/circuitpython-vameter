@@ -66,13 +66,19 @@ class ActiveState:
     self._log_settings()
     m_data = DataAggregator(self._dim)
     c_view = 0
-    # reset plots
-    for i in range(self._dim):
-      self._views[2+i].reset()
+    if self._app.display:
+      # reset plots and show first ValuesView
+      for i in range(self._dim):
+        self._views[2+i].reset()
+      self._views[0].show()
 
     # reset data-provider and wait for first sample
     self._app.data_provider.reset()
-    self._app.data_provider.get_data()
+    try:
+      self._app.data_provider.get_data()
+    except:
+      print("\n#data-provider timed out")
+      return
 
     if self._settings.duration:
       end_t = time.monotonic() + self._settings.duration
