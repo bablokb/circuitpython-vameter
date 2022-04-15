@@ -35,6 +35,8 @@ class DataProvider:
 
     if not hasattr(settings,'v_min'):
       settings.v_min = 1.0                # set default threshold to 1V
+    if not hasattr(settings,'a_min'):
+      settings.a_min = 0.5                # set default threshold to 0.5mA
     self._settings = settings
     self._ina219   = INA219(i2c)
     self.reset()
@@ -90,7 +92,7 @@ class DataProvider:
       if self._ina219.overflow:
         continue
 
-      if v > self._settings.v_min:
+      if v > self._settings.v_min and a > self._settings.a_min:
         self._start = True
         return (v,a,v+vd) if WITH_SUPPLY_V else (v,a)
       elif self._start:
