@@ -85,7 +85,7 @@ class View:
       self._display.show(self._group)
 
 # ----------------------------------------------------------------------------
-# --- View for current A/V values   ------------------------------------------
+# --- View for current values   ----------------------------------------------
 
 class ValuesView(View):
 
@@ -95,11 +95,19 @@ class ValuesView(View):
     """ constructor """
 
     super(ValuesView,self).__init__(display,border)
-    self._units = units
     if self._display:
       self._value = []
-      self._value.append(self.add(units[0],'NE',View.FONT_L))
-      self._value.append(self.add(units[1],'SE',View.FONT_L))
+      if len(units) < 3:
+        pos  = ['NE','SE']
+        font = View.FONT_L
+        self._units = units
+      else:
+        pos  = ['NE','E','SE']
+        font = View.FONT_S
+        self._units = units[:3]    # we support at most 3 values
+
+      for i,unit in enumerate(self._units):
+        self._value.append(self.add(units[i],pos[i],font))
 
   # --- set values   ---------------------------------------------------------
 
