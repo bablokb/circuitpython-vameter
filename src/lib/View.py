@@ -9,6 +9,7 @@
 # ----------------------------------------------------------------------------
 
 import displayio
+import terminalio
 from adafruit_display_text import label
 from adafruit_bitmap_font import bitmap_font
 from adafruit_display_shapes.rect import Rect
@@ -17,6 +18,7 @@ from adafruit_display_shapes.sparkline import Sparkline
 # --- base class of all Views   ----------------------------------------------
 
 class View:
+  FONT_T   = terminalio.FONT
   FONT_S   = bitmap_font.load_font("fonts/DejaVuSansMono-Bold-18-min.pcf")
   FONT_L   = bitmap_font.load_font("fonts/DejaVuSansMono-Bold-32-min.pcf")
   FG_COLOR = 0xFFFFFF
@@ -184,7 +186,7 @@ class PlotView(View):
     self._units = units
     self._sparklines = []
     self._values = []
-    pos = ['SE','SW']
+    pos = ['NW','NE']
     for i in range(min(len(units),2)):
       sparkline = Sparkline(
         width=self._display.width-2*self._offset,
@@ -192,7 +194,7 @@ class PlotView(View):
         max_items=64,
         x=0, y=0)
       self._sparklines.append(sparkline)
-      self._values.append(self.add('0.00',pos[i],View.FONT_S))
+      self._values.append(self.add('0.00',pos[i],View.FONT_T))
       self._group.append(sparkline)
 
   # --- reset state   --------------------------------------------------------
