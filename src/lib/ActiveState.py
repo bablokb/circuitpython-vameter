@@ -26,13 +26,11 @@ class ActiveState:
     self._fmt      = app.data_provider.get_fmt()
     self._dim      = app.data_provider.get_dim()
     if self._app.display:
-      self._plot   = PlotView(app.display,app.border,
-                           app.data_provider.get_units())
       self._views = [ValuesView(app.display,app.border,
                                  app.data_provider.get_units()),
-                      ValuesView(app.display,app.border,['s','s']),  # elapsed
-                      self._plot]
-                      
+                      ValuesView(app.display,app.border,['s','s'])]  # elapsed
+      for unit in app.data_provider.get_units():
+        self._views.append(PlotView(app.display,app.border,[unit]))
 
   # --- write settings to serial   -------------------------------------------
 
@@ -68,7 +66,9 @@ class ActiveState:
     self._log_settings()
     m_data = DataAggregator(self._dim)
     c_view = 0
-    self._plot.reset()
+    # reset plots
+    for i in range(self._dim):
+      self._views[2+i].reset()
 
     # reset data-provider and wait for first sample
     self._app.data_provider.reset()
@@ -125,7 +125,9 @@ class ActiveState:
 
       # update display with current values
       if self._app.display:
-        self._plot.set_values(data_v)           # always update plot
+        # update plots
+        for i,value in enumerate(data_v):
+          self._views[2+i].set_values([value])
         if c_view == 0:
           # measurement values
           self._views[c_view].set_values(data_v,time.monotonic()-start_t)
