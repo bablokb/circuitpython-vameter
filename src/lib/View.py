@@ -178,18 +178,21 @@ class PlotView(View):
   # --- constructor   --------------------------------------------------------
 
   def __init__(self,display,border,units):
-    """ constructor """
+    """ constructor (units must be an iterable!) """
 
     super(PlotView,self).__init__(display,border)
     self._units = units
     self._sparklines = []
-    for i in range(len(units)):
+    self._values = []
+    pos = ['SE','SW']
+    for i in range(min(len(units),2)):
       sparkline = Sparkline(
         width=self._display.width-2*self._offset,
         height=self._display.height-2*self._offset,
         max_items=64,
         x=0, y=0)
       self._sparklines.append(sparkline)
+      self._values.append(self.add('0.00',pos[i],View.FONT_S))
       self._group.append(sparkline)
 
   # --- reset state   --------------------------------------------------------
@@ -204,10 +207,11 @@ class PlotView(View):
   # --- set values   ---------------------------------------------------------
 
   def set_values(self,values):
-    """ set values """
+    """ set values (must pass an iterable!) """
 
     if self._display:
       self._display.auto_refresh = False
-      for index,value in enumerate(values):
-        self._sparklines[index].add_value(value)
+      for i in range(len(self._sparklines)):
+        self._sparklines[i].add_value(values[i])
+        self._values[i].text = self.format(values[i],self._units[i])
       self._display.auto_refresh = True
