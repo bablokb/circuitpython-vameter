@@ -23,7 +23,7 @@
 import time
 from adafruit_ina219 import ADCResolution, BusVoltageRange, INA219
 
-WITH_SUPPLY_V   = True   # normally False, set to True for calibration
+WITH_SUPPLY_V   = False  # normally False, set to True for calibration
 NO_LOAD_TIMEOUT = 60     # timeout (sec) if there is no load for given duration
 
 class DataProvider:
