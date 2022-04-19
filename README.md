@@ -36,6 +36,11 @@ pullups of the MCU are usually too weak.
 On the left edge: the MCU, a RP2040-Qt-Trinkey. The INA219 is left to the
 barrel-jack on the upper-left side of the breadboard.
 
+The INA219-breakout has two pins (next to the I2C-interface) and a
+screw-terminal for attachement of the power-source (V+) and the load (V-).
+*Don't use the pins, use the screw-terminal* or else your results will
+be off by about 20%.
+
 
 Installation
 ------------
