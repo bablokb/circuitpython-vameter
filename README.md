@@ -60,10 +60,17 @@ Steps:
     - adafruit_register
     - adafruit_mpr121
 
-  3. if you are using a MCU which does not define board-pins for SDA and
+  3. If you are using a MCU which does not define board-pins for SDA and
      SCL (e.g. Raspberry Pi Pico): change the pin-values in `src/main.py`.
 
-  4. copy all files from `src` to your device.
+  4. Check `sr/lib/INA219DataProvider.py` for the correct voltage range.
+     The code uses the library-default of 32V/2A, but this can be changed
+     to 16V/1A or 16V/400mA. The additional precision is probably not
+     worth the effort. Also, you can change the chip-internal oversampling
+     of the ADC. The Default uses 8x oversampling resulting in a minimal
+     sampling time of 4.26ms.
+
+  5. Copy all files from `src` to your device.
 
 
 Usage
