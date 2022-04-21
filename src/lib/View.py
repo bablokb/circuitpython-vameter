@@ -122,6 +122,15 @@ class ValuesView(View):
 
       # TODO: show elapsed time on larger screens
 
+  # --- clear values   -------------------------------------------------------
+
+  def clear_values(self):
+    """ clear values """
+
+    if self._display:
+      for index in range(len(self._value)):
+        self._value[index].text = self._units[index]
+
 # ----------------------------------------------------------------------------
 # --- View for results   -----------------------------------------------------
 
