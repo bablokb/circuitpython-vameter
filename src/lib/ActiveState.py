@@ -70,6 +70,7 @@ class ActiveState:
       # reset plots and show first ValuesView
       for i in range(self._dim):
         self._views[2+i].reset()
+      self._views[0].clear_values()
       self._views[0].show()
 
     # reset data-provider and wait for first sample
