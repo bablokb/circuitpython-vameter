@@ -52,6 +52,25 @@ class KeyEventProvider:
     self._mpr121   = adafruit_mpr121.MPR121(i2c)
     self._last_key = (-1,time.monotonic())
 
+  # --- get key (with debounce-control)   ------------------------------------
+
+  def _get_key(self):
+    """ return key or None if within debounce-interval """
+
+    touched = self._mpr121.touched_pins
+    if True not in touched:
+      return None
+
+    # get current key and check for bouncing
+    index = touched.index(True)
+    t     = time.monotonic()
+    if index == self._last_key[0] and t < (
+                         self._last_key[1] + KeyEventProvider.DEBOUNCE_TIME):
+      return None
+    else:
+      self._last_key = (index,time.monotonic())
+      return index
+
   # --- wait for a key   -----------------------------------------------------
 
   def wait_for_key(self,keymap):
@@ -60,21 +79,11 @@ class KeyEventProvider:
     normal_keymap = keymap
     shift         = False
     while True:
-      touched = self._mpr121.touched_pins
-      if True not in touched:
-        continue
-
       # get current key and check for bouncing
-      index = touched.index(True)
-      t     = time.monotonic()
-      if index == self._last_key[0] and t < (
-                         self._last_key[1] + KeyEventProvider.DEBOUNCE_TIME):
-        continue
-      else:
-        self._last_key = (index,time.monotonic())
+      index = self._get_key()
 
       # check for correct key
-      if index not in keymap.keys():
+      if index not in keymap.keys():   # implicitly checks for None
         continue
 
       # process shift
@@ -92,11 +101,7 @@ class KeyEventProvider:
   def is_key_pressed(self,keymap):
     """ check keys and return the key or None """
 
-    touched = self._mpr121.touched_pins
-    if True not in touched:
-      return None
-    
-    index = touched.index(True)
+    index = self._get_key()
     if index not in keymap.keys():
       return None
     else:
