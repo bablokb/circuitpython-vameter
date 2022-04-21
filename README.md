@@ -111,17 +111,17 @@ Config-Mode
 
 Once the program is in configuration mode, you can enter various parameters:
 
-  - **Interval**: the sampling interval in milliseconds
+  - **Interval**: the sampling interval in milliseconds  
     ![](doc/config-int-view.png)
   - **Oversample**: oversampling on application level. Since the chip itself
-    does oversampling as well, this setting can be left at '1X'
+    does oversampling as well, this setting can be left at '1X'  
     ![](doc/config-oversample-view.png)
   - **Duration**: the duration of the measurement in seconds. A value of zero
-    will run the measurement until it is explicitly or implicitly stopped.
+    will run the measurement until it is explicitly or implicitly stopped.  
     ![](doc/config-dur-view.png)
   - **Update**: update-interval of the screen in milliseconds. These updates
     slow down the sampling, so make sure this value is much larger than the
-    value of `interval`.
+    value of `interval`.  
     ![](doc/config-upd-view.png)
 
 The "Next"-button will navigate through the configuration screens, after the
@@ -141,11 +141,11 @@ current is above a default threshold (1V/0.5mA) and stops again once
 
 Using the "View"-button you cycle through various views:
 
-  - voltage and current
+  - voltage and current  
     ![](doc/values-view.png)
-  - elapsed time
+  - elapsed time  
     ![](doc/elapsed-view.png)
-  - plot-view of voltage
+  - plot-view of voltage  
     ![](doc/plot-view-v.png)
-  - plot-view of current
+  - plot-view of current  
     ![](doc/plot-view-a.png)
