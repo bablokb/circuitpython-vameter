@@ -1,0 +1,19 @@
+#!/bin/bash
+# --------------------------------------------------------------------------
+# Wrapper-script to start cp-vameter within virtual environment
+#
+# Author: Bernhard Bablok
+# License: GPL3
+#
+# Website: https://github.com/bablokb/circuitpython-vameter
+#
+# --------------------------------------------------------------------------
+
+# activate virtual env
+source "${0%/*}/../lib/cp-vameter/runtime/bin/activate"
+
+# switch to app-directory (paths in the code are relative to here)
+cd     "${0%/*}/../lib/cp-vameter/app"
+
+# start the application
+python "main.py"

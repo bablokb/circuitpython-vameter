@@ -1,0 +1,90 @@
+#!/bin/bash
+# --------------------------------------------------------------------------
+# Install files and packages on a Raspberry Pi
+#
+# Author: Bernhard Bablok
+# License: GPL3
+#
+# Website: https://github.com/bablokb/circuitpython-vameter
+#
+# --------------------------------------------------------------------------
+
+PROJECT="cp-vameter"
+
+PACKAGES="python3-pip python3-venv libopenjp2-7 libtiff5"
+
+PIP_PACKAGES="                               \
+  RPI.GPIO                                   \
+  adafruit-blinka                            \
+  adafruit-blinka-displayio                  \
+  adafruit-circuitpython-bitmap_font         \
+  adafruit-circuitpython-displayio_ssd1306   \
+  adafruit-circuitpython-display_shapes      \
+  adafruit-circuitpython-display_text        \
+  adafruit-circuitpython-ina219              \
+  adafruit-circuitpython-register            \
+  adafruit-circuitpython-mpr121              \
+"
+
+# --- install system-packages   ---------------------------------------------
+
+apt-get update
+apt-get -y --no-upgrade install $PACKAGES
+
+# --- install virtual environment   -----------------------------------------
+
+echo "[INFO] creating virtenv for $PROJECT" 2>&1
+mkdir -p "/usr/local/lib/${PROJECT}"
+pushd "/usr/local/lib/${PROJECT}" >/dev/null
+python3 -m venv runtime
+
+echo "[INFO] installing packages for $PROJECT" 2>&1
+source runtime/bin/activate
+pip3 install $PIP_PACKAGES
+deactivate
+popd >/dev/null
+
+echo "[INFO] finished preparing /usr/local/lib/${PROJECT}/runtime" 2>&1
+
+# --- install application files   -------------------------------------------
+
+# copy application files
+mkdir -p "/usr/local/lib/${PROJECT}/app"
+cp -a $(dirname "$0")/../src/* "/usr/local/lib/${PROJECT}/app"
+
+# remove libs not needed for Blinka
+rm -fr "/usr/local/lib/${PROJECT}/app/lib/"adafruit_*
+
+# set ownership to root
+chown -R root:root "/usr/local/lib/${PROJECT}/app"
+chmod -R 644       "/usr/local/lib/${PROJECT}/app"
+find "/usr/local/lib/${PROJECT}/app" -type d -exec chmod +x {} \+
+
+# move application files to virtual env
+mv -f "/usr/local/lib/${PROJECT}/app/lib/"*.py \
+       /usr/local/lib/${PROJECT}/runtime/lib/python*/site-packages
+
+# --- install wrapper script   ----------------------------------------------
+
+cp $(dirname "$0")/../files/usr/local/bin/${PROJECT} /usr/local/bin
+chown root:root "/usr/local/bin/${PROJECT}"
+chmod 755 "/usr/local/bin/${PROJECT}"
+
+# --- configure system   ----------------------------------------------------
+
+# update /boot/config.txt
+if ! grep -q "^dtparam=i2c_arm=on" /boot/config.txt ; then
+  echo -e "[INFO] configuring i2c in /boot/config.txt" 2>&1
+  echo "dtparam=i2c_arm=on" >> /boot/config.txt
+  echo -e "[INFO] reboot required!" 2>&1
+fi
+
+# update /etc/modules
+if ! grep -q "^i2c-dev" /etc/modules; then
+  echo -e "[INFO] configuring /etc/modules" 2>&1
+  echo "i2c-dev" >> /etc/modules
+  echo -e "[INFO] reboot required!" 2>&1
+fi
+
+
+echo "[INFO] installation completed"
