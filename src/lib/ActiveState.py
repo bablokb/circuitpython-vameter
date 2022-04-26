@@ -99,7 +99,7 @@ class ActiveState:
       if self._app.display and self._settings.update:
         display_next = time.monotonic() + self._settings.update/1000
       else:
-        display_next = sys.maxsize
+        display_next = end_t
       while not stop and time.monotonic() < display_next:
 
         # sleep until next sampling interval starts (int_t minus overhead)
@@ -111,7 +111,9 @@ class ActiveState:
           data_t0 = time.monotonic()
           data_t,data_v = self._get_data()
           print(self._fmt.format(1000*data_t,*data_v))
+          #s =  time.monotonic()
           m_data.add(data_v)
+          #print("#add: %f" % (time.monotonic()-s))
           samples += 1
         except StopIteration:
           stop = True
@@ -132,9 +134,12 @@ class ActiveState:
 
       # update display with current values
       if self._app.display:
+        #s =  time.monotonic()
         # update plots
         for i,value in enumerate(data_v):
           self._views[2+i].set_values([value])
+        #print("#display plots: %f" % (time.monotonic()-s))
+        #s =  time.monotonic()
         if c_view == 0:
           # measurement values
           self._views[c_view].set_values(data_v,time.monotonic()-start_t)
@@ -142,10 +147,13 @@ class ActiveState:
           # elapsed time
           self._views[c_view].set_values([time.monotonic()-start_t,
                                            self._settings.duration],-1)
+        #print("#display values: %f" % (time.monotonic()-s))
+        #s =  time.monotonic()
         self._views[c_view].show()
         if not self._app.key_events:
           # auto toggle view
           c_view = (c_view+1) % len(self._views)
+        #print("#display show: %f" % (time.monotonic()-s))
 
     # that's it, save and log results
     self._app.results.time    = data_t - start_t
