@@ -83,6 +83,7 @@ class View:
 
     if self._display:
       self._display.show(self._group)
+      self._display.refresh()
 
 # ----------------------------------------------------------------------------
 # --- View for current values   ----------------------------------------------
@@ -229,8 +230,6 @@ class PlotView(View):
     """ set values (must pass an iterable!) """
 
     if self._display:
-      self._display.auto_refresh = False
       for i in range(len(self._sparklines)):
         self._sparklines[i].add_value(values[i])
         self._values[i].text = self.format(values[i],self._units[i])
-      self._display.auto_refresh = True

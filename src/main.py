@@ -63,6 +63,7 @@ class VAMeter:
     i2c = busio.I2C(sda=PIN_SDA,scl=PIN_SCL)
 
     self.display = self._get_display(i2c)
+    self.display.auto_refresh = False
     self.border  = OLED_BORDER
 
     self.settings = ValueHolder()
