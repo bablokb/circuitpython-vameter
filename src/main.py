@@ -13,7 +13,8 @@ import busio
 import displayio
 import time
 
-import adafruit_displayio_ssd1306
+import adafruit_displayio_ssd1306          # I2C-OLED display
+from adafruit_st7735r import ST7735R       # SPI-TFT  display
 
 from ReadyState  import ReadyState
 from ConfigState import ConfigState
@@ -31,17 +32,37 @@ DEF_DURATION   = 0      # measurement-duration:    0s     (i.e. not limited)
 DEF_UPDATE     = 1000   # display update-interval: 1000ms
 DEF_PLOTS      = True   # create plots
 
+BORDER = 1
+
+# for the I2C-display
 OLED_ADDR   = 0x3C
 OLED_WIDTH  = 128
 OLED_HEIGHT = 64
-OLED_BORDER = 1
-
 if board.board_id == 'raspberry_pi_pico':
-  PIN_SDA = board.GP18
-  PIN_SCL = board.GP19
+  PIN_SDA = board.GP2
+  PIN_SCL = board.GP3
 elif hasattr(board,'SDA'):
   PIN_SDA = board.SDA
   PIN_SCL = board.SCL
+
+# for the SPI-display
+TFT_WIDTH  = 160
+TFT_HEIGHT = 128
+TFT_ROTATE = 270
+TFT_BGR    = True
+
+PIN_CS  = board.GP9
+PIN_DC  = board.GP10
+PIN_RST = board.GP11
+
+if board.board_id == 'raspberry_pi_pico':
+  PIN_CLK = board.GP14
+  PIN_RX  = board.GP16    # unused
+  PIN_TX  = board.GP15
+elif hasattr(board,'MOSI'):
+  PIN_CLK = board.CLK
+  PIN_RX  = board.MISO    # unused
+  PIN_TX  = board.MOSI
 
 # --- ValueHolder class   ----------------------------------------------------
 
@@ -64,8 +85,9 @@ class VAMeter:
     i2c = busio.I2C(sda=PIN_SDA,scl=PIN_SCL)
 
     self.display = self._get_display(i2c)
-    self.display.auto_refresh = False
-    self.border  = OLED_BORDER
+    if self.display:
+      self.display.auto_refresh = False
+    self.border  = BORDER
 
     self.settings = ValueHolder()
     self.settings.interval   = DEF_INTERVAL
@@ -96,12 +118,23 @@ class VAMeter:
     if hasattr(board,'DISPLAY') and board.DISPLAY:
       return board.DISPLAY
     else:
+      # try OLED display first
       try:
         display_bus = displayio.I2CDisplay(i2c, device_address=OLED_ADDR)
         return adafruit_displayio_ssd1306.SSD1306(display_bus,
                                                   width=OLED_WIDTH,
                                                   height=OLED_HEIGHT)
       except:
+        pass
+      # then try SPI-display
+      try:
+        spi = busio.SPI(clock=PIN_CLK,MOSI=PIN_TX)       #, MISO=PIN_RX)
+        bus = displayio.FourWire(spi,command=PIN_DC,chip_select=PIN_CS,
+                                 reset=PIN_RST)
+        return ST7735R(bus,width=TFT_WIDTH,height=TFT_HEIGHT,
+                       rotation=TFT_ROTATE,bgr=TFT_BGR)
+      except:
+        raise
         return None
 
   # --- main loop   ----------------------------------------------------------

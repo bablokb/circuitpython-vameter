@@ -19,6 +19,7 @@ PIP_PACKAGES="                               \
   adafruit-blinka-displayio                  \
   adafruit-circuitpython-bitmap_font         \
   adafruit-circuitpython-displayio_ssd1306   \
+  adafruit-circuitpython-st7735r             \
   adafruit-circuitpython-display_shapes      \
   adafruit-circuitpython-display_text        \
   adafruit-circuitpython-ina219              \

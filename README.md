@@ -9,7 +9,8 @@ This repository contains the necessary CircuitPyhon software to drive a
 voltage/current meter based on the following components:
 
   - INA219 breakout
-  - Mini OLED display with 128x64 (based on a SSD1306-chip)
+  - Mini OLED display with 128x64 (based on a SSD1306-chip) or
+  - SPI TFT-1.8" display (based on a ST7735R-chip)
   - 4x3 touchpad (based on a MPR121-chip)
 
 Measurements are shown on the display and written as CSV to the
@@ -27,7 +28,8 @@ knobs and buttons instead of the touchpad) you should read the
 Hardware
 --------
 
-All components use I2C. Connect the respective SDA, SCL, Vcc and GND
+All components use I2C except if you choose to use the SPI-display.
+Connect the respective SDA, SCL, Vcc and GND
 pins with the relevant pins of the MCU. Don't forget pullups, the builtin
 pullups of the MCU are usually too weak.
 
@@ -60,6 +62,7 @@ Steps:
 
     - adafruit_bitmap_font
     - adafruit_displayio_ssd1306
+    - adafruit_st7735r
     - adafruit_display_shapes
     - adafruit_display_text
     - adafruit_ina219
@@ -67,7 +70,8 @@ Steps:
     - adafruit_mpr121
 
   3. If you are using a MCU which does not define board-pins for SDA and
-     SCL (e.g. Raspberry Pi Pico): change the pin-values in `src/main.py`.
+     SCL etc. (e.g. Raspberry Pi Pico): change the pin-values in `src/main.py`.
+     The SPI-display needs additional pins, these are also defined there.
 
   4. Check `sr/lib/INA219DataProvider.py` for the correct voltage range.
      The code uses the library-default of 32V/2A, but this can be changed
