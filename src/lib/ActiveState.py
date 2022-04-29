@@ -29,8 +29,9 @@ class ActiveState:
       self._views = [ValuesView(app.display,app.border,
                                  app.data_provider.get_units()),
                       ValuesView(app.display,app.border,['s','s'])]  # elapsed
-      for unit in app.data_provider.get_units():
-        self._views.append(PlotView(app.display,app.border,[unit]))
+      if self._settings.plots:
+        for unit in app.data_provider.get_units():
+          self._views.append(PlotView(app.display,app.border,[unit]))
 
   # --- write settings to serial   -------------------------------------------
 
@@ -67,9 +68,10 @@ class ActiveState:
     m_data = DataAggregator(self._dim)
     c_view = 0
     if self._app.display:
-      # reset plots and show first ValuesView
-      for i in range(self._dim):
-        self._views[2+i].reset()
+      if self._settings.plots:
+        # reset plots and show first ValuesView
+        for i in range(self._dim):
+          self._views[2+i].reset()
       self._views[0].clear_values()
       self._views[0].show()
 
@@ -92,14 +94,15 @@ class ActiveState:
     start_t = time.monotonic()                 # timestamp of start
     samples = 0                                # total number of samples
 
-    # sample until duration (or until manual stop)
+    # sample until manual stop or until end of duration
     while not stop and time.monotonic() < end_t:
 
-      # sample until screen-update is necessary
+      # calc next screen update
       if self._app.display and self._settings.update:
         display_next = time.monotonic() + self._settings.update/1000
       else:
         display_next = end_t
+      # sample until screen-update is necessary
       while not stop and time.monotonic() < display_next:
 
         # sleep until next sampling interval starts (int_t minus overhead)
@@ -133,12 +136,13 @@ class ActiveState:
         break
 
       # update display with current values
-      if self._app.display:
-        #s =  time.monotonic()
-        # update plots
-        for i,value in enumerate(data_v):
-          self._views[2+i].set_values([value])
-        #print("#display plots: %f" % (time.monotonic()-s))
+      if self._app.display and self._settings.update:
+        if self._settings.plots:
+          # update plots
+          #s =  time.monotonic()
+          for i,value in enumerate(data_v):
+            self._views[2+i].set_values([value])
+          #print("#display plots: %f" % (time.monotonic()-s))
         #s =  time.monotonic()
         if c_view == 0:
           # measurement values
@@ -163,7 +167,7 @@ class ActiveState:
     print("\n#Duration: {0:.1f}s".format(self._app.results.time))
     print("#Samples: {0:d} ({1:.1f}/s)".format(samples,
                                                samples/self._app.results.time))
-    print("#Interval: {0:.0f}ms)".format(1000*self._app.results.time/samples))
+    print("#Interval: {0:.0f}ms".format(1000*self._app.results.time/samples))
     print("#Min,Mean,Max")
     units = self._app.data_provider.get_units()
     for index,value in enumerate(self._app.results.values):
