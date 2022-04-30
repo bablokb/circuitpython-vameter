@@ -23,7 +23,8 @@ class KeyEventProvider:
   KEYMAP_READY = {
     0: 'START',
     4: 'CONFIG',
-    6: 'TOGGLE'
+    6: 'TOGGLE',
+    8: 'EXIT'                # useful when running on a Pi
     }
   KEYMAP_ACTIVE = {
     8: 'STOP',

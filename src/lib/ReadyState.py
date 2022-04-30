@@ -9,6 +9,7 @@
 #
 # ----------------------------------------------------------------------------
 
+import board
 import time
 from View import ResultView
 
@@ -49,6 +50,11 @@ class ReadyState:
         return active
       elif key == 'CONFIG':
         return config
+      elif key == 'EXIT':
+        if hasattr(board,'__blinka__'):
+          return None
+        else:
+          continue
       else:
         cur_view = (cur_view+1) % n_views
         self._views[cur_view].show()

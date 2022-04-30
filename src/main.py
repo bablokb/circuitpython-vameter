@@ -144,9 +144,11 @@ class VAMeter:
 
     while True:
       next_state = self._ready.run(self._active,self._config)
+      if next_state is None:
+        break
       next_state.run()
       while not self.key_events:
-        # start endless sleeping-loop to prevent restart of measurement
+        # no keypad, start endless sleeping-loop to prevent restart of measurement
         time.sleep(1)
 
 # --- main loop   ------------------------------------------------------------
