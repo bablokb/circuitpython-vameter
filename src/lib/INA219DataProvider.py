@@ -23,11 +23,15 @@
 import time
 from adafruit_ina219 import ADCResolution, BusVoltageRange, INA219
 
-WITH_SUPPLY_V   = False  # normally False, set to True for calibration
+WITH_POWER      = True   # normally False, set to True to add power-attribute
 NO_LOAD_TIMEOUT = 60     # timeout (sec) if there is no load for given duration
 
 class DataProvider:
   """ provide data """
+
+  _dim   = 3 if WITH_POWER else 2
+  _units = ['V','mA','mW']
+  _fmt   = ["{1:.3f}","{2:.3f}","{3:.3f}"]
 
   # --- constructor   --------------------------------------------------------
 
@@ -61,22 +65,19 @@ class DataProvider:
 
   def get_dim(self):
     """ dimension of data """
-    return 3 if WITH_SUPPLY_V else 2
+    return DataProvider._dim
 
   # --- return units of data   -----------------------------------------------
 
   def get_units(self):
     """ units of data """
-    return ['V','mA','V'] if WITH_SUPPLY_V else ['V','mA']
+    return DataProvider._units[:DataProvider._dim]
 
   # --- log-format   ---------------------------------------------------------
 
   def get_fmt(self):
-    """ return format for data, must include placeholder for timestamp """
-    if WITH_SUPPLY_V:
-      return "{0:.2f},{1:.3f},{2:.3f},{3:.6f}"
-    else:
-      return "{0:.2f},{1:.3f},{2:.3f}"
+    """ return format for data, timestamp is {0} """
+    return ','.join(DataProvider._fmt[:DataProvider._dim])
 
   # --- provide data   -------------------------------------------------------
 
@@ -87,16 +88,16 @@ class DataProvider:
     # The loop degenerates as long as the voltage is high enough.
     t_start = time.monotonic()
     while True:
-      v  = self._ina219.bus_voltage   # voltage on V- (load side)
-      vd = self._ina219.shunt_voltage # voltage drop across shunt
-      a  = self._ina219.current       # current in mA
+      v = self._ina219.bus_voltage   # voltage on V- (load side)
+      a = self._ina219.current       # current in mA
+      p = self._ina219.power
 
       if self._ina219.overflow:
         continue
 
       if v > self._settings.v_min and a > self._settings.a_min:
         self._start = True
-        return (v,a,v+vd) if WITH_SUPPLY_V else (v,a)
+        return (v,a,1000*p) if WITH_POWER else (v,a)
       elif self._start:
         # voltage dropped below threshold, so we stop
         raise StopIteration
