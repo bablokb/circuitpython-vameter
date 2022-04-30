@@ -49,11 +49,11 @@ class DataProvider:
   # --- log-format   ---------------------------------------------------------
 
   def get_fmt(self):
-    """ return format for data, must include placeholder for timestamp """
+    """ return format for data, timestamp is {0} """
     if DIM == 2:
-      return "{0:.1f},{1:.2f},{2:.1f}"
+      return "{1:.2f},{2:.1f}"
     else:
-      return "{0:.1f},{1:.2f},{2:.1f},{3:.1f}"
+      return "{1:.2f},{2:.1f},{3:.1f}"
 
   # --- provide data   -------------------------------------------------------
 

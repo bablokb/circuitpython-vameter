@@ -23,7 +23,7 @@ class ActiveState:
 
     self._app      = app
     self._settings = app.settings
-    self._fmt      = app.data_provider.get_fmt()
+    self._fmt      = "{0:.1f},"+app.data_provider.get_fmt()
     self._dim      = app.data_provider.get_dim()
     if self._app.display:
       self._views = [ValuesView(app.display,app.border,
