@@ -35,6 +35,7 @@ Characters needed for values and units:
   - V
   - mA
   - ms
+  - mW
   - s
 
 Character table
@@ -62,6 +63,7 @@ Character table
 | O    |      |   X   |       |
 | U    |      |   X   |       |
 | V    |   X  |   X   |   X   |
+| W    |   X  |   X   |       |
 | a    |      |   X   |       |
 | d    |      |   X   |       |
 | e    |      |   X   |       |
