@@ -34,7 +34,8 @@ DEF_PLOTS      = True   # create plots
 
 BORDER = 1
 
-# for the I2C-display
+# for the I2C-display   ---------------------------------
+
 OLED_ADDR   = 0x3C
 OLED_WIDTH  = 128
 OLED_HEIGHT = 64
@@ -45,23 +46,31 @@ elif hasattr(board,'SDA'):
   PIN_SDA = board.SDA
   PIN_SCL = board.SCL
 
-# for the SPI-display
+# for the SPI-display   ---------------------------------
+
 TFT_WIDTH  = 160
 TFT_HEIGHT = 128
 TFT_ROTATE = 270
 TFT_BGR    = True
 
-PIN_CS  = board.GP9
-PIN_DC  = board.GP10
-PIN_RST = board.GP11
+if hasattr(board,'__blinka__'):
+  # assume Raspberry Pi, change if required
+  PIN_CS  = board.CE0
+  PIN_DC  = board.D25
+  PIN_RST = board.D24
+else:
+  # adapt to your MCU
+  PIN_CS  = board.GP9
+  PIN_DC  = board.GP10
+  PIN_RST = board.GP11
 
 if board.board_id == 'raspberry_pi_pico':
   PIN_CLK = board.GP14
-  PIN_RX  = board.GP16    # unused
+  #PIN_RX  = board.GP16    # unused
   PIN_TX  = board.GP15
 elif hasattr(board,'MOSI'):
-  PIN_CLK = board.CLK
-  PIN_RX  = board.MISO    # unused
+  PIN_CLK = board.SCLK
+  #PIN_RX  = board.MISO    # unused
   PIN_TX  = board.MOSI
 
 # --- ValueHolder class   ----------------------------------------------------
@@ -128,7 +137,7 @@ class VAMeter:
         pass
       # then try SPI-display
       try:
-        spi = busio.SPI(clock=PIN_CLK,MOSI=PIN_TX)       #, MISO=PIN_RX)
+        spi = busio.SPI(clock=PIN_CLK,MOSI=PIN_TX)
         bus = displayio.FourWire(spi,command=PIN_DC,chip_select=PIN_CS,
                                  reset=PIN_RST)
         return ST7735R(bus,width=TFT_WIDTH,height=TFT_HEIGHT,
