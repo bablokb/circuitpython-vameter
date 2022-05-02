@@ -117,9 +117,6 @@ Once the program is in configuration mode, you can enter various parameters:
 
   - **Interval**: the sampling interval in milliseconds  
     ![](doc/config-int-view.png)
-  - **Oversample**: oversampling on application level. Since the chip itself
-    does oversampling as well, this setting can be left at '1X'  
-    ![](doc/config-oversample-view.png)
   - **Duration**: the duration of the measurement in seconds. A value of zero
     will run the measurement until it is explicitly or implicitly stopped.  
     ![](doc/config-dur-view.png)
