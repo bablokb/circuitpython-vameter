@@ -92,6 +92,24 @@ Steps:
   5. Copy all files from below `src` to your device.
 
 
+Installation (Raspberry Pi)
+---------------------------
+
+You can install the program also on a Raspberry Pi (or any other SBC
+with Blinka-support):
+
+    sudo tools/install-pi
+
+This installs the program, Blinka and all necessary libraries to
+`/usr/local/cp-vameter`. To run the program, just use the command
+`cp-vameter`. This assumes that `/usr/local/bin` is within your path.
+
+Note that the installation is quite slow, because the install-command
+installs everything to a python-virtenv. Especially download, compile
+and install of numpy takes a lot of time, even on the faster PIs. For
+running the program, a Pi-Zero is more than sufficient.
+
+
 Usage
 -----
 
