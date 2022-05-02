@@ -39,7 +39,8 @@ class ActiveState:
     """ write settings """
 
     print("\n#Interval:   {0:d}ms".format(self._settings.interval))
-    print("#Oversampling: {0:d}X".format(self._settings.oversample))
+    if self._settings.oversample > 0:
+      print("#Oversampling: {0:d}X".format(self._settings.oversample))
     print("#Duration:     {0:d}s".format(self._settings.duration))
     print("#Update:       {0:d}ms\n".format(self._settings.update))
 
@@ -48,7 +49,7 @@ class ActiveState:
   def _get_data(self):
     """ get data using oversampling """
 
-    if self._settings.oversample == 1:
+    if self._settings.oversample < 2:
       return (time.monotonic(),self._app.data_provider.get_data())
 
     d_sum = [0 for i in range(self._dim)]

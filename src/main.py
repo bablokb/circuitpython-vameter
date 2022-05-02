@@ -27,7 +27,7 @@ from Touchpad import KeyEventProvider
 # --- constants   ------------------------------------------------------------
 
 DEF_INTERVAL   = 100    # sampling-interval:       100ms
-DEF_OVERSAMPLE = 1      # oversampling:            1X
+DEF_OVERSAMPLE = 0      # oversampling:            0: use 1X, hide config
 DEF_DURATION   = 0      # measurement-duration:    0s     (i.e. not limited)
 DEF_UPDATE     = 1000   # display update-interval: 1000ms
 DEF_PLOTS      = True   # create plots

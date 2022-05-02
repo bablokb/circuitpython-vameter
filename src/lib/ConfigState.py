@@ -21,9 +21,13 @@ class ConfigState:
     """ constructor """
 
     self._app   = app
-    headings    = ['Interval:','Oversample:','Duration:','Update:']
-    units       = ['ms','X','s','ms']
-    self._attr  = ['interval','oversample','duration','update']
+    headings    = ['Interval:','Duration:','Update:']
+    units       = ['ms','s','ms']
+    self._attr  = ['interval','duration','update']
+    if app.settings.oversample > 0:
+      headings.append('Oversample:')
+      units.append('X')
+      self._attr.append('oversample')
     self._views = [ConfigView(app.display,app.border,
                               headings[i],
                               units[i])
