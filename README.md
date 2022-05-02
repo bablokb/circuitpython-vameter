@@ -50,15 +50,15 @@ screw-terminal for attachement of the power-source (V+) and the load (V-).
 be off by about 20%.
 
 
-Installation
-------------
+Installation (Pico or other MCU)
+--------------------------------
 
 Steps:
 
-  1. Clone the repository
+  0. Install the current version of CircuitPython to your device
 
-  2. Add the following libraries from the CircuitPython library-bundle to
-     `src/lib`
+  1. Install the following libraries from the CircuitPython library-bundle to
+     the `lib`-directory of your device
 
     - adafruit_bitmap_font
     - adafruit_displayio_ssd1306
@@ -68,6 +68,15 @@ Steps:
     - adafruit_ina219
     - adafruit_register
     - adafruit_mpr121
+
+    The preferred way to do this is to use `circup` (note that the device
+    must be mounted):
+
+        sudo apt-get -y install pip3
+        sudo pip3 install circup
+        circup install -r requirements.txt
+
+  2. Clone the repository
 
   3. If you are using a MCU which does not define board-pins for SDA and
      SCL etc. (e.g. Raspberry Pi Pico): change the pin-values in `src/main.py`.
@@ -80,7 +89,7 @@ Steps:
      of the ADC. The Default uses 8x oversampling resulting in a minimal
      sampling time of 4.26ms.
 
-  5. Copy all files from `src` to your device.
+  5. Copy all files from below `src` to your device.
 
 
 Usage
