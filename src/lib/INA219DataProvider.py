@@ -23,7 +23,7 @@
 import time
 from adafruit_ina219 import ADCResolution, BusVoltageRange, INA219
 
-WITH_POWER      = True   # normally False, set to True to add power-attribute
+WITH_POWER      = False  # normally False, set to True to add power-attribute
 NO_LOAD_TIMEOUT = 60     # timeout (sec) if there is no load for given duration
 
 class DataProvider:
