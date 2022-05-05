@@ -39,12 +39,17 @@ BORDER = 1
 OLED_ADDR   = 0x3C
 OLED_WIDTH  = 128
 OLED_HEIGHT = 64
+
+# I2C pins
 if board.board_id == 'raspberry_pi_pico':
   PIN_SDA = board.GP2
   PIN_SCL = board.GP3
 elif hasattr(board,'SDA'):
   PIN_SDA = board.SDA
   PIN_SCL = board.SCL
+else:
+  # adapt to your MCU
+  pass
 
 # for the SPI-display   ---------------------------------
 
@@ -53,17 +58,7 @@ TFT_HEIGHT = 128
 TFT_ROTATE = 270
 TFT_BGR    = True
 
-if hasattr(board,'__blinka__'):
-  # assume Raspberry Pi, change if required
-  PIN_CS  = board.CE0
-  PIN_DC  = board.D25
-  PIN_RST = board.D24
-else:
-  # adapt to your MCU
-  PIN_CS  = board.GP9
-  PIN_DC  = board.GP10
-  PIN_RST = board.GP11
-
+# SPI pins
 if board.board_id == 'raspberry_pi_pico':
   PIN_CLK = board.GP14
   #PIN_RX  = board.GP16    # unused
@@ -72,6 +67,20 @@ elif hasattr(board,'MOSI'):
   PIN_CLK = board.SCLK
   #PIN_RX  = board.MISO    # unused
   PIN_TX  = board.MOSI
+
+# additional pins for TFT
+if hasattr(board,'__blinka__'):
+  # assume Raspberry Pi, change if required
+  PIN_CS  = board.CE0
+  PIN_DC  = board.D25
+  PIN_RST = board.D24
+elif board.board_id == 'raspberry_pi_pico':
+  PIN_CS  = board.GP9
+  PIN_DC  = board.GP10
+  PIN_RST = board.GP11
+else:
+  # adapt to your MCU
+  pass
 
 # --- ValueHolder class   ----------------------------------------------------
 
