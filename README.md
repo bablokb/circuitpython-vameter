@@ -82,7 +82,7 @@ Steps:
      SCL etc. (e.g. Raspberry Pi Pico): change the pin-values in `src/main.py`.
      The SPI-display needs additional pins, these are also defined there.
 
-  4. Check `sr/lib/INA219DataProvider.py` for the correct voltage range.
+  4. Check `src/lib/INA219DataProvider.py` for the correct voltage range.
      The code uses the library-default of 32V/2A, but this can be changed
      to 16V/1A or 16V/400mA. The additional precision is probably not
      worth the effort. Also, you can change the chip-internal oversampling
@@ -95,20 +95,28 @@ Steps:
 Installation (Raspberry Pi)
 ---------------------------
 
-You can install the program also on a Raspberry Pi (or any other SBC
-with Blinka-support):
+There is a native build of CircuitPython for the Raspberry Pi, but that
+build is extremely slow and not usable yet. The better option is to
+use _Blinka_, an emulation layer which provides classes and methods usually
+missing in a native python installation. Blinka runs on various SBCs,
+the Raspberry Pi is only the most prominent example.
+
+You can install the project on a Raspberry Pi (or any other Debian-based SBC
+with Blinka-support) using:
 
     sudo tools/install-pi
 
-This installs the program, Blinka and all necessary libraries to
+This installs the project files, Blinka and all necessary libraries to
 `/usr/local/cp-vameter`. To run the program, just use the command
 `cp-vameter`. This assumes that `/usr/local/bin` is within your path.
 
 Note that the installation is quite slow, because the install-command
 installs everything to a python-virtenv. Especially download, compile
-and install of numpy takes a lot of time, even on the faster PIs. For
+and install of numpy takes a lot of time, even on the faster Pis. For
 running the program, a Pi-Zero is more than sufficient.
 
+Also note that Blinka currently only supports SPI-displays with 16-bit
+colors.
 
 Usage
 -----
