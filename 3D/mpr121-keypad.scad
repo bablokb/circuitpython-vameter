@@ -53,7 +53,7 @@ pad_xoff = (xi - 3*pad_s - 2*pad_xgap)/2;
 pad_yoff = (yi - 4*pad_s - 3*pad_ygap)/2;
 
 module keypad_pad(text) {
-  translate([0,0,zo-pad_h+fuzz]) difference() {
+  difference() {
     cuboid([pad_s,pad_s,pad_h], rounding=1,edges="Z",
                                 anchor=FRONT+LEFT+BOTTOM);
     translate([pad_s/2,pad_s/2,-fuzz]) text3d(text,h=pad_h+2*fuzz,size=10,
@@ -61,29 +61,35 @@ module keypad_pad(text) {
   }
 }
 
+module keypad_pads() {
+  difference() {
+    cube([xi-0.1,yi-0.1,pad_h]);
+    translate([pad_xoff,yi-pad_yoff-pad_s,0]) keypad_pad("1");
+    translate([pad_xoff+pad_s+pad_xgap,yi-pad_yoff-pad_s,0]) keypad_pad("2");
+    translate([pad_xoff+2*pad_s+2*pad_xgap,yi-pad_yoff-pad_s,0]) keypad_pad("3");
+
+    translate([pad_xoff,yi-pad_yoff-pad_ygap-2*pad_s,0]) keypad_pad("4");
+    translate([pad_xoff+pad_s+pad_xgap,yi-pad_yoff-pad_ygap-2*pad_s,0]) keypad_pad("5");
+    translate([pad_xoff+2*pad_s+2*pad_xgap,yi-pad_yoff-pad_ygap-2*pad_s,0]) keypad_pad("6");
+
+    translate([pad_xoff,yi-pad_yoff-2*pad_ygap-3*pad_s,0]) keypad_pad("7");
+    translate([pad_xoff+pad_s+pad_xgap,yi-pad_yoff-2*pad_ygap-3*pad_s,0]) keypad_pad("8");
+    translate([pad_xoff+2*pad_s+2*pad_xgap,yi-pad_yoff-2*pad_ygap-3*pad_s,0]) keypad_pad("9");
+
+    translate([pad_xoff,yi-pad_yoff-3*pad_ygap-4*pad_s,0]) keypad_pad("C");
+    translate([pad_xoff+pad_s+pad_xgap,yi-pad_yoff-3*pad_ygap-4*pad_s,0]) keypad_pad("0");
+    translate([pad_xoff+2*pad_s+2*pad_xgap,yi-pad_yoff-3*pad_ygap-4*pad_s,0]) keypad_pad("S");
+  }
+}
+
 module keypad_inset() {
-  cube([xi,yi,zo]);
+  difference() {
+    cube([xi-0.1,yi-0.1,zo]);
+    translate([0,0,zo-pad_h+fuzz]) keypad_pads();
+  }
 }
 
-
-difference() {
-  keypad_inset();
-  translate([pad_xoff,yi-pad_yoff-pad_s,0]) keypad_pad("1");
-  translate([pad_xoff+pad_s+pad_xgap,yi-pad_yoff-pad_s,0]) keypad_pad("2");
-  translate([pad_xoff+2*pad_s+2*pad_xgap,yi-pad_yoff-pad_s,0]) keypad_pad("3");
-
-  translate([pad_xoff,yi-pad_yoff-pad_ygap-2*pad_s,0]) keypad_pad("4");
-  translate([pad_xoff+pad_s+pad_xgap,yi-pad_yoff-pad_ygap-2*pad_s,0]) keypad_pad("5");
-  translate([pad_xoff+2*pad_s+2*pad_xgap,yi-pad_yoff-pad_ygap-2*pad_s,0]) keypad_pad("6");
-
-  translate([pad_xoff,yi-pad_yoff-2*pad_ygap-3*pad_s,0]) keypad_pad("7");
-  translate([pad_xoff+pad_s+pad_xgap,yi-pad_yoff-2*pad_ygap-3*pad_s,0]) keypad_pad("8");
-  translate([pad_xoff+2*pad_s+2*pad_xgap,yi-pad_yoff-2*pad_ygap-3*pad_s,0]) keypad_pad("9");
-
-  translate([pad_xoff,yi-pad_yoff-3*pad_ygap-4*pad_s,0]) keypad_pad("C");
-  translate([pad_xoff+pad_s+pad_xgap,yi-pad_yoff-3*pad_ygap-4*pad_s,0]) keypad_pad("0");
-  translate([pad_xoff+2*pad_s+2*pad_xgap,yi-pad_yoff-3*pad_ygap-4*pad_s,0]) keypad_pad("S");
-}
+keypad_inset();
 
 // --- frame for keypad   ----------------------------------------------------------
 
