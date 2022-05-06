@@ -6,3 +6,4 @@ test
 adafruit*
 *secrets.py
 boot_out.txt
+*.stl
