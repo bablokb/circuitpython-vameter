@@ -33,13 +33,24 @@ class View:
     if display:
       self._group   = displayio.Group()
       self._offset = border + 2 if border else 0
+
+      # hack for displays larger than 128x64
+      off_w = (display.width-128)/2
+      off_h = (display.height-64)/2
+
       self._pos_map = {
-        'NW': ((0.0,0.0),(self._offset,              self._offset)),
-        'NE': ((1.0,0.0),(display.width-self._offset,self._offset)),
-        'W':  ((0.0,0.5),(self._offset,              display.height/2)),
-        'E':  ((1.0,0.5),(display.width-self._offset,display.height/2)),
-        'SW': ((0.0,1.0),(self._offset,              display.height-self._offset)),
-        'SE': ((1.0,1.0),(display.width-self._offset,display.height-self._offset)),
+        'NW': ((0.0,0.0),(self._offset+off_w,
+                          self._offset+off_h)),
+        'NE': ((1.0,0.0),(display.width-self._offset-off_w,
+                          self._offset+off_h)),
+        'W':  ((0.0,0.5),(self._offset+off_w,
+                          display.height/2)),
+        'E':  ((1.0,0.5),(display.width-self._offset-off_w,
+                          display.height/2)),
+        'SW': ((0.0,1.0),(self._offset+off_w,
+                          display.height-self._offset-off_h)),
+        'SE': ((1.0,1.0),(display.width-self._offset-off_w,
+                          display.height-self._offset-off_h)),
         }
       if border:
         rect = Rect(0,0,display.width,display.height,
