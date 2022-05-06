@@ -8,6 +8,8 @@
 //
 // -----------------------------------------------------------------------------
 
+include <BOSL2/std.scad>
+
 $fa = 1;
 $fs = 0.4;
 $fn = 48;
@@ -41,6 +43,50 @@ cyl_off_ly = cyl_d/2+2.5;
 cyl_off_ux = cyl_d/2+2.6;
 cyl_off_uy = cyl_d/2+1;
 
+// --- keypad inset   --------------------------------------------------------------
+
+pad_s = 13;
+pad_xgap = 3;
+pad_ygap = 2;
+pad_h = 0.4;
+pad_xoff = (xi - 3*pad_s - 2*pad_xgap)/2;
+pad_yoff = (yi - 4*pad_s - 3*pad_ygap)/2;
+
+module keypad_pad(text) {
+  translate([0,0,zo-pad_h+fuzz]) difference() {
+    cuboid([pad_s,pad_s,pad_h], rounding=1,edges="Z",
+                                anchor=FRONT+LEFT+BOTTOM);
+    translate([pad_s/2,pad_s/2,-fuzz]) text3d(text,h=pad_h+2*fuzz,size=10,
+                              anchor=BOTTOM+CENTER);
+  }
+}
+
+module keypad_inset() {
+  cube([xi,yi,zo]);
+}
+
+
+difference() {
+  keypad_inset();
+  translate([pad_xoff,yi-pad_yoff-pad_s,0]) keypad_pad("1");
+  translate([pad_xoff+pad_s+pad_xgap,yi-pad_yoff-pad_s,0]) keypad_pad("2");
+  translate([pad_xoff+2*pad_s+2*pad_xgap,yi-pad_yoff-pad_s,0]) keypad_pad("3");
+
+  translate([pad_xoff,yi-pad_yoff-pad_ygap-2*pad_s,0]) keypad_pad("4");
+  translate([pad_xoff+pad_s+pad_xgap,yi-pad_yoff-pad_ygap-2*pad_s,0]) keypad_pad("5");
+  translate([pad_xoff+2*pad_s+2*pad_xgap,yi-pad_yoff-pad_ygap-2*pad_s,0]) keypad_pad("6");
+
+  translate([pad_xoff,yi-pad_yoff-2*pad_ygap-3*pad_s,0]) keypad_pad("7");
+  translate([pad_xoff+pad_s+pad_xgap,yi-pad_yoff-2*pad_ygap-3*pad_s,0]) keypad_pad("8");
+  translate([pad_xoff+2*pad_s+2*pad_xgap,yi-pad_yoff-2*pad_ygap-3*pad_s,0]) keypad_pad("9");
+
+  translate([pad_xoff,yi-pad_yoff-3*pad_ygap-4*pad_s,0]) keypad_pad("C");
+  translate([pad_xoff+pad_s+pad_xgap,yi-pad_yoff-3*pad_ygap-4*pad_s,0]) keypad_pad("0");
+  translate([pad_xoff+2*pad_s+2*pad_xgap,yi-pad_yoff-3*pad_ygap-4*pad_s,0]) keypad_pad("S");
+}
+
+// --- frame for keypad   ----------------------------------------------------------
+
 module keypad_frame() {
   // base
   difference() {
@@ -58,4 +104,4 @@ module keypad_frame() {
   translate([xo-cyl_off_ux,yo-cyl_off_uy,zo-fuzz]) cylinder(cyl_h,d=cyl_d);
 }
 
-keypad_frame();
+// keypad_frame();
