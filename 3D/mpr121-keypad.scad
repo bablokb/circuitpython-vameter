@@ -52,12 +52,26 @@ pad_h = 0.4;
 pad_xoff = (xi - 3*pad_s - 2*pad_xgap)/2;
 pad_yoff = (yi - 4*pad_s - 3*pad_ygap)/2;
 
-module keypad_pad(text) {
+module keypad_pad(text1,text2="",text3="") {
   difference() {
     cuboid([pad_s,pad_s,pad_h], rounding=1,edges="Z",
                                 anchor=FRONT+LEFT+BOTTOM);
-    translate([pad_s/2,pad_s/2,-fuzz]) text3d(text,h=pad_h+2*fuzz,size=10,
-                              anchor=BOTTOM+CENTER);
+    if (text3) {
+      translate([pad_s/2,5*pad_s/6,-fuzz]) text3d(text1,h=pad_h+2*fuzz,size=3,
+                                anchor=BOTTOM+CENTER);
+      translate([pad_s/2,3*pad_s/6,-fuzz]) text3d(text2,h=pad_h+2*fuzz,size=3,
+                                anchor=BOTTOM+CENTER);
+      translate([pad_s/2,pad_s/6,-fuzz]) text3d(text3,h=pad_h+2*fuzz,size=3,
+                                anchor=BOTTOM+CENTER);
+    } else if (text2) {
+      translate([pad_s/2,3*pad_s/4,-fuzz]) text3d(text1,h=pad_h+2*fuzz,size=4,
+                                anchor=BOTTOM+CENTER);
+      translate([pad_s/2,pad_s/4,-fuzz]) text3d(text2,h=pad_h+2*fuzz,size=4,
+                                anchor=BOTTOM+CENTER);
+    } else {
+      translate([pad_s/2,pad_s/2,-fuzz]) text3d(text1,h=pad_h+2*fuzz,size=6,
+                                anchor=BOTTOM+CENTER);
+    }
   }
 }
 
@@ -69,16 +83,17 @@ module keypad_pads() {
     translate([pad_xoff+2*pad_s+2*pad_xgap,yi-pad_yoff-pad_s,0]) keypad_pad("3");
 
     translate([pad_xoff,yi-pad_yoff-pad_ygap-2*pad_s,0]) keypad_pad("4");
-    translate([pad_xoff+pad_s+pad_xgap,yi-pad_yoff-pad_ygap-2*pad_s,0]) keypad_pad("5");
+    translate([pad_xoff+pad_s+pad_xgap,yi-pad_yoff-pad_ygap-2*pad_s,0])
+             keypad_pad("View","5","View");
     translate([pad_xoff+2*pad_s+2*pad_xgap,yi-pad_yoff-pad_ygap-2*pad_s,0]) keypad_pad("6");
 
     translate([pad_xoff,yi-pad_yoff-2*pad_ygap-3*pad_s,0]) keypad_pad("7");
     translate([pad_xoff+pad_s+pad_xgap,yi-pad_yoff-2*pad_ygap-3*pad_s,0]) keypad_pad("8");
     translate([pad_xoff+2*pad_s+2*pad_xgap,yi-pad_yoff-2*pad_ygap-3*pad_s,0]) keypad_pad("9");
 
-    translate([pad_xoff,yi-pad_yoff-3*pad_ygap-4*pad_s,0]) keypad_pad("C");
-    translate([pad_xoff+pad_s+pad_xgap,yi-pad_yoff-3*pad_ygap-4*pad_s,0]) keypad_pad("0");
-    translate([pad_xoff+2*pad_s+2*pad_xgap,yi-pad_yoff-3*pad_ygap-4*pad_s,0]) keypad_pad("S");
+    translate([pad_xoff,yi-pad_yoff-3*pad_ygap-4*pad_s,0]) keypad_pad("Next","Start");
+    translate([pad_xoff+pad_s+pad_xgap,yi-pad_yoff-3*pad_ygap-4*pad_s,0]) keypad_pad("0","Conf");
+    translate([pad_xoff+2*pad_s+2*pad_xgap,yi-pad_yoff-3*pad_ygap-4*pad_s,0]) keypad_pad("CLR","Stop");
   }
 }
 
