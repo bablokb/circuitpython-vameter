@@ -45,13 +45,16 @@ cyl_off_uy = cyl_d/2+1;
 
 // --- keypad inset   --------------------------------------------------------------
 
-pad_s = 13;
-pad_xgap = 3;
-pad_ygap = 2;
-pad_h = 0.4;
+ins_z    = 0.8;      // total hight inset
+pad_s    = 13;       // pad x/y dimension
+pad_xgap = 3;        // x-gap between pads
+pad_ygap = 2;        // y-gap between pads
+pad_h    = 0.4;      // hight of pads
+
 pad_xoff = (xi - 3*pad_s - 2*pad_xgap)/2;
 pad_yoff = (yi - 4*pad_s - 3*pad_ygap)/2;
 
+// single pad with up to three lines of text
 module keypad_pad(text1,text2="",text3="") {
   difference() {
     cuboid([pad_s,pad_s,pad_h], rounding=1,edges="Z",
@@ -75,6 +78,7 @@ module keypad_pad(text1,text2="",text3="") {
   }
 }
 
+// 3x4 matrix of pads
 module keypad_pads() {
   difference() {
     cube([xi-0.1,yi-0.1,pad_h]);
@@ -97,10 +101,11 @@ module keypad_pads() {
   }
 }
 
+// inset: base and pads
 module keypad_inset() {
   difference() {
-    cube([xi-0.1,yi-0.1,zo]);
-    translate([0,0,zo-pad_h+fuzz]) keypad_pads();
+    cube([xi-0.1,yi-0.1,ins_z]);
+    translate([0,0,ins_z-pad_h+fuzz]) keypad_pads();
   }
 }
 
