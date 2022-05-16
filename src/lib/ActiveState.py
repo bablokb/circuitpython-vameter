@@ -23,6 +23,7 @@ class ActiveState:
 
     self._app      = app
     self._settings = app.settings
+    self._logger   = app.logger
     self._fmt      = "{0:.1f},"+app.data_provider.get_fmt()
     self._dim      = app.data_provider.get_dim()
     if self._app.display:
@@ -32,17 +33,6 @@ class ActiveState:
       if self._settings.plots:
         for unit in app.data_provider.get_units():
           self._views.append(PlotView(app.display,app.border,[unit]))
-
-  # --- write settings to serial   -------------------------------------------
-
-  def _log_settings(self):
-    """ write settings """
-
-    print("\n#Interval:   {0:d}ms".format(self._settings.interval))
-    if self._settings.oversample > 0:
-      print("#Oversampling: {0:d}X".format(self._settings.oversample))
-    print("#Duration:     {0:d}s".format(self._settings.duration))
-    print("#Update:       {0:d}ms\n".format(self._settings.update))
 
   # --- get data   -----------------------------------------------------------
 
@@ -65,7 +55,7 @@ class ActiveState:
   def run(self):
     """ main-loop during active-state """
 
-    self._log_settings()
+    self._logger.log_settings()
     m_data = DataAggregator(self._dim)
     c_view = 0
     if self._app.display:
@@ -114,7 +104,7 @@ class ActiveState:
         try:
           data_t0 = time.monotonic()
           data_t,data_v = self._get_data()
-          print(self._fmt.format(1000*data_t,*data_v))
+          self._logger.log_values(data_t,data_v)
           #s =  time.monotonic()
           m_data.add(data_v)
           #print("#add: %f" % (time.monotonic()-s))
@@ -165,11 +155,4 @@ class ActiveState:
     self._app.results.samples = samples
     self._app.results.values  = m_data.get()
 
-    print("\n#Duration: {0:.1f}s".format(self._app.results.time))
-    print("#Samples: {0:d} ({1:.1f}/s)".format(samples,
-                                               samples/self._app.results.time))
-    print("#Interval: {0:.0f}ms".format(1000*self._app.results.time/samples))
-    print("#Min,Mean,Max")
-    units = self._app.data_provider.get_units()
-    for index,value in enumerate(self._app.results.values):
-      print("#{1:.2f}{0:s},{2:.2f}{0:s},{3:.2f}{0:s}".format(units[index],*value))
+    self._logger.log_summary(samples)

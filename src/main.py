@@ -22,7 +22,8 @@ from ActiveState import ActiveState
 
 #from FakeDataProvider import DataProvider
 from INA219DataProvider import DataProvider
-from Touchpad import KeyEventProvider
+from Touchpad           import KeyEventProvider
+from SerialLogger       import DataLogger
 
 # --- constants   ------------------------------------------------------------
 
@@ -115,6 +116,8 @@ class VAMeter:
     self.settings.plots      = DEF_PLOTS
 
     self.data_provider  = DataProvider(i2c,self.settings)
+    self.logger         = DataLogger(self)
+
     self.results        = ValueHolder()
     self.results.values = [[0,0,0] for i in range(self.data_provider.get_dim())]
     self.results.time   = 0
