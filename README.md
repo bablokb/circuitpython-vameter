@@ -157,7 +157,8 @@ Once the program is in configuration mode, you can enter various parameters:
     ![](doc/config-dur-view.png)
   - **Update**: update-interval of the screen in milliseconds. These updates
     slow down the sampling, so make sure this value is much larger than the
-    value of `interval`.  
+    value of `interval`. Setting the value to zero will disable
+    updates of the display during measurement.  
     ![](doc/config-upd-view.png)
 
 The "Next"-button will navigate through the configuration screens, after the
@@ -185,3 +186,36 @@ Using the "View"-button you cycle through various views:
     ![](doc/plot-view-v.png)
   - plot-view of current  
     ![](doc/plot-view-a.png)
+
+
+Tips and Tricks
+---------------
+
+The default configuration of the sensor uses 8x oversampling for the
+internal ADC. This reduces noise. Sampling-time according to the
+datasheet is 4.26ms. Using less oversampling or less precision you
+can bring this down to below 1ms, but if you really need high-frequency
+sampling in this range you should think about reimplementing the project
+using an optimzed setup and probably C/C++.
+
+Using a Pico, you can reach a minimal sampling interval of about 8ms
+(6ms measured on a Pi3B+).
+
+Display-updates take about 330ms. During update, you loose all samples.
+Setting the update-interval to zero prevents data-loss. When the
+sampling-interval is larger than 330ms, no data-loss occurs regardless
+of display-updates.
+
+For ex-post data-visualization, save the data from the serial output
+to a file, remove comment-lines and then use the
+[Python Datamonitor](https://github.com/bablokb/py-datamon) to create
+a plot. A ready to use configuration-file is in
+[doc/cp-vameter.json](./cp-vameter.json).
+
+The INA219 provides voltage, current and power. The default configuration
+does not sample power. If you need all three values, you can change
+this within `lib/INA219DataProvider` (set `WITH_POWER=True`).
+
+In this file you can also change some additional settings, e.g. sample
+frequency and voltage/current range as well as the cutoff-values used
+for detecting start and stop of measurements.
