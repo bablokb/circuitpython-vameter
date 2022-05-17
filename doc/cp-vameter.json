@@ -1,0 +1,17 @@
+{ "cols": 1,
+  "width": 1600,
+  "height": 400,
+  "title":  "cp-vameter: Voltage/Current",
+  "x": {"col":   0, "type": "time", "normalize": true, "scale": 0.001},
+  "xaxis": {"text": "time (sec)", "rescale": {"min": "+30", "max": "+60"}},
+  "yaxis": {"text": "V",  "color": "blue"},
+  "yaxis2": {"text": "mA", "color": "red"},
+  "legend": {"loc": null},
+  "plots": [
+    {"values": [{"col":   1, "label": "Voltage", "color": "blue"},
+                {"col":   2, "axis": 2, "label": "Current", "color": "red"}
+               ],
+     "title": "Voltage and Current"
+    }
+   ]
+}
