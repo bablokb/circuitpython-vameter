@@ -22,7 +22,7 @@ you have to change configuration values directly within the source-code.
 
 If you want to use other components (especially a bigger display or
 knobs and buttons instead of the touchpad) you should read the
-[porting guide](doc/porting.md).
+[hacking guide](doc/hacking.md).
 
 
 Hardware
