@@ -1,11 +1,13 @@
 Fonts
 =====
 
-The program uses the *DejaVuSansMono-Bold* font in three different
-font-sizes for the SSD1306 display.
+The program uses the *DejaVuSansMono-Bold* font in two different
+font-sizes. The tiny-font is the default builtin font `terminalio.FONT`. If
+you prefer a different tiny-font, change the definition within
+'src/lib/View.py`.
 
 To keep the size small, only the subset of characters actually used
-are within the font. These subsets were created following the
+are within the fonts. These subsets were created following the
 tutorial from
 <https://learn.adafruit.com/custom-fonts-for-pyportal-circuitpython-display>.
 
@@ -38,8 +40,14 @@ Characters needed for values and units:
   - mW
   - s
 
+
 Character table
 ---------------
+
+Note that the tiny-version if the font currently contains all characters
+unless you change the definition. In this case ensure that all characters
+from the table are contained in the font.
+
 
 | Char | Tiny | Small | Large |
 |------|------|-------|-------|
