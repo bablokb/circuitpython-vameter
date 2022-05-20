@@ -8,7 +8,7 @@ Overview
 This repository contains the necessary CircuitPyhon software to drive a
 voltage/current meter based on the following components:
 
-  - INA219 breakout
+  - INA219 current-sensor breakout
   - Mini OLED display with 128x64 (based on a SSD1306-chip) or
   - SPI TFT-1.8" display (based on a ST7735R-chip)
   - 4x3 touchpad (based on a MPR121-chip)
@@ -36,7 +36,9 @@ pullups of the MCU are usually too weak.
 ![](doc/hardware.jpg)
 
 On the left edge: the MCU, a RP2040-Qt-Trinkey. The INA219 is left to the
-barrel-jack on the upper-left side of the breadboard.
+barrel-jack on the upper-left side of the breadboard. On the top edge
+of the image is a load-resistor. In real applications this resistor is
+replaced by the load you want to measure.
 
 The mini-oled with 128x64 pixels is in the middle, on the right is a
 MPR121-based keypad with 12 keys. A template for the key-mapping is in
