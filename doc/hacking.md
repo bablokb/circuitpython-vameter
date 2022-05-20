@@ -50,9 +50,12 @@ lib/INA219DataProvider.py
 -------------------------
 
 The file implements the class `DataProvider`. You could swap the dataprovider
-with something totally different, e.g. using a BME280 sensor with
-temperature, pressure and humidity. An alternative implementation
-(used during development and for testing) is `FakeDataProvider.py`.
+with something simlar (e.g. INA260) or totally different. A BME280 sensor with
+temperature, pressure and humidity would be a candidate.
+
+An alternative implementation which is part of the project is the
+`FakeDataProvider.py`. It is useful during development and testing since it
+does neither need a real current-sensor, nor an existing load.
 
 Other sensors would certainly need other characters within the font-set,
 so you must also update the fonts.
