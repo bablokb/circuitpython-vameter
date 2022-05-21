@@ -24,7 +24,10 @@ class ActiveState:
     self._app      = app
     self._settings = app.settings
     self._logger   = app.logger
-    self._fmt      = "{0:.1f},"+app.data_provider.get_fmt()
+    if app.settings.tm_scale == 'ms':
+      self._tm_scale = 0.001
+    else:
+      self._tm_scale = 1
     self._dim      = app.data_provider.get_dim()
     if self._app.display:
       self._views = [ValuesView(app.display,app.border,
@@ -79,18 +82,18 @@ class ActiveState:
     else:
       end_t = sys.maxsize
 
-    data_t0 = 0                                # timestamp before last sample
-    stop    = False                            # global stop
-    int_t   = self._settings.interval/1000     # interval time in sec
-    start_t = time.monotonic()                 # timestamp of start
-    samples = 0                                # total number of samples
+    data_t0 = 0                                      # timestamp before last sample
+    stop    = False                                  # global stop
+    int_t   = self._settings.interval*self._tm_scale # interval time in sec
+    start_t = time.monotonic()                       # timestamp of start
+    samples = 0                                      # total number of samples
 
     # sample until manual stop or until end of duration
     while not stop and time.monotonic() < end_t:
 
       # calc next screen update
       if self._app.display and self._settings.update:
-        display_next = time.monotonic() + self._settings.update/1000
+        display_next = time.monotonic() + self._settings.update*self._tm_scale
       else:
         display_next = end_t
       # sample until screen-update is necessary

@@ -22,7 +22,7 @@ class ConfigState:
 
     self._app   = app
     headings    = ['Interval:','Duration:','Update:']
-    units       = ['ms','s','ms']
+    units       = [app.settings.tm_scale,'s',app.settings.tm_scale]
     self._attr  = ['interval','duration','update']
     if app.settings.oversample > 0:
       headings.append('Oversample:')

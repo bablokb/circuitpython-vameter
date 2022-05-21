@@ -18,6 +18,10 @@ class DataLogger:
 
     self._app = app
     self._fmt = "{0:.1f},"+app.data_provider.get_fmt()
+    if app.settings.tm_scale == 'ms':
+      self._tm_scale = 1000
+    else:
+      self._tm_scale = 1
 
   # --- print settings   -----------------------------------------------------
 
@@ -26,11 +30,11 @@ class DataLogger:
 
     settings = self._app.settings
 
-    print("\n#Interval:   {0:d}ms".format(settings.interval))
+    print("\n#Interval:   {0:d}{1:s}".format(settings.interval,settings.tm_scale))
     if settings.oversample > 0:
       print("#Oversampling: {0:d}X".format(settings.oversample))
     print("#Duration:     {0:d}s".format(settings.duration))
-    print("#Update:       {0:d}ms\n".format(settings.update))
+    print("#Update:       {0:d}{1:s}\n".format(settings.update,settings.tm_scale))
 
   # --- print values   -------------------------------------------------------
 
@@ -46,7 +50,9 @@ class DataLogger:
     print("\n#Duration: {0:.1f}s".format(self._app.results.time))
     print("#Samples: {0:d} ({1:.1f}/s)".format(samples,
                                                samples/self._app.results.time))
-    print("#Interval: {0:.0f}ms".format(1000*self._app.results.time/samples))
+    print("#Interval: {0:.1f}{1:s}".format(
+      self._tm_scale*self._app.results.time/samples,
+      self._app.settings.tm_scale))
     print("#Min,Mean,Max")
     units = self._app.data_provider.get_units()
     for index,value in enumerate(self._app.results.values):
