@@ -8,52 +8,13 @@
 #
 # ----------------------------------------------------------------------------
 
-class DataLogger:
+from LogWriter import LogWriter
+
+class DataLogger(LogWriter):
   """ log data to the serial console """
 
   # --- constructor   --------------------------------------------------------
 
   def __init__(self,app):
-    """ constructor """
-
-    self._app = app
-    self._fmt = "{0:.1f},"+app.data_provider.get_fmt()
-    if app.settings.tm_scale == 'ms':
-      self._tm_scale = 1000
-    else:
-      self._tm_scale = 1
-
-  # --- print settings   -----------------------------------------------------
-
-  def log_settings(self):
-    """ print settings """
-
-    settings = self._app.settings
-
-    print("#\n#Interval:   {0:d}{1:s}".format(settings.interval,settings.tm_scale))
-    if settings.oversample > 0:
-      print("#Oversampling: {0:d}X".format(settings.oversample))
-    print("#Duration:     {0:d}s".format(settings.duration))
-    print("#Update:       {0:d}{1:s}\n#".format(settings.update,settings.tm_scale))
-
-  # --- print values   -------------------------------------------------------
-
-  def log_values(self,t,values):
-    """ print values """
-    print(self._fmt.format(1000*t,*values))
-
-  # --- print summary   ------------------------------------------------------
-
-  def log_summary(self,samples):
-    """ print summary """
-
-    print("#\n#Duration: {0:.1f}s".format(self._app.results.time))
-    print("#Samples: {0:d} ({1:.1f}/s)".format(samples,
-                                               samples/self._app.results.time))
-    print("#Interval: {0:.1f}{1:s}".format(
-      self._tm_scale*self._app.results.time/samples,
-      self._app.settings.tm_scale))
-    print("#Min,Mean,Max")
-    units = self._app.data_provider.get_units()
-    for index,value in enumerate(self._app.results.values):
-      print("#{1:.2f}{0:s},{2:.2f}{0:s},{3:.2f}{0:s}".format(units[index],*value))
+    """ constructor: just pass the builtin print()-function to base-class """
+    super(DataLogger,self).__init__(app,print)
