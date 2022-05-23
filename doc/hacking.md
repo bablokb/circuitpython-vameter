@@ -17,6 +17,8 @@ Here you define pin-numbers and import classes. When implementing new
 versions, keep the class name and change the import statement. The class
 `FakeDataProvider` vs. `INA219DataProvider` is an example.
 
+The file also defines a number of global constants. This is useful for
+setups e.g. without a touchpad.
 
 lib/View.py
 -----------
@@ -59,6 +61,10 @@ does neither need a real current-sensor, nor an existing load.
 
 Other sensors would certainly need other characters within the font-set,
 so you must also update the fonts.
+
+If the data-provider is not targeted at sampling in the milliseconds realm,
+you should also change the constant `DEF_TM_SCALE` to `s` instead of `ms` in
+`main.py`.
 
 
 lib/SerialLogger.py
