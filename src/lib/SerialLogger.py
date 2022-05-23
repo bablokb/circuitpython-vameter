@@ -16,5 +16,12 @@ class DataLogger(LogWriter):
   # --- constructor   --------------------------------------------------------
 
   def __init__(self,app):
-    """ constructor: just pass the builtin print()-function to base-class """
-    super(DataLogger,self).__init__(app,print)
+    """ constructor """
+    super(DataLogger,self).__init__(app)
+
+  # --- log implementation   -------------------------------------------------
+
+  def log(self,msg):
+    """ just pass the string to the builtin print()-function """
+
+    print(msg)
