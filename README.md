@@ -24,6 +24,10 @@ If you want to use other components (especially a bigger display or
 knobs and buttons instead of the touchpad) you should read the
 [hacking guide](doc/hacking.md).
 
+Also the main program is agnostic about which kind of sensor is
+sampled. Just by providing a data-provider class you can collect data of any
+sensor. This is also documented in the [hacking guide](doc/hacking.md).
+
 
 Hardware
 --------
