@@ -221,3 +221,7 @@ this within `lib/INA219DataProvider` (set `WITH_POWER=True`).
 In this file you can also change some additional settings, e.g. sample
 frequency and voltage/current range as well as the cutoff-values used
 for detecting start and stop of measurements.
+
+Logging via WLAN is possible with an additional ESP-01 MCU connected
+to the UART of the Pico. For details, read the
+[ESP-01 logging HowTo](doc/esp01logger.md).

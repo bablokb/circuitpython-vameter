@@ -71,4 +71,11 @@ lib/SerialLogger.py
 -------------------
 
 Implements the class `DataLogger` (logging to the serial console).
-Alternative implementations must implement all methods.
+Alternative implementations must implement at least the `log()`-method.
+
+
+lib/ESP01Logger.py
+-------------------
+
+Implements the class `DataLogger` (logging via WLAN). For details, read
+the [ESP-01 logging HowTo](./esp01logger.md).
