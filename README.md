@@ -208,6 +208,11 @@ Setting the update-interval to zero prevents data-loss. When the
 sampling-interval is larger than 330ms, no data-loss occurs regardless
 of display-updates.
 
+During active measurement, the default setup not only displays the
+values, but also plots of the data. This is also costly (in speed
+and memory) and can be disabled in `main.py` with the constant
+`DEF_PLOTS`.
+
 For ex-post data-visualization, save the data from the serial output
 to a file, remove comment-lines and then use the
 [Python Datamonitor](https://github.com/bablokb/py-datamon) to create
