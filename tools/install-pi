@@ -11,7 +11,7 @@
 
 PROJECT="cp-vameter"
 
-PACKAGES="python3-pip python3-venv libopenjp2-7 libtiff5"
+PACKAGES="python3-pip python3-venv libatlas-base-dev libopenjp2-7 libtiff5"
 
 PIP_PACKAGES="                               \
   RPI.GPIO                                   \
