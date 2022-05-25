@@ -79,6 +79,11 @@ if ! grep -q "^dtparam=i2c_arm=on" /boot/config.txt ; then
   echo "dtparam=i2c_arm=on" >> /boot/config.txt
   echo -e "[INFO] reboot required!" 2>&1
 fi
+if ! grep -q "^dtparam=spi=on" /boot/config.txt ; then
+  echo -e "[INFO] configuring spi in /boot/config.txt" 2>&1
+  echo "dtparam=spi=on" >> /boot/config.txt
+  echo -e "[INFO] reboot required!" 2>&1
+fi
 
 # update /etc/modules
 if ! grep -q "^i2c-dev" /etc/modules; then
