@@ -23,7 +23,9 @@ from ActiveState import ActiveState
 #from FakeDataProvider import DataProvider
 from INA219DataProvider import DataProvider
 from Touchpad           import KeyEventProvider
+
 from SerialLogger       import DataLogger
+#from ESP01Logger       import DataLogger
 
 # --- constants   ------------------------------------------------------------
 
@@ -89,6 +91,20 @@ else:
   # adapt to your MCU
   pass
 
+# --- for UART-based components (e.g. ESP01, HC-05)   ------------------------
+# (this is for optional components, see docs)
+
+if board.board_id == 'raspberry_pi_pico':
+  PIN_TX = board.GP0
+  PIN_RX = board.GP1
+elif hasattr(board,'TX'):
+  PIN_TX = board.TX
+  PIN_RX = board.RX
+else:
+  # adapt to your MCU
+  PIN_TX = None
+  PIN_RX = None
+
 # --- ValueHolder class   ----------------------------------------------------
 
 class ValueHolder:
@@ -121,6 +137,9 @@ class VAMeter:
     self.settings.duration   = DEF_DURATION
     self.settings.update     = DEF_UPDATE
     self.settings.plots      = DEF_PLOTS
+
+    self.settings.pin_tx     = PIN_TX
+    self.settings.pin_rx     = PIN_RX
 
     self.data_provider  = DataProvider(i2c,self.settings)
     self.logger         = DataLogger(self)
