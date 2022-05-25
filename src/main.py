@@ -181,7 +181,6 @@ class VAMeter:
         return ST7735R(bus,width=TFT_WIDTH,height=TFT_HEIGHT,
                        rotation=TFT_ROTATE,bgr=TFT_BGR)
       except:
-        raise
         return None
 
   # --- main loop   ----------------------------------------------------------
