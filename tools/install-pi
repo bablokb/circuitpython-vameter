@@ -34,10 +34,14 @@ apt-get -y --no-upgrade install $PACKAGES
 
 # --- install virtual environment   -----------------------------------------
 
-echo "[INFO] creating virtenv for $PROJECT" 2>&1
-mkdir -p "/usr/local/lib/${PROJECT}"
-pushd "/usr/local/lib/${PROJECT}" >/dev/null
-python3 -m venv runtime
+if ! [ -d "/usr/local/lib/${PROJECT}" ]; then
+  echo "[INFO] creating virtenv for $PROJECT" 2>&1
+  mkdir -p "/usr/local/lib/${PROJECT}"
+  pushd "/usr/local/lib/${PROJECT}" >/dev/null
+  python3 -m venv runtime
+else
+  pushd "/usr/local/lib/${PROJECT}" >/dev/null
+fi
 
 echo "[INFO] installing packages for $PROJECT" 2>&1
 source runtime/bin/activate
