@@ -22,20 +22,20 @@ the file `secrets.py` (see below).
 Wiring
 ------
 
-Connect RX, TX on the Pico with TX, RX on the device. Additionally connect
-3V3 and GND. If the Pico does not supply enough current, connect a
-AMS1117 (or a similar 5V->3V3 converter) to the VBUS-pin of the Pico and feed
-the ESP-01S from the output of the converter.
+Connect RX, TX from the Pico with TX, RX on the device. Additionally connect
+3V3 and GND. If the Pico does not supply enough current, connect an
+AMS1117 (or a similar 5V->3V3 regulator) to the VBUS-pin of the Pico and feed
+the ESP-01S from the output of the regulator.
 
 
-main.y
-------
+main.py
+-------
 
 Import `DataLogger` from `ESP01DataLogger` instead of from `SerialDataLogger`.
 You only need to toggle the comment before two lines for that.
 
 Check the pin-configuration for `PIN_RX` and `PIN_TX`. Most MCUs will
-provide this from `board`, but the Pico is very flexible so you might have
+provide this from `board`, but the Pico is very flexible so you will have
 to adjust the defaults to your needs.
 
 
