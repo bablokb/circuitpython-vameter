@@ -19,7 +19,7 @@ class LogWriter:
     """ constructor """
 
     self.app = app
-    self._fmt = "{0:.1f},"+app.data_provider.get_fmt()
+    self._fmt = "{0:.1f},"+app.data_provider.get_fmt()+"\n"
     if app.settings.tm_scale == 'ms':
       self._tm_scale = 1000
     else:
@@ -32,12 +32,12 @@ class LogWriter:
 
     settings = self.app.settings
 
-    self.log("#\n#Interval:   {0:d}{1:s}".format(
+    self.log("#\n#Interval:   {0:d}{1:s}\n".format(
       settings.interval,settings.tm_scale))
     if settings.oversample > 0:
-      self.log("#Oversampling: {0:d}X".format(settings.oversample))
-    self.log("#Duration:     {0:d}s".format(settings.duration))
-    self.log("#Update:       {0:d}{1:s}\n#".format(
+      self.log("#Oversampling: {0:d}X\n".format(settings.oversample))
+    self.log("#Duration:     {0:d}s\n".format(settings.duration))
+    self.log("#Update:       {0:d}{1:s}\n#\n".format(
       settings.update,settings.tm_scale))
 
   # --- print values   -------------------------------------------------------
@@ -51,14 +51,14 @@ class LogWriter:
   def log_summary(self,samples):
     """ print summary """
 
-    self.log("#\n#Duration: {0:.1f}s".format(self.app.results.time))
-    self.log("#Samples: {0:d} ({1:.1f}/s)".format(
+    self.log("#\n#Duration: {0:.1f}s\n".format(self.app.results.time))
+    self.log("#Samples: {0:d} ({1:.1f}/s)\n".format(
       samples,samples/self.app.results.time))
-    self.log("#Interval: {0:.1f}{1:s}".format(
+    self.log("#Interval: {0:.1f}{1:s}\n".format(
       self._tm_scale*self.app.results.time/samples,
       self.app.settings.tm_scale))
-    self.log("#Min,Mean,Max")
+    self.log("#Min,Mean,Max\n")
     units = self.app.data_provider.get_units()
     for index,value in enumerate(self.app.results.values):
-      self.log("#{1:.2f}{0:s},{2:.2f}{0:s},{3:.2f}{0:s}".format(
+      self.log("#{1:.2f}{0:s},{2:.2f}{0:s},{3:.2f}{0:s}\n".format(
         units[index],*value))
