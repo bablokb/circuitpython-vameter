@@ -199,6 +199,12 @@ class VAMeter:
 
 # --- main loop   ------------------------------------------------------------
 
-app = VAMeter()
-app.run()
-
+try:
+  app = VAMeter()
+  app.run()
+except KeyboardInterrupt:
+  if hasattr(board,'__blinka__'):
+    # finish program without backtrace
+    pass
+  else:
+    raise
