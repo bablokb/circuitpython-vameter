@@ -53,6 +53,10 @@ OLED_HEIGHT = 64
 if board.board_id == 'raspberry_pi_pico':
   PIN_SDA = board.GP2
   PIN_SCL = board.GP3
+elif board.board_id == 'adafruit_qtpy_esp32s2':
+  # use I2C from Stemma/Qt
+  PIN_SDA = board.SDA1
+  PIN_SCL = board.SCL1
 elif hasattr(board,'SDA'):
   PIN_SDA = board.SDA
   PIN_SCL = board.SCL
@@ -72,10 +76,19 @@ if board.board_id == 'raspberry_pi_pico':
   PIN_CLK = board.GP14
   #PIN_RX  = board.GP16    # unused
   PIN_TX  = board.GP15
-elif hasattr(board,'MOSI'):
-  PIN_CLK = board.SCLK
-  #PIN_RX  = board.MISO    # unused
-  PIN_TX  = board.MOSI
+else:
+  if hasattr(board,'MOSI'):
+    PIN_TX  = board.MOSI
+  else:
+    # adapt to your MCU
+    PIN_TX = None
+  if hasattr(board,'SCLK'):
+    PIN_CLK = board.SCLK
+  elif hasattr(board,'SCK'):
+    PIN_CLK = board.SCK
+  else:
+    # adapt to your MCU
+    PIN_RX = None
 
 # additional pins for TFT
 if hasattr(board,'__blinka__'):
@@ -89,7 +102,9 @@ elif board.board_id == 'raspberry_pi_pico':
   PIN_RST = board.GP11
 else:
   # adapt to your MCU
-  pass
+  PIN_CS  = None
+  PIN_DC  = None
+  PIN_RST = None
 
 # --- for UART-based components (e.g. ESP01, HC-05)   ------------------------
 # (this is for optional components, see docs)
