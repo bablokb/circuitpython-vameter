@@ -24,4 +24,4 @@ class DataLogger(LogWriter):
   def log(self,msg):
     """ just pass the string to the builtin print()-function """
 
-    print(msg)
+    print(msg,end="")
