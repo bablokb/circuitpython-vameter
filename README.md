@@ -74,6 +74,8 @@ Steps:
     - adafruit_ina219
     - adafruit_register
     - adafruit_mpr121
+    - add adafruit_espatcontrol
+    - adafruit_requests
 
     The preferred way to do this is to use `circup` (note that the device
     must be mounted):
@@ -123,6 +125,7 @@ running the program, a Pi-Zero is more than sufficient.
 
 Also note that Blinka currently only supports SPI-displays with 16-bit
 colors.
+
 
 Usage
 -----
@@ -205,10 +208,10 @@ sampling in this range you should think about reimplementing the project
 using an optimzed setup and probably C/C++.
 
 Using a Pico, you can reach a minimal sampling interval of about 8ms
-(6ms measured on a Pi3B+).
+(about 6ms measured on a Pi3B+, about 7ms on a QT Py ESP32-S2).
 
 Display-updates take about 330ms. During update, you loose all samples.
-Setting the update-interval to zero prevents data-loss. When the
+*Setting the update-interval to zero prevents data-loss*. When the
 sampling-interval is larger than 330ms, no data-loss occurs regardless
 of display-updates.
 
