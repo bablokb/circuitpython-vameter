@@ -138,7 +138,7 @@ class VAMeter:
     if not hasattr(board,'DISPLAY'):
       displayio.release_displays()
 
-    i2c = busio.I2C(sda=PIN_SDA,scl=PIN_SCL)
+    i2c = busio.I2C(sda=PIN_SDA,scl=PIN_SCL,frequency=400000)
 
     self.display = self._get_display(i2c)
     if self.display:
