@@ -65,10 +65,6 @@ chown -R root:root "/usr/local/lib/${PROJECT}/app"
 chmod -R 644       "/usr/local/lib/${PROJECT}/app"
 find "/usr/local/lib/${PROJECT}/app" -type d -exec chmod +x {} \+
 
-# move application files to virtual env
-mv -f "/usr/local/lib/${PROJECT}/app/lib/"*.py \
-       /usr/local/lib/${PROJECT}/runtime/lib/python*/site-packages
-
 # --- install wrapper script   ----------------------------------------------
 
 cp $(dirname "$0")/../files/usr/local/bin/${PROJECT} /usr/local/bin
