@@ -27,6 +27,10 @@ from Touchpad           import KeyEventProvider
 from SerialLogger       import DataLogger
 #from ESP01Logger       import DataLogger
 
+if hasattr(board,'__blinka__'):
+  # support functions for Blinka
+  import BlinkaExtensions
+
 # --- constants   ------------------------------------------------------------
 
 DEF_TM_SCALE   = 'ms'     # time-scale: ms|s:        ms
@@ -73,22 +77,21 @@ TFT_BGR    = True
 
 # SPI pins
 if board.board_id == 'raspberry_pi_pico':
-  PIN_CLK = board.GP14
-  #PIN_RX  = board.GP16    # unused
-  PIN_TX  = board.GP15
+  PIN_CLK  = board.GP14
+  PIN_MOSI = board.GP15
 else:
   if hasattr(board,'MOSI'):
-    PIN_TX  = board.MOSI
+    PIN_MOSI = board.MOSI
   else:
     # adapt to your MCU
-    PIN_TX = None
+    PIN_MOSI = None
   if hasattr(board,'SCLK'):
     PIN_CLK = board.SCLK
   elif hasattr(board,'SCK'):
     PIN_CLK = board.SCK
   else:
     # adapt to your MCU
-    PIN_RX = None
+    PIN_CLK = None
 
 # additional pins for TFT
 if hasattr(board,'__blinka__'):
@@ -152,6 +155,9 @@ class VAMeter:
     self.settings.duration   = DEF_DURATION
     self.settings.update     = DEF_UPDATE
     self.settings.plots      = DEF_PLOTS
+    if hasattr(board,'__blinka__'):
+      # change defaults from commandline arguments
+      BlinkaExtensions.update_settings(self.settings)
 
     self.settings.pin_tx     = PIN_TX
     self.settings.pin_rx     = PIN_RX
@@ -190,7 +196,7 @@ class VAMeter:
         pass
       # then try SPI-display
       try:
-        spi = busio.SPI(clock=PIN_CLK,MOSI=PIN_TX)
+        spi = busio.SPI(clock=PIN_CLK,MOSI=PIN_MOSI)
         bus = displayio.FourWire(spi,command=PIN_DC,chip_select=PIN_CS,
                                  reset=PIN_RST)
         return ST7735R(bus,width=TFT_WIDTH,height=TFT_HEIGHT,

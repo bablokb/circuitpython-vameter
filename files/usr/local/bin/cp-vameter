@@ -16,4 +16,4 @@ source "${0%/*}/../lib/cp-vameter/runtime/bin/activate"
 cd     "${0%/*}/../lib/cp-vameter/app"
 
 # start the application
-PYTHONPATH=./lib python "main.py"
+PYTHONPATH=./lib python "main.py" "$@"
