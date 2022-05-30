@@ -82,7 +82,7 @@ Steps:
 
         sudo apt-get -y install pip3
         sudo pip3 install circup
-        circup install -r requirements.txt
+        circup --path /mountpoint/of/device install -r requirements.txt
 
   2. Clone the repository
 
@@ -134,12 +134,24 @@ The program is in three modes: _ready_ (after power-on and reset),
 _active_ and _config_. Possible transitions are _ready-active-ready_ and
 _ready-config-ready_.
 
+If no keypad is detected, the program runs exactly once using the
+defaults defined in `src/main.py`.
+
 To switch modes, use the keypad:
 
 ![](doc/keyboard-template.png)
 
 Keys in blue are valid for the ready-mode, keys in black during configuration
 and keys in red during the active-mode.
+
+If you run the program on a SBC using the Blinka-emulation, you can
+also provide settings via commandline parameters. For a list of options
+run
+
+    cp-vameter -h
+
+This is especially useful for headless operation, i.e. without display
+and without keypad.
 
 
 Ready-Mode
@@ -211,13 +223,14 @@ Using a Pico, you can reach a minimal sampling interval of about 8ms
 (about 6ms measured on a Pi3B+, about 7ms on a QT Py ESP32-S2).
 
 Display-updates take about 330ms. During update, you loose all samples.
-*Setting the update-interval to zero prevents data-loss*. When the
+*Setting the update-interval to zero prevents data-loss*, but you
+can't see the values during measurement. When the
 sampling-interval is larger than 330ms, no data-loss occurs regardless
 of display-updates.
 
 During active measurement, the default setup not only displays the
 values, but also plots of the data. This is also costly (in speed
-and memory) and can be disabled in `main.py` with the constant
+and memory) and can be disabled in `src/main.py` with the constant
 `DEF_PLOTS`.
 
 For ex-post data-visualization, save the data from the serial output
@@ -237,3 +250,6 @@ for detecting start and stop of measurements.
 Logging via WLAN is possible with an additional ESP-01 MCU connected
 to the UART of the Pico. For details, read the
 [ESP-01 logging HowTo](doc/esp01logger.md).
+
+If the program runs on an ESP32 you can use the builtin wifi for
+data-logging. See [ESP32 logging HowTo](doc/esp32logger.md) for details.
