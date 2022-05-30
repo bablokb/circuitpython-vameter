@@ -58,6 +58,8 @@ OLED_HEIGHT = 64
 if board.board_id == 'raspberry_pi_pico':
   PIN_SDA = board.GP2
   PIN_SCL = board.GP3
+#  PIN_SDA = board.GP16
+#  PIN_SCL = board.GP17
 elif board.board_id == 'adafruit_qtpy_esp32s2':
   # use I2C from Stemma/Qt
   PIN_SDA = board.SDA1
@@ -217,7 +219,7 @@ class VAMeter:
       if not hasattr(board,'__blinka__'):
         # don't stop on MCU
         while True:
-          sleep(1)
+          time.sleep(1)
     else:
       while True:
         next_state = self._ready.run(self._active,self._config)
