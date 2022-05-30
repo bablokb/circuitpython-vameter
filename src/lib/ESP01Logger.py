@@ -75,16 +75,9 @@ class DataLogger(LogWriter):
                                     secrets["remote_ip"],secrets["remote_port"]):
           break
         else:
-          try:
-            self._esp.socket_disconnect()
-          except:
-            pass
           time.sleep(1)
       except Exception:
-        try:
-          self._esp.socket_disconnect()
-        except:
-          pass
+        pass
       retry -= 1
 
   # --- send data   ----------------------------------------------------------
