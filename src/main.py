@@ -26,6 +26,7 @@ from Touchpad           import KeyEventProvider
 
 from SerialLogger       import DataLogger
 #from ESP01Logger       import DataLogger
+#from ESP32Logger       import DataLogger
 
 if hasattr(board,'__blinka__'):
   # support functions for Blinka
@@ -209,14 +210,20 @@ class VAMeter:
   def run(self):
     """ main loop """
 
-    while True:
-      next_state = self._ready.run(self._active,self._config)
-      if next_state is None:
-        break
-      next_state.run()
-      while not self.key_events:
-        # no keypad, start endless sleeping-loop to prevent restart of measurement
-        time.sleep(1)
+    if not self.key_events:
+      # no keypad, only one iteration without config
+      self._active.run()
+      self._ready.run(self._active,self._config)      # display results
+      if not hasattr(board,'__blinka__'):
+        # don't stop on MCU
+        while True:
+          sleep(1)
+    else:
+      while True:
+        next_state = self._ready.run(self._active,self._config)
+        if next_state is None:
+          break
+        next_state.run()
 
 # --- main loop   ------------------------------------------------------------
 

@@ -32,8 +32,8 @@ class ReadyState:
   def run(self,active,config):
     """ main-loop during ready-state """
 
-    if not self._app.display or not self._app.key_events:
-      # no config without display or keys, so just start
+    if not self._app.display:
+      # no config without display
       return active
 
     # set results and show first view
@@ -42,6 +42,9 @@ class ReadyState:
     for index,result in enumerate(self._app.results.values):
       self._views[index].set_values(*result)
     self._views[cur_view].show()
+
+    if not self._app.key_events:
+      return
 
     # query key and process
     while True:
