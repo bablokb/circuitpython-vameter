@@ -43,12 +43,14 @@ class ReadyState:
       self._views[index].set_values(*result)
     self._views[cur_view].show()
 
-    if not self._app.key_events:
-      return
-
     # query key and process
     while True:
-      key = self._app.key_events.wait_for_key(self._app.key_events.KEYMAP_READY)
+      if not self._app.key_events:   # endless loop, toggling views
+        key = 'VIEW'
+        time.sleep(2)
+      else:
+        key = self._app.key_events.wait_for_key(self._app.key_events.KEYMAP_READY)
+
       if key == 'START':
         return active
       elif key == 'CONFIG':

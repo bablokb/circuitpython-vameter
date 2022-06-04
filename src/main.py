@@ -216,10 +216,6 @@ class VAMeter:
       # no keypad, only one iteration without config
       self._active.run()
       self._ready.run(self._active,self._config)      # display results
-      if not hasattr(board,'__blinka__'):
-        # don't stop on MCU
-        while True:
-          time.sleep(1)
     else:
       while True:
         next_state = self._ready.run(self._active,self._config)
