@@ -46,8 +46,11 @@ class ReadyState:
     # query key and process
     while True:
       if not self._app.key_events:   # endless loop, toggling views
-        key = 'VIEW'
-        time.sleep(2)
+        if hasattr(board,'__blinka__') and self._app.settings.exit:
+          return None
+        else:
+          key = 'VIEW'
+          time.sleep(2)
       else:
         key = self._app.key_events.wait_for_key(self._app.key_events.KEYMAP_READY)
 
