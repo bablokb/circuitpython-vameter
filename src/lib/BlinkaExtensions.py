@@ -45,6 +45,9 @@ def _get_parser(settings):
   parser.add_argument('-n', '--no-plots', action='store_false',
       dest='plots', default=settings.plots,
       help="disable plots")
+  parser.add_argument('-e', '--exit', action='store_true',
+      dest='exit', default=settings.exit,
+      help="exit after measurement")
   parser.add_argument('-h', '--help', action='help',
       help='print this help')
 
