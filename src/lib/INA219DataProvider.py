@@ -41,7 +41,7 @@ class DataProvider:
     if not hasattr(settings,'v_min'):
       settings.v_min = 1.0                # set default threshold to 1V
     if not hasattr(settings,'a_min'):
-      settings.a_min = 0.5                # set default threshold to 0.5mA
+      settings.a_min = 0                  # set default threshold to 0mA
     self._settings = settings
     self._ina219   = INA219(i2c)
     self.reset()
@@ -88,14 +88,14 @@ class DataProvider:
     # The loop degenerates as long as the voltage is high enough.
     t_start = time.monotonic()
     while True:
-      v = self._ina219.bus_voltage   # voltage on V- (load side)
-      a = self._ina219.current       # current in mA
+      v = self._ina219.bus_voltage     # voltage on V- (load side)
+      a = max(0,self._ina219.current)  # current in mA
       p = self._ina219.power
 
       if self._ina219.overflow:
         continue
 
-      if v > self._settings.v_min and a > self._settings.a_min:
+      if v >= self._settings.v_min and a >= self._settings.a_min:
         self._start = True
         return (v,a,1000*p) if WITH_POWER else (v,a)
       elif self._start:
