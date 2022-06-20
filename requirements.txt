@@ -8,3 +8,4 @@ adafruit_register==1.9.8
 adafruit_display_shapes==2.4.3
 adafruit_espatcontrol==0.0.0-auto.0
 adafruit_display_text==2.22.3
+asyncio==0.5.11
