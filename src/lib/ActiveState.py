@@ -76,25 +76,25 @@ class ActiveState:
       elif key == 'STOP':
         self._stop = True
         return
-      await asyncio.sleep(0)
+      await asyncio.sleep(0.1)
 
   # --- update views   -------------------------------------------------------
 
-  def _update_views(self,data_v):
+  def _update_views(self):
     """ update views """
 
     if self._app.display and self._settings.update:
       if self._settings.plots:
         # update plots
         #s =  time.monotonic()
-        for i,value in enumerate(data_v):
+        for i,value in enumerate(self.data_v):
           self._views[2+i].set_values([value])
         #print("#display plots: %f" % (time.monotonic()-s))
       #s =  time.monotonic()
       if self._cur_view == 0:
         # measurement values
         self._views[self._cur_view].set_values(
-          data_v,time.monotonic()-self._start_t)
+          self.data_v,time.monotonic()-self._start_t)
       elif self._cur_view == 1:
         # elapsed time
         self._views[self._cur_view].set_values(
@@ -112,11 +112,13 @@ class ActiveState:
     while not self._stop:
       await asyncio.sleep(self._settings.update*self._tm_scale)
 
+      # update display with current values
       #s =  time.monotonic()
+      self._update_views()
       self._views[self._cur_view].show()                # show current view
       if not self._app.key_events:                      # auto toggle view
         self._cur_view = (self._cur_view+1) % len(self._views)
-      #print("#display show: %f" % (time.monotonic()-s))
+      #print("#_show_view: %f" % (time.monotonic()-s))
 
   # --- loop during ready-state   --------------------------------------------
 
@@ -173,10 +175,10 @@ class ActiveState:
       # get, log and save data
       try:
         data_t0 = time.monotonic()
-        data_t,data_v = self._get_data()
-        self._logger.log_values(data_t,data_v)
+        self.data_t,self.data_v = self._get_data()
+        self._logger.log_values(self.data_t,self.data_v)
         #s =  time.monotonic()
-        m_data.add(data_v)
+        m_data.add(self.data_v)
         #print("#add: %f" % (time.monotonic()-s))
         samples += 1
       except StopIteration:
@@ -186,11 +188,8 @@ class ActiveState:
       if self._stop:
         break
 
-      # update display with current values
-      self._update_views(data_v)
-
     # that's it, save and log results
-    self._app.results.time    = data_t - self._start_t
+    self._app.results.time    = self.data_t - self._start_t
     self._app.results.samples = samples
     self._app.results.values  = m_data.get()
 
