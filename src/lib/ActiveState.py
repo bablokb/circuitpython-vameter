@@ -109,16 +109,26 @@ class ActiveState:
     if not (self._app.display and self._settings.update):
       return
 
+    update_time = 0.33                                  # pico,SSD1306
     while not self._stop:
       await asyncio.sleep(self._settings.update*self._tm_scale)
+      gap = self._next_sample_t - time.monotonic()
+
+      # don't start update just before next sample, unless sampling-interval
+      # is smaller than update-time (in the latter case we miss samples
+      # anyhow)
+      if gap < update_time and update_time < self._int_t:
+        # wait with update after the next sample
+        await asyncio.sleep(gap+0.01)
 
       # update display with current values
-      #s =  time.monotonic()
+      s = time.monotonic()
       self._update_views()
       self._views[self._cur_view].show()                # show current view
       if not self._app.key_events:                      # auto toggle view
         self._cur_view = (self._cur_view+1) % len(self._views)
-      #print("#_show_view: %f" % (time.monotonic()-s))
+      update_time = time.monotonic() - s
+      #print("#_show_view: %f" % update_time)
 
   # --- loop during ready-state   --------------------------------------------
 
@@ -132,6 +142,8 @@ class ActiveState:
 
   async def _run(self):
     """ main-loop during active-state """
+
+    self._int_t = self._settings.interval*self._tm_scale # interval time in sec
 
     key_task  = asyncio.create_task(self._check_key())
     view_task = asyncio.create_task(self._show_view())
@@ -161,7 +173,6 @@ class ActiveState:
       end_t = sys.maxsize
 
     data_t0 = 0                                      # timestamp before last sample
-    int_t   = self._settings.interval*self._tm_scale # interval time in sec
     self._start_t = time.monotonic()                 # timestamp of start
     samples = 0                                      # total number of samples
 
@@ -170,7 +181,10 @@ class ActiveState:
 
       # sleep until next sampling interval starts (int_t minus overhead)
       if data_t0 > 0:
-        await asyncio.sleep(max(int_t - (time.monotonic()-data_t0),0))
+        sleep_t = max(self._int_t-(time.monotonic()-data_t0),0)
+        self._next_sample_t = time.monotonic() + sleep_t
+        if sleep_t:
+          await asyncio.sleep(sleep_t)
 
       # get, log and save data
       try:
