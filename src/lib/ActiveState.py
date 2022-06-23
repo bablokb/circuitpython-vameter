@@ -111,7 +111,7 @@ class ActiveState:
 
     update_time = 0.33                                  # pico,SSD1306
     while not self._stop:
-      await asyncio.sleep(self._settings.update*self._tm_scale)
+      await asyncio.sleep(self._settings.update/1000)
       gap = self._next_sample_t - time.monotonic()
 
       # don't start update just before next sample, unless sampling-interval

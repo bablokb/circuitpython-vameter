@@ -37,8 +37,7 @@ class LogWriter:
     if settings.oversample > 0:
       self.log("#Oversampling: {0:d}X\n".format(settings.oversample))
     self.log("#Duration:     {0:d}s\n".format(settings.duration))
-    self.log("#Update:       {0:d}{1:s}\n#\n".format(
-      settings.update,settings.tm_scale))
+    self.log("#Update:       {0:d}ms\n#\n".format(settings.update))
 
   # --- print values   -------------------------------------------------------
 
