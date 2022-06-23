@@ -220,7 +220,7 @@ sampling in this range you should think about reimplementing the project
 using an optimzed setup and probably C/C++.
 
 Using a Pico, you can reach a minimal sampling interval of about 9.5ms
-(about 6.1ms measured on a Pi3B+, about 6.6ms on a QT Py ESP32-S2).
+(about 5.4ms measured on a Pi3B+, about 6.6ms on a QT Py ESP32-S2).
 
 Display-updates take about 330ms. During update, you loose all samples.
 *Setting the update-interval to zero prevents data-loss*, but you
