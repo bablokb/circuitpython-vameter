@@ -25,6 +25,7 @@ PIP_PACKAGES="                               \
   adafruit-circuitpython-ina219              \
   adafruit-circuitpython-register            \
   adafruit-circuitpython-mpr121              \
+  adafruit-circuitpython-asyncio             \
 "
 
 # --- install system-packages   ---------------------------------------------
