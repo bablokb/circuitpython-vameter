@@ -31,8 +31,8 @@ class ActiveState:
       self._tm_scale = 1
     self._dim      = app.data_provider.get_dim()
 
-    # global stop for all tasks
-    self._stop     = False
+    self._stop       = False    # global stop for all tasks
+    self._new_sample = False    # toggle after each sample
 
     if self._app.display:
       self._cur_view = 0
@@ -84,14 +84,14 @@ class ActiveState:
     """ update views """
 
     if self._app.display and self._settings.update:
-      if self._settings.plots:
+      if self._new_sample and self._settings.plots:
         # update plots
         #s =  time.monotonic()
         for i,value in enumerate(self.data_v):
           self._views[2+i].set_values([value])
         #print("#display plots: %f" % (time.monotonic()-s))
       #s =  time.monotonic()
-      if self._cur_view == 0:
+      if self._new_sample and self._cur_view == 0:
         # measurement values
         self._views[self._cur_view].set_values(
           self.data_v,time.monotonic()-self._start_t)
@@ -124,11 +124,15 @@ class ActiveState:
       # update display with current values
       s = time.monotonic()
       self._update_views()
-      self._views[self._cur_view].show()                # show current view
+      if self._new_sample or not self._app.key_events or self._cur_view == 1:
+        self._views[self._cur_view].show()
+        update_time = time.monotonic() - s
+        #print("#_show_view: %f" % update_time)
+
+      self._new_sample = False
       if not self._app.key_events:                      # auto toggle view
         self._cur_view = (self._cur_view+1) % len(self._views)
-      update_time = time.monotonic() - s
-      #print("#_show_view: %f" % update_time)
+
 
   # --- loop during ready-state   --------------------------------------------
 
@@ -190,6 +194,7 @@ class ActiveState:
       try:
         data_t0 = time.monotonic()
         self.data_t,self.data_v = self._get_data()
+        self._new_sample = True
         self._logger.log_values(self.data_t,self.data_v)
         #s =  time.monotonic()
         m_data.add(self.data_v)
