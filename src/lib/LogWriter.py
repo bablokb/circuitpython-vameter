@@ -10,6 +10,8 @@
 #
 # ----------------------------------------------------------------------------
 
+from Scales import *
+
 class LogWriter:
   """ log data """
 
@@ -20,10 +22,9 @@ class LogWriter:
 
     self.app = app
     self._fmt = "{0:.1f},"+app.data_provider.get_fmt()+"\n"
-    if app.settings.tm_scale == 'ms':
-      self._tm_scale = 1000
-    else:
-      self._tm_scale = 1
+    self._int_fac   = int_fac(app.settings.tm_scale)
+    self._dur_scale = dur_scale(app.settings.tm_scale)
+    self._dur_fac   = dur_fac(app.settings.tm_scale)
 
   # --- print settings   -----------------------------------------------------
 
@@ -36,7 +37,8 @@ class LogWriter:
       settings.interval,settings.tm_scale))
     if settings.oversample > 0:
       self.log("#Oversampling: {0:d}X\n".format(settings.oversample))
-    self.log("#Duration:     {0:d}s\n".format(settings.duration))
+    self.log("#Duration:     {0:d}{1:s}\n".format(
+      settings.duration,self._dur_scale))
     self.log("#Update:       {0:d}ms\n#\n".format(settings.update))
 
   # --- print values   -------------------------------------------------------
@@ -50,11 +52,12 @@ class LogWriter:
   def log_summary(self,samples):
     """ print summary """
 
-    self.log("#\n#Duration: {0:.1f}s\n".format(self.app.results.time))
+    self.log("#\n#Duration: {0:.1f}{1:s}\n".format(
+      self.app.results.time/self._dur_fac,self._dur_scale))
     self.log("#Samples: {0:d} ({1:.1f}/s)\n".format(
       samples,samples/self.app.results.time))
-    self.log("#Interval: {0:.1f}{1:s}\n".format(
-      self._tm_scale*self.app.results.time/samples,
+    self.log("#Mean Interval: {0:.1f}{1:s}\n".format(
+      self.app.results.time/self._int_fac/samples,
       self.app.settings.tm_scale))
     self.log("#Min,Mean,Max\n")
     units = self.app.data_provider.get_units()

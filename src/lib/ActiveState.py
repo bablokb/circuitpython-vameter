@@ -13,6 +13,7 @@ import sys
 import asyncio
 from View import ValuesView, PlotView
 from Data import DataAggregator
+from Scales import *
 
 class ActiveState:
   """ manage active-state """
@@ -25,10 +26,8 @@ class ActiveState:
     self._app      = app
     self._settings = app.settings
     self._logger   = app.logger
-    if app.settings.tm_scale == 'ms':
-      self._tm_scale = 0.001
-    else:
-      self._tm_scale = 1
+    self._int_fac = int_fac(app.settings.tm_scale)
+    self._dur_fac = dur_fac(app.settings.tm_scale)
     self._dim      = app.data_provider.get_dim()
 
     self._stop       = False    # global stop for all tasks
@@ -36,9 +35,11 @@ class ActiveState:
 
     if self._app.display:
       self._cur_view = 0
+      d_scale     = dur_scale(app.settings.tm_scale)
       self._views = [ValuesView(app.display,app.border,
                                  app.data_provider.get_units()),
-                      ValuesView(app.display,app.border,['s','s'])]  # elapsed
+                      ValuesView(app.display,app.border,
+                                 [d_scale,d_scale])]  # elapsed
       if self._settings.plots:
         for unit in app.data_provider.get_units():
           self._views.append(PlotView(app.display,app.border,[unit]))
@@ -98,7 +99,8 @@ class ActiveState:
       elif self._cur_view == 1:
         # elapsed time
         self._views[self._cur_view].set_values(
-          [time.monotonic()-self._start_t,self._settings.duration],-1)
+          [(time.monotonic()-self._start_t)/self._dur_fac,
+           self._settings.duration],-1)
       #print("#display values: %f" % (time.monotonic()-s))
 
   # --- show current views   -------------------------------------------------
@@ -147,7 +149,7 @@ class ActiveState:
   async def _run(self):
     """ main-loop during active-state """
 
-    self._int_t = self._settings.interval*self._tm_scale # interval time in sec
+    self._int_t = self._settings.interval*self._int_fac # interval time in sec
 
     key_task  = asyncio.create_task(self._check_key())
     view_task = asyncio.create_task(self._show_view())
@@ -172,7 +174,7 @@ class ActiveState:
       return
 
     if self._settings.duration:
-      end_t = time.monotonic() + self._settings.duration
+      end_t = time.monotonic() + self._settings.duration*self._dur_fac
     else:
       end_t = sys.maxsize
 

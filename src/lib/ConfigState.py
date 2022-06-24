@@ -11,6 +11,7 @@
 
 import time
 from View import ConfigView
+from Scales import *
 
 class ConfigState:
   """ manage config-state """
@@ -22,7 +23,8 @@ class ConfigState:
 
     self._app   = app
     headings    = ['Interval:','Duration:','Update:']
-    units       = [app.settings.tm_scale,'s',app.settings.tm_scale]
+    units       = [app.settings.tm_scale,
+                   dur_scale(app.settings.tm_scale),'ms']
     self._attr  = ['interval','duration','update']
     if app.settings.oversample > 0:
       headings.append('Oversample:')
