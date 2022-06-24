@@ -30,27 +30,31 @@ PIP_PACKAGES="                               \
 
 # --- install system-packages   ---------------------------------------------
 
-apt-get update
-apt-get -y --no-upgrade install $PACKAGES
+if [ -z "$1" ]; then
+  apt-get update
+  apt-get -y --no-upgrade install $PACKAGES
+fi
 
 # --- install virtual environment   -----------------------------------------
 
-if ! [ -d "/usr/local/lib/${PROJECT}" ]; then
-  echo "[INFO] creating virtenv for $PROJECT" 2>&1
-  mkdir -p "/usr/local/lib/${PROJECT}"
-  pushd "/usr/local/lib/${PROJECT}" >/dev/null
-  python3 -m venv runtime
-else
-  pushd "/usr/local/lib/${PROJECT}" >/dev/null
+if [ -z "$1" ]; then
+  if ! [ -d "/usr/local/lib/${PROJECT}" ]; then
+    echo "[INFO] creating virtenv for $PROJECT" 2>&1
+    mkdir -p "/usr/local/lib/${PROJECT}"
+    pushd "/usr/local/lib/${PROJECT}" >/dev/null
+    python3 -m venv runtime
+  else
+    pushd "/usr/local/lib/${PROJECT}" >/dev/null
+  fi
+
+  echo "[INFO] installing packages for $PROJECT" 2>&1
+  source runtime/bin/activate
+  pip3 install $PIP_PACKAGES
+  deactivate
+  popd >/dev/null
+
+  echo "[INFO] finished preparing /usr/local/lib/${PROJECT}/runtime" 2>&1
 fi
-
-echo "[INFO] installing packages for $PROJECT" 2>&1
-source runtime/bin/activate
-pip3 install $PIP_PACKAGES
-deactivate
-popd >/dev/null
-
-echo "[INFO] finished preparing /usr/local/lib/${PROJECT}/runtime" 2>&1
 
 # --- install application files   -------------------------------------------
 
@@ -92,6 +96,5 @@ if ! grep -q "^i2c-dev" /etc/modules; then
   echo "i2c-dev" >> /etc/modules
   echo -e "[INFO] reboot required!" 2>&1
 fi
-
 
 echo "[INFO] installation completed"
