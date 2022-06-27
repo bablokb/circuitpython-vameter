@@ -19,6 +19,7 @@ Text strings
 
 The program uses the following text strings:
 
+  - Int-Scale:
   - Interval:
   - Oversample:
   - Duration:
@@ -36,9 +37,8 @@ Characters needed for values and units:
   - numbers
   - V
   - mA
-  - ms
   - mW
-  - s
+  - ms, s, m, h, d
 
 
 Character table
@@ -53,6 +53,7 @@ from the table are contained in the font.
 |------|------|-------|-------|
 | sp   |   X  |   X   |   X   |
 | .    |   X  |   X   |   X   |
+| -    |      |   X   |       |
 | 0    |   X  |   X   |   X   |
 | 1    |   X  |   X   |   X   |
 | 2    |   X  |   X   |   X   |
@@ -69,12 +70,15 @@ from the table are contained in the font.
 | I    |      |   X   |       |
 | M    |   X  |   X   |   X   |
 | O    |      |   X   |       |
+| S    |      |   X   |       |
 | U    |      |   X   |       |
 | V    |   X  |   X   |   X   |
 | W    |   X  |   X   |       |
 | a    |      |   X   |       |
-| d    |      |   X   |       |
+| c    |      |   X   |       |
+| d    |      |   X   |   X   |
 | e    |      |   X   |       |
+| h    |      |   X   |   X   |
 | i    |      |   X   |       |
 | l    |      |   X   |       |
 | m    |   X  |   X   |   X   |
