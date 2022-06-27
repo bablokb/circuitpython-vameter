@@ -22,9 +22,6 @@ class LogWriter:
 
     self.app = app
     self._fmt = "{0:.1f},"+app.data_provider.get_fmt()+"\n"
-    self._int_fac   = int_fac(app.settings.tm_scale)
-    self._dur_scale = dur_scale(app.settings.tm_scale)
-    self._dur_fac   = dur_fac(app.settings.tm_scale)
 
   # --- print settings   -----------------------------------------------------
 
@@ -32,6 +29,9 @@ class LogWriter:
     """ print settings """
 
     settings = self.app.settings
+    self._int_fac   = int_fac(settings.tm_scale)
+    self._dur_scale = dur_scale(settings.tm_scale)
+    self._dur_fac   = dur_fac(settings.tm_scale)
 
     self.log("#\n#Interval:   {0:d}{1:s}\n".format(
       settings.interval,settings.tm_scale))

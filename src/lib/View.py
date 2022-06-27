@@ -143,6 +143,14 @@ class ValuesView(View):
       for index in range(len(self._value)):
         self._value[index].text = self._units[index]
 
+  # --- set unit   -----------------------------------------------------------
+
+  def set_units(self,units):
+    """ set units for values """
+
+    if self._display:
+      self._units = units
+
 # ----------------------------------------------------------------------------
 # --- View for results   -----------------------------------------------------
 
@@ -200,6 +208,14 @@ class ConfigView(View):
 
     if self._display:
       self._value.text = "{0:s}{1:s}".format(value,self._unit)
+
+  # --- set unit   -----------------------------------------------------------
+
+  def set_unit(self,unit):
+    """ set unit for config-item """
+
+    if self._display:
+      self._unit = unit
 
 # ----------------------------------------------------------------------------
 # --- PlotView   -------------------------------------------------------------

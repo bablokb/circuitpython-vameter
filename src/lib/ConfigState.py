@@ -22,10 +22,10 @@ class ConfigState:
     """ constructor """
 
     self._app   = app
-    headings    = ['Interval:','Duration:','Update:']
-    units       = [app.settings.tm_scale,
+    headings    = ['Int-Scale:','Interval:','Duration:','Update:']
+    units       = ["",app.settings.tm_scale,
                    dur_scale(app.settings.tm_scale),'ms']
-    self._attr  = ['interval','duration','update']
+    self._attr  = ['tm_scale','interval','duration','update']
     if app.settings.oversample > 0:
       headings.append('Oversample:')
       units.append('X')
@@ -34,6 +34,8 @@ class ConfigState:
                               headings[i],
                               units[i])
                    for i in range(len(headings))]
+    self._int_view = self._views[1]
+    self._dur_view = self._views[2]
 
   # --- update a setting   ----------------------------------------------------
 
@@ -46,15 +48,25 @@ class ConfigState:
       self._views[nr].show()
       key = self._app.key_events.wait_for_key(self._app.key_events.KEYMAP_CONFIG)
       if key == 'NEXT':
-        setattr(self._app.settings,self._attr[nr],int(value))
+        if nr == 0:
+          setattr(self._app.settings,self._attr[nr],value)     # scale is a string
+          self._int_view.set_unit(value)
+          self._dur_view.set_unit(dur_scale(value))
+        else:
+          setattr(self._app.settings,self._attr[nr],int(value))
         return
       elif key == 'CLR':
-        if len(value) > 1:
+        if nr == 0:
+          value = 'ms'
+        elif len(value) > 1:
           value = value[:-1]
         else:
           value = '0'
       elif value == '0':
         value = key
+      elif nr == 0:
+        index = min(int(key),len(INT_SCALES)) - 1
+        value = list(INT_SCALES.items())[index][0]
       else:
         value = value+key
 

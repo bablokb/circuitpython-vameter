@@ -8,6 +8,7 @@
 #
 # ----------------------------------------------------------------------------
 
+import gc
 import time
 import sys
 import asyncio
@@ -26,20 +27,16 @@ class ActiveState:
     self._app      = app
     self._settings = app.settings
     self._logger   = app.logger
-    self._int_fac = int_fac(app.settings.tm_scale)
-    self._dur_fac = dur_fac(app.settings.tm_scale)
     self._dim      = app.data_provider.get_dim()
 
     self._stop       = False    # global stop for all tasks
     self._new_sample = False    # toggle after each sample
 
     if self._app.display:
-      self._cur_view = 0
-      d_scale     = dur_scale(app.settings.tm_scale)
       self._views = [ValuesView(app.display,app.border,
-                                 app.data_provider.get_units()),
-                      ValuesView(app.display,app.border,
-                                 [d_scale,d_scale])]  # elapsed
+                                app.data_provider.get_units()),
+                     ValuesView(app.display,app.border,['s','s'])   # elapsed
+                     ]
       if self._settings.plots:
         for unit in app.data_provider.get_units():
           self._views.append(PlotView(app.display,app.border,[unit]))
@@ -111,6 +108,7 @@ class ActiveState:
     if not (self._app.display and self._settings.update):
       return
 
+    cur_view = self._cur_view
     update_time = 0.33                                  # pico,SSD1306
     while not self._stop:
       await asyncio.sleep(self._settings.update/1000)
@@ -126,8 +124,12 @@ class ActiveState:
       # update display with current values
       s = time.monotonic()
       self._update_views()
-      if self._new_sample or not self._app.key_events or self._cur_view == 1:
+      if (self._new_sample or
+          not self._app.key_events or
+          self._cur_view == 1 or
+          cur_view != self._cur_view):
         self._views[self._cur_view].show()
+        cur_view = self._cur_view
         update_time = time.monotonic() - s
         #print("#_show_view: %f" % update_time)
 
@@ -141,7 +143,27 @@ class ActiveState:
   def run(self):
     """ main-loop during active-state """
 
-    self._stop     = False
+    # reset state and query runtime-settings
+    self._stop    = False
+    self._int_fac = int_fac(self._settings.tm_scale)
+    self._dur_fac = dur_fac(self._settings.tm_scale)
+    self._int_t = self._settings.interval*self._int_fac # interval time in sec
+
+    # reset views
+    if self._app.display:
+      self._cur_view = 0
+      self._views[0].clear_values()
+      self._views[0].show()
+
+      d_scale = dur_scale(self._settings.tm_scale)
+      self._views[1].set_units([d_scale,d_scale])
+
+      if self._settings.plots:
+        # reset plots
+        for i in range(self._dim):
+          self._views[2+i].reset()
+
+    gc.collect()
     asyncio.run(self._run())
 
   # --- loop during ready-state   --------------------------------------------
@@ -149,21 +171,12 @@ class ActiveState:
   async def _run(self):
     """ main-loop during active-state """
 
-    self._int_t = self._settings.interval*self._int_fac # interval time in sec
-
     key_task  = asyncio.create_task(self._check_key())
     view_task = asyncio.create_task(self._show_view())
 
     self._logger.log_settings()
     m_data = DataAggregator(self._dim)
     c_view = 0
-    if self._app.display:
-      if self._settings.plots:
-        # reset plots and show first ValuesView
-        for i in range(self._dim):
-          self._views[2+i].reset()
-      self._views[0].clear_values()
-      self._views[0].show()
 
     # reset data-provider and wait for first sample
     self._app.data_provider.reset()
