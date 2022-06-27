@@ -8,7 +8,6 @@
 #
 # ----------------------------------------------------------------------------
 
-import gc
 import board
 import busio
 import displayio
@@ -180,6 +179,7 @@ class VAMeter:
       self.key_events = None
 
     self._ready  = ReadyState(self)
+    self._active = ActiveState(self)
     self._config = ConfigState(self)
 
   # --- initialize display   -------------------------------------------------
@@ -215,16 +215,13 @@ class VAMeter:
 
     if not self.key_events:
       # no keypad, only one iteration without config
-      self._active = ActiveState(self)
       self._active.run()
       self._ready.run(self._active,self._config)      # display results
     else:
       while True:
-        self._active = ActiveState(self)
         next_state = self._ready.run(self._active,self._config)
         if next_state is None:
           break
-        gc.collect()
         next_state.run()
 
 # --- main loop   ------------------------------------------------------------
