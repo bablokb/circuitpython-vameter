@@ -76,6 +76,7 @@ Steps:
     - adafruit_mpr121
     - add adafruit_espatcontrol
     - adafruit_requests
+    - asyncio
 
     The preferred way to do this is to use `circup` (note that the device
     must be mounted):
@@ -171,10 +172,16 @@ Config-Mode
 
 Once the program is in configuration mode, you can enter various parameters:
 
-  - **Interval**: the sampling interval in milliseconds  
+  - **Int-Scale**: the scale of the sampling interval in ms/s/m/h/d  
+    The values 1-5 on the keypad are mapped to these intervals
+  - **Interval**: the sampling interval in the given scale  
     ![](doc/config-int-view.png)
-  - **Duration**: the duration of the measurement in seconds. A value of zero
-    will run the measurement until it is explicitly or implicitly stopped.  
+  - **Duration**: the duration of the measurement. A value of zero
+    will run the measurement until it is explicitly or implicitly stopped.
+    The scale of the duration depends on the scale of the interval. E.g. a
+    interval-scale of 'ms' (i.e. in milliseconds) will force a duration
+    measured in seconds. For an interval-scale of 's' the duration-scale will
+    be in minutes and so on.  
     ![](doc/config-dur-view.png)
   - **Update**: update-interval of the screen in milliseconds. These updates
     slow down the sampling, so make sure this value is much larger than the
