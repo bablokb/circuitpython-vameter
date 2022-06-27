@@ -202,8 +202,21 @@ class ActiveState:
       if data_t0 > 0:
         sleep_t = max(self._int_t-(time.monotonic()-data_t0),0)
         self._next_sample_t = time.monotonic() + sleep_t
-        if sleep_t:
-          await asyncio.sleep(sleep_t)
+        while sleep_t:
+          if sleep_t > 1:
+            # wake up at least once a second to process stop
+            await asyncio.sleep(1)
+            if self._stop:
+              break
+            else:
+              sleep_t -= 1
+              continue
+          else:
+            await asyncio.sleep(sleep_t)
+            break
+
+        if self._stop:
+          break
 
       # get, log and save data
       try:
