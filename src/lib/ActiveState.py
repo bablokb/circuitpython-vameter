@@ -39,7 +39,9 @@ class ActiveState:
                      ]
       if self._settings.plots:
         for unit in app.data_provider.get_units():
-          self._views.append(PlotView(app.display,app.border,[unit]))
+          plot = PlotView(app.display,app.border,[unit])
+          self._views.append(plot)
+          app.results.plots.append(plot)
 
   # --- get data   -----------------------------------------------------------
 

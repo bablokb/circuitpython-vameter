@@ -36,6 +36,11 @@ class ReadyState:
       # no config without display
       return active
 
+    # add plots to our list of views
+    if (self._app.settings.plots and
+        len(self._views) == len(self._app.results.values)):
+      self._views.extend(self._app.results.plots)
+
     # set results and show first view
     cur_view = 0
     n_views  = len(self._views)
