@@ -31,7 +31,7 @@ def _get_parser(settings):
       default=settings.interval, type=int,
       help='sampling interval')
   parser.add_argument('-s', '--scale', metavar='scale',
-      default=settings.tm_scale, type=str, dest='tm_scale',
+      default=settings.int_scale, type=str, dest='int_scale',
       help='time-scale (ms or s)')
   parser.add_argument('-o', '--oversample', metavar='oversample',
       default=settings.oversample, type=int,

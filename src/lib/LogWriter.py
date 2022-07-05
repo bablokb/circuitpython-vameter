@@ -29,12 +29,12 @@ class LogWriter:
     """ print settings """
 
     settings = self.app.settings
-    self._int_fac   = int_fac(settings.tm_scale)
-    self._dur_scale = dur_scale(settings.tm_scale)
-    self._dur_fac   = dur_fac(settings.tm_scale)
+    self._int_fac   = int_fac(settings.int_scale)
+    self._dur_scale = dur_scale(settings.int_scale)
+    self._dur_fac   = dur_fac(settings.int_scale)
 
     self.log("#\n#Interval:   {0:d}{1:s}\n".format(
-      settings.interval,settings.tm_scale))
+      settings.interval,settings.int_scale))
     if settings.oversample > 0:
       self.log("#Oversampling: {0:d}X\n".format(settings.oversample))
     self.log("#Duration:     {0:d}{1:s}\n".format(
@@ -58,7 +58,7 @@ class LogWriter:
       samples,samples/self.app.results.time))
     self.log("#Mean Interval: {0:.1f}{1:s}\n".format(
       self.app.results.time/self._int_fac/samples,
-      self.app.settings.tm_scale))
+      self.app.settings.int_scale))
     self.log("#Min,Mean,Max\n")
     units = self.app.data_provider.get_units()
     for index,value in enumerate(self.app.results.values):

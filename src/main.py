@@ -34,18 +34,13 @@ if hasattr(board,'__blinka__'):
 
 # --- constants   ------------------------------------------------------------
 
-DEF_TM_SCALE   = 'ms'     # time-scale: ms|s:        ms
-if DEF_TM_SCALE == 'ms':
-  DEF_INTERVAL   = 100    # sampling-interval:       100ms
-  DEF_UPDATE     = 1000   # display update-interval: 1000ms
-else:
-  DEF_INTERVAL   = 60     # sampling-interval:       60s
-  DEF_UPDATE     = 60     # display update-interval: 60s
-
-DEF_OVERSAMPLE = 0        # oversampling:            0: use 1X, hide config
-DEF_DURATION   = 0        # measurement-duration:    0s     (i.e. not limited)
-DEF_PLOTS      = True     # create plots
-DEF_EXIT       = False    # blinka: exit after measurement
+DEF_INT_SCALE  = 'ms'    # interval-scale: ms|s:    ms
+DEF_INTERVAL   = 100     # sampling-interval:       100 in the given scale
+DEF_UPDATE     = 1000    # display update-interval: 1000ms
+DEF_OVERSAMPLE = 0       # oversampling:            0: use 1X, hide config
+DEF_DURATION   = 0       # measurement-duration:    0s     (i.e. not limited)
+DEF_PLOTS      = True    # create plots
+DEF_EXIT       = False   # blinka: exit after measurement
 BORDER = 1
 
 # for the I2C-display   ---------------------------------
@@ -153,7 +148,7 @@ class VAMeter:
 
     self.settings = ValueHolder()
     self.settings.interval   = DEF_INTERVAL
-    self.settings.tm_scale   = DEF_TM_SCALE
+    self.settings.int_scale  = DEF_INT_SCALE
     self.settings.oversample = DEF_OVERSAMPLE
     self.settings.duration   = DEF_DURATION
     self.settings.update     = DEF_UPDATE

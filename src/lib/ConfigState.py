@@ -23,9 +23,9 @@ class ConfigState:
 
     self._app   = app
     headings    = ['Int-Scale:','Interval:','Duration:','Update:']
-    units       = ["",app.settings.tm_scale,
-                   dur_scale(app.settings.tm_scale),'ms']
-    self._attr  = ['tm_scale','interval','duration','update']
+    units       = ["",app.settings.int_scale,
+                   dur_scale(app.settings.int_scale),'ms']
+    self._attr  = ['int_scale','interval','duration','update']
     if app.settings.oversample > 0:
       headings.append('Oversample:')
       units.append('X')

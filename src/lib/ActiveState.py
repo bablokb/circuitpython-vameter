@@ -147,8 +147,8 @@ class ActiveState:
 
     # reset state and query runtime-settings
     self._stop    = False
-    self._int_fac = int_fac(self._settings.tm_scale)
-    self._dur_fac = dur_fac(self._settings.tm_scale)
+    self._int_fac = int_fac(self._settings.int_scale)
+    self._dur_fac = dur_fac(self._settings.int_scale)
     self._int_t = self._settings.interval*self._int_fac # interval time in sec
 
     # reset views
@@ -157,7 +157,7 @@ class ActiveState:
       self._views[0].clear_values()
       self._views[0].show()
 
-      d_scale = dur_scale(self._settings.tm_scale)
+      d_scale = dur_scale(self._settings.int_scale)
       self._views[1].set_units([d_scale,d_scale])
 
       if self._settings.plots:
