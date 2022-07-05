@@ -1,5 +1,5 @@
 # ----------------------------------------------------------------------------
-# main.py: driver program vor VA-meter
+# main.py: driver program for VA-meter
 #
 # Author: Bernhard Bablok
 # License: GPL3
