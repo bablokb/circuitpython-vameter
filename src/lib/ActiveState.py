@@ -193,16 +193,19 @@ class ActiveState:
     else:
       end_t = sys.maxsize
 
-    data_t0 = 0                                      # timestamp before last sample
-    self._start_t = time.monotonic()                 # timestamp of start
-    samples = 0                                      # total number of samples
+    data_t_last = 0                    # timestamp before last sample
+    self._start_t = time.monotonic()   # timestamp of start
+    samples = 0                        # total number of samples
 
     # sample until manual stop or until end of duration
     while not self._stop and time.monotonic() < end_t:
 
-      # sleep until next sampling interval starts (int_t minus overhead)
-      if data_t0 > 0:
-        sleep_t = max(self._int_t-(time.monotonic()-data_t0),0)
+      # sleep until next sampling interval starts:
+      # interval_time (self._int_t) minus time already past due to
+      # sampling and other activities
+      # the initial value of zero forces immediate sampling at the beginning
+      if data_t_last > 0:
+        sleep_t = max(self._int_t-(time.monotonic()-data_t_last),0)
         self._next_sample_t = time.monotonic() + sleep_t
         while sleep_t:
           if sleep_t > 1:
@@ -222,7 +225,7 @@ class ActiveState:
 
       # get, log and save data
       try:
-        data_t0 = time.monotonic()
+        data_t_last = time.monotonic()
         self.data_t,self.data_v = self._get_data()
         self._new_sample = True
         self._logger.log_values(self.data_t,self.data_v)
