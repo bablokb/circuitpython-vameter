@@ -8,3 +8,5 @@ adafruit*
 boot_out.txt
 *.stl
 asyncio
+fp-info-cache
+jlcpcb
