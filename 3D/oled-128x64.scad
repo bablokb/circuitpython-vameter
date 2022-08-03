@@ -12,7 +12,6 @@
 oled_x = 27.8;
 oled_y = 28;
 oled_z = 2.3;
-rim   = 5;
 
 // inner dimensions
 oled_xi = oled_x;
@@ -34,7 +33,7 @@ module oled() {
   // base
   difference() {
     // outer cube
-    translate([-rim,-rim,0]) cube([oled_x+2*rim,oled_y+2*rim,oled_z]);
+    cube([oled_x,oled_y,oled_z]);
     // inner cutout
     translate([0,oled_yc_l,-fuzz]) cube([oled_xi,oled_yi,oled_z+2*fuzz]);
     // lower cutout
