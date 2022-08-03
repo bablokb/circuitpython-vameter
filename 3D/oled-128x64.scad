@@ -8,55 +8,47 @@
 //
 // -----------------------------------------------------------------------------
 
-$fa = 1;
-$fs = 0.4;
-$fn = 48;
-
-fuzz = 0.01;
-w4 = 1.67;   // 4 walls Prusa3D
-gap = 0.1;
-
 // outer dimensions
-xo = 27.8;
-yo = 28;
-zo = 2.3;
+oled_x = 27.8;
+oled_y = 28;
+oled_z = 2.3;
 rim   = 5;
 
 // inner dimensions
-xi = xo;
-yi = 19.3+2*gap;
+oled_xi = oled_x;
+oled_yi = 19.3+2*gap;
 
 // cutouts
-xc_l = 13;
-yc_l = 4.4;
-zc_l = 0.4;
-xc_u = 9.0;
-yc_u = 4.1;
-zc_u = 0.4;
+oled_xc_l = 13;
+oled_yc_l = 4.4;
+oled_zc_l = 0.4;
+oled_xc_u = 9.0;
+oled_yc_u = 4.1;
+oled_zc_u = 0.4;
 
 // cylinders
-cyl_d =   1.9;
-cyl_off = 1.1;
+oled_cyl_d =   1.9;
+oled_cyl_off = 1.1;
 
 module oled() {
   // base
   difference() {
     // outer cube
-    translate([-rim,-rim,0]) cube([xo+2*rim,yo+2*rim,zo]);
+    translate([-rim,-rim,0]) cube([oled_x+2*rim,oled_y+2*rim,oled_z]);
     // inner cutout
-    translate([0,yc_l,-fuzz]) cube([xi,yi,zo+2*fuzz]);
+    translate([0,oled_yc_l,-fuzz]) cube([oled_xi,oled_yi,oled_z+2*fuzz]);
     // lower cutout
-    translate([(xo-xc_l)/2,0,zc_l]) cube([xc_l,yc_l+fuzz,zo+2*fuzz]);
+    translate([(oled_x-oled_xc_l)/2,0,oled_zc_l]) cube([oled_xc_l,oled_yc_l+fuzz,oled_z+2*fuzz]);
     // upper cutout
-    translate([(xo-xc_u)/2,yc_l+yi-fuzz,zc_u]) cube([xc_u,yc_u,zo+2*fuzz]);
+    translate([(oled_x-oled_xc_u)/2,oled_yc_l+oled_yi-fuzz,oled_zc_u]) cube([oled_xc_u,oled_yc_u,oled_z+2*fuzz]);
   }
   // inner frame
-  translate([0,yc_l-fuzz,0]) cube([xo,3,zc_l]);
+  translate([0,oled_yc_l-fuzz,0]) cube([oled_x,3,oled_zc_l]);
   // cylinders
-  translate([cyl_off+cyl_d/2,cyl_off+cyl_d/2,zo-fuzz]) cylinder(3,d=1.9);
-  translate([xo-(cyl_off+cyl_d/2),cyl_off+cyl_d/2,zo-fuzz]) cylinder(3,d=1.9);
-  translate([cyl_off+cyl_d/2,yo-(cyl_off+cyl_d/2),zo-fuzz]) cylinder(3,d=1.9);
-  translate([xo-(cyl_off+cyl_d/2),yo-(cyl_off+cyl_d/2),zo-fuzz]) cylinder(3,d=1.9);
+  translate([oled_cyl_off+oled_cyl_d/2,oled_cyl_off+oled_cyl_d/2,oled_z-fuzz]) cylinder(3,d=1.9);
+  translate([oled_x-(oled_cyl_off+oled_cyl_d/2),oled_cyl_off+oled_cyl_d/2,oled_z-fuzz]) cylinder(3,d=1.9);
+  translate([oled_cyl_off+oled_cyl_d/2,oled_y-(oled_cyl_off+oled_cyl_d/2),oled_z-fuzz]) cylinder(3,d=1.9);
+  translate([oled_x-(oled_cyl_off+oled_cyl_d/2),oled_y-(oled_cyl_off+oled_cyl_d/2),oled_z-fuzz]) cylinder(3,d=1.9);
 }
 
 oled();
