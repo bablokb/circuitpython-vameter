@@ -10,38 +10,29 @@
 
 include <BOSL2/std.scad>
 
-$fa = 1;
-$fs = 0.4;
-$fn = 48;
-
-fuzz = 0.01;
-w4 = 1.67;   // 4 walls Prusa3D
-gap = 0.1;
-
 // outer dimensions
-xo = 49;
-yo = 78.6;
-zo = 1.4;
-rim   = 5;
+xo_kp = 49;
+yo_kp = 78.6;
+zo_kp = 1.4;
 
 // inner dimensions
-xi = 45;
-yi = 60.5;
-xi_off =2;
-yi_off = 13;
+xi_kp = 45;
+yi_kp = 60.5;
+xi_kp_off =2;
+yi_kp_off = 13;
 
 // cutouts
-xc_l = 14;
-yc_l = 3.5;
-zc_l = 0.4;
+xc_kp_l = 14;
+yc_kp_l = 3.5;
+zc_kp_l = 0.4;
 
 // cylinders
-cyl_d   = 3;
-cyl_h   = 3;
-cyl_off_lx = cyl_d/2+2.5;
-cyl_off_ly = cyl_d/2+2.5;
-cyl_off_ux = cyl_d/2+2.6;
-cyl_off_uy = cyl_d/2+1;
+kp_cyl_d   = 3;
+kp_cyl_h   = 3;
+kp_cyl_off_lx = kp_cyl_d/2+2.5;
+kp_cyl_off_ly = kp_cyl_d/2+2.5;
+kp_cyl_off_ux = kp_cyl_d/2+2.6;
+kp_cyl_off_uy = kp_cyl_d/2+1;
 
 // --- frame for keypad   ----------------------------------------------------------
 
@@ -49,17 +40,17 @@ module keypad_frame() {
   // base
   difference() {
     // outer cube
-    translate([-rim,-rim,0]) cube([xo+2*rim,yo+2*rim,zo]);
+    translate([0,0,0]) cube([xo_kp,yo_kp,zo_kp]);
     // inner cutout
-    translate([xi_off,yi_off,-fuzz]) cube([xi,yi,zo+2*fuzz]);
+    translate([xi_kp_off,yi_kp_off,-fuzz]) cube([xi_kp,yi_kp,zo_kp+2*fuzz]);
     // lower cutout
-    translate([(xo-xc_l)/2,0,zc_l]) cube([xc_l,yc_l+fuzz,zo+2*fuzz]);
+    translate([(xo_kp-xc_kp_l)/2,0,zc_kp_l]) cube([xc_kp_l,yc_kp_l+fuzz,zo_kp+2*fuzz]);
   }
   // cylinders
-  translate([cyl_off_lx,cyl_off_ly,zo-fuzz]) cylinder(cyl_h,d=cyl_d);
-  translate([xo-cyl_off_lx,cyl_off_ly,zo-fuzz]) cylinder(cyl_h,d=cyl_d);
-  translate([cyl_off_ux,yo-cyl_off_uy,zo-fuzz]) cylinder(cyl_h,d=cyl_d);
-  translate([xo-cyl_off_ux,yo-cyl_off_uy,zo-fuzz]) cylinder(cyl_h,d=cyl_d);
+  translate([kp_cyl_off_lx,kp_cyl_off_ly,zo_kp-fuzz]) cylinder(kp_cyl_h,d=kp_cyl_d);
+  translate([xo_kp-kp_cyl_off_lx,kp_cyl_off_ly,zo_kp-fuzz]) cylinder(kp_cyl_h,d=kp_cyl_d);
+  translate([kp_cyl_off_ux,yo_kp-kp_cyl_off_uy,zo_kp-fuzz]) cylinder(kp_cyl_h,d=kp_cyl_d);
+  translate([xo_kp-kp_cyl_off_ux,yo_kp-kp_cyl_off_uy,zo_kp-fuzz]) cylinder(kp_cyl_h,d=kp_cyl_d);
 }
 
-// keypad_frame();
+//keypad_frame();
