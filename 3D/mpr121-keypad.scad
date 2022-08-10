@@ -13,7 +13,7 @@ include <BOSL2/std.scad>
 // outer dimensions
 xo_kp = 49;
 yo_kp = 78.6;
-zo_kp = 1.4;
+zo_kp = b;
 
 // inner dimensions
 xi_kp = 45;
