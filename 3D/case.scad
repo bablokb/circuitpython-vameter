@@ -60,7 +60,7 @@ module case() {
       anchor=FRONT+LEFT+BOTTOM
     );
 
-    cuboid([x_mcu,w4+2*fuzz,z],
+    cuboid([x_mcu_grove,w4+2*fuzz,z],
       p1=[w4+gap+x_mcu_off,0,b+z_sup+z_pcb]);               // cutout mcu/grove
     cuboid([x_conn,w4+2*fuzz,z],
       p1=[w4+gap+x_conn_off,ysize+w4-fuzz,b+z_sup+z_pcb]);  // cutout connectors
@@ -68,10 +68,6 @@ module case() {
 
   pcb_support();
   pcb_holder();
-
-  z_snap = b + z_sup + z_pcb + zsize;
-  translate([w4-fuzz,w4+(ysize-snap_w)/2,z_snap-2*snap_h]) snap_male(RIGHT);
-  translate([w4+xsize+fuzz,w4+(ysize-snap_w)/2,z_snap]) snap_male(LEFT);
 }
 
 // --- top-level object   ----------------------------------------------------
