@@ -41,4 +41,21 @@ module cover() {
   move([xr_mcu + (x-xr_mcu-xo_kp)/2,y_kp,b]) mirror([0,0,1]) yflip(y=yo_kp/2) keypad_frame();
 }
 
+module wall() {
+  z = zsize - 1;
+  difference() {
+    cuboid([xsize-gap,ysize-gap,z], rounding=3, edges="Z",
+           anchor=FRONT+LEFT+TOP,p1=[w4+gap/2,w4+gap/2,-z]);
+    cuboid([xsize-gap-2*w2,ysize-gap-2*w2,z+2*fuzz], rounding=3, edges="Z",
+            anchor=FRONT+LEFT+TOP,p1=[w4+gap/2+w2,w4+gap/2+w2,-z]);
+    cuboid([x_mcu_grove,w4+w2+gap+fuzz,b+z+2*fuzz],
+            anchor=TOP+CENTER,
+            p1=[w4+gap+x_mcu_off,-fuzz,-z-b]);         // cutout for mcu+grove
+    cuboid([x_conn,w4+w2+gap+fuzz,b+z+2*fuzz],
+            anchor=TOP+CENTER,
+            p1=[w4+gap+x_conn_off,ysize-fuzz,-z-b]);   // cutout for connectors
+
+  }
+}
 cover();
+wall();
