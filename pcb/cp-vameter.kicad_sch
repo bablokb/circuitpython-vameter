@@ -6,8 +6,8 @@
 
   (title_block
     (title "cp-vameter")
-    (date "2022-07-05")
-    (rev "1.0")
+    (date "2022-07-29")
+    (rev "1.1")
     (company "Bernhard Bablok")
     (comment 1 "https://github.com/bablokb/circuitpython-vameter")
   )
@@ -797,7 +797,6 @@
       )
     )
   )
-
 
   (junction (at 136.525 122.555) (diameter 0) (color 0 0 0 0)
     (uuid 0b1abae7-801e-4a8a-add9-5a91e1c0e56a)
@@ -1784,7 +1783,7 @@
     (property "Value" "Vin JST-PH2" (id 1) (at 140.335 140.335 90)
       (effects (font (size 1.27 1.27)) (justify left))
     )
-    (property "Footprint" "Connector_JST:JST_PH_S2B-PH-K_1x02_P2.00mm_Horizontal" (id 2) (at 133.985 137.16 0)
+    (property "Footprint" "Connector_JST:JST_PH_S2B-PH-SM4-TB_1x02-1MP_P2.00mm_Horizontal" (id 2) (at 133.985 137.16 0)
       (effects (font (size 1.27 1.27)) hide)
     )
     (property "Datasheet" "~" (id 3) (at 133.985 137.16 0)
@@ -2248,7 +2247,7 @@
     (property "Value" "Vin JST-PH2" (id 1) (at 28.575 31.115 90)
       (effects (font (size 1.27 1.27)) (justify left))
     )
-    (property "Footprint" "Connector_JST:JST_PH_S2B-PH-K_1x02_P2.00mm_Horizontal" (id 2) (at 34.925 34.29 0)
+    (property "Footprint" "Connector_JST:JST_PH_S2B-PH-SM4-TB_1x02-1MP_P2.00mm_Horizontal" (id 2) (at 34.925 34.29 0)
       (effects (font (size 1.27 1.27)) hide)
     )
     (property "Datasheet" "~" (id 3) (at 34.925 34.29 0)
@@ -2338,7 +2337,7 @@
       (reference "H4") (unit 1) (value "MountingHole") (footprint "MountingHole:MountingHole_2.5mm")
     )
     (path "/fc329e60-968a-4f61-ba77-53d29ff8c1c7"
-      (reference "J1") (unit 1) (value "Vin JST-PH2") (footprint "Connector_JST:JST_PH_S2B-PH-K_1x02_P2.00mm_Horizontal")
+      (reference "J1") (unit 1) (value "Vin JST-PH2") (footprint "Connector_JST:JST_PH_S2B-PH-SM4-TB_1x02-1MP_P2.00mm_Horizontal")
     )
     (path "/03aea3b0-3967-431b-9db8-cf271b1a617d"
       (reference "J2") (unit 1) (value "Vin Header*") (footprint "Connector_PinHeader_2.54mm:PinHeader_1x02_P2.54mm_Horizontal")
@@ -2368,7 +2367,7 @@
       (reference "J10") (unit 1) (value "Vin Header*") (footprint "Connector_PinHeader_2.54mm:PinHeader_1x02_P2.54mm_Horizontal")
     )
     (path "/46883b41-1ec5-4622-b4e3-2cebaa8c855c"
-      (reference "J11") (unit 1) (value "Vin JST-PH2") (footprint "Connector_JST:JST_PH_S2B-PH-K_1x02_P2.00mm_Horizontal")
+      (reference "J11") (unit 1) (value "Vin JST-PH2") (footprint "Connector_JST:JST_PH_S2B-PH-SM4-TB_1x02-1MP_P2.00mm_Horizontal")
     )
     (path "/2683c828-1382-436b-b491-f5c6c9447ffe"
       (reference "J12") (unit 1) (value "Grove Ext. INA260") (footprint "user:grove_horizontal")
