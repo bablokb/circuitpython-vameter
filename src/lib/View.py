@@ -237,6 +237,7 @@ class PlotView(View):
         width=self._display.width-2*self._offset,
         height=self._display.height-2*self._offset,
         max_items=64,
+        dyn_xpitch=False,
         x=0, y=0)
       self._sparklines.append(sparkline)
       self._values.append(self.add('0.00',pos[i],View.FONT_T))
@@ -258,5 +259,15 @@ class PlotView(View):
 
     if self._display:
       for i in range(len(self._sparklines)):
-        self._sparklines[i].add_value(values[i])
+        self._sparklines[i].add_value(values[i],update=False)
         self._values[i].text = self.format(values[i],self._units[i])
+
+  # --- show the view   ------------------------------------------------------
+
+  def show(self):
+    """ show the view """
+
+    if self._display:
+      for i in range(len(self._sparklines)):
+        self._sparklines[i].update()
+      super(PlotView,self).show()
