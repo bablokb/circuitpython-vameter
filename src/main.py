@@ -41,6 +41,7 @@ DEF_OVERSAMPLE = 0       # oversampling:            0: use 1X, hide config
 DEF_DURATION   = 0       # measurement-duration:    0s     (i.e. not limited)
 DEF_PLOTS      = True    # create plots
 DEF_EXIT       = False   # blinka: exit after measurement
+DEF_TP_ORIENT  = 'P'     # touchpad orientation P|L
 BORDER = 1
 
 # for the I2C-display   ---------------------------------
@@ -154,6 +155,7 @@ class VAMeter:
     self.settings.update     = DEF_UPDATE
     self.settings.plots      = DEF_PLOTS
     self.settings.exit       = DEF_EXIT
+    self.settings.tp_orient  = DEF_TP_ORIENT
     if hasattr(board,'__blinka__'):
       # change defaults from commandline arguments
       BlinkaExtensions.update_settings(self.settings)
