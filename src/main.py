@@ -114,26 +114,41 @@ class VAMeter:
   def _get_display(self,i2c):
     """ initialize hardware """
 
-    if hasattr(board,'DISPLAY') and board.DISPLAY:
-      return board.DISPLAY
+    if DEF_DISPLAY == 'ssd1306':
+      display_bus = displayio.I2CDisplay(i2c, device_address=OLED_ADDR)
+      return adafruit_displayio_ssd1306.SSD1306(display_bus,
+                                                width=OLED_WIDTH,
+                                                height=OLED_HEIGHT)
+    elif DEF_DISPLAY == 'st7735r':
+      spi = busio.SPI(clock=PIN_CLK,MOSI=PIN_MOSI)
+      bus = displayio.FourWire(spi,command=PIN_DC,chip_select=PIN_CS,
+                               reset=PIN_RST)
+      return ST7735R(bus,width=TFT_WIDTH,height=TFT_HEIGHT,
+                     rotation=TFT_ROTATE,bgr=TFT_BGR)
+    elif DEF_DISPLAY == 'auto':
+      if hasattr(board,'DISPLAY') and board.DISPLAY:
+        return board.DISPLAY
+      else:
+        # try OLED display first
+        try:
+          display_bus = displayio.I2CDisplay(i2c, device_address=OLED_ADDR)
+          return adafruit_displayio_ssd1306.SSD1306(display_bus,
+                                                    width=OLED_WIDTH,
+                                                    height=OLED_HEIGHT)
+        except:
+          pass
+        # then try SPI-display
+        try:
+          spi = busio.SPI(clock=PIN_CLK,MOSI=PIN_MOSI)
+          bus = displayio.FourWire(spi,command=PIN_DC,chip_select=PIN_CS,
+                                   reset=PIN_RST)
+          return ST7735R(bus,width=TFT_WIDTH,height=TFT_HEIGHT,
+                         rotation=TFT_ROTATE,bgr=TFT_BGR)
+        except:
+          return None
     else:
-      # try OLED display first
-      try:
-        display_bus = displayio.I2CDisplay(i2c, device_address=OLED_ADDR)
-        return adafruit_displayio_ssd1306.SSD1306(display_bus,
-                                                  width=OLED_WIDTH,
-                                                  height=OLED_HEIGHT)
-      except:
-        pass
-      # then try SPI-display
-      try:
-        spi = busio.SPI(clock=PIN_CLK,MOSI=PIN_MOSI)
-        bus = displayio.FourWire(spi,command=PIN_DC,chip_select=PIN_CS,
-                                 reset=PIN_RST)
-        return ST7735R(bus,width=TFT_WIDTH,height=TFT_HEIGHT,
-                       rotation=TFT_ROTATE,bgr=TFT_BGR)
-      except:
-        return None
+      print("invalid value of DEF_DISPLAY: %s" % DEF_DISPLAY)
+      return None
 
   # --- main loop   ----------------------------------------------------------
 

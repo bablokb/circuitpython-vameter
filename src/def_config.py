@@ -20,6 +20,8 @@ DEF_DURATION   = 0       # measurement-duration:    0s     (i.e. not limited)
 DEF_PLOTS      = True    # create plots
 DEF_EXIT       = False   # blinka: exit after measurement
 DEF_TP_ORIENT  = 'P'     # touchpad orientation P|L
+DEF_DISPLAY    = 'auto'  # auto|ssd1306|st7735r
+
 BORDER = 1
 
 # --- I2C   ------------------------------------------------------------------

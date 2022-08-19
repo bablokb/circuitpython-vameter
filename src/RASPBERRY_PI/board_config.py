@@ -10,6 +10,8 @@
 
 import board
 
+DEF_DISPLAY = 'st7735r'
+
 # SPI/TFT pins
 
 PIN_CS  = board.CE0
