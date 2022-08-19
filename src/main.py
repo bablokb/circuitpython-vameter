@@ -9,6 +9,7 @@
 # ----------------------------------------------------------------------------
 
 import board
+import sys
 import busio
 import displayio
 import time
@@ -32,95 +33,23 @@ if hasattr(board,'__blinka__'):
   # support functions for Blinka
   import BlinkaExtensions
 
-# --- constants   ------------------------------------------------------------
+# --- configuration   --------------------------------------------------------
 
-DEF_INT_SCALE  = 'ms'    # interval-scale: ms|s:    ms
-DEF_INTERVAL   = 100     # sampling-interval:       100 in the given scale
-DEF_UPDATE     = 1000    # display update-interval: 1000ms
-DEF_OVERSAMPLE = 0       # oversampling:            0: use 1X, hide config
-DEF_DURATION   = 0       # measurement-duration:    0s     (i.e. not limited)
-DEF_PLOTS      = True    # create plots
-DEF_EXIT       = False   # blinka: exit after measurement
-DEF_TP_ORIENT  = 'P'     # touchpad orientation P|L
-BORDER = 1
+from def_config import *
 
-# for the I2C-display   ---------------------------------
-
-OLED_ADDR   = 0x3C
-OLED_WIDTH  = 128
-OLED_HEIGHT = 64
-
-# I2C pins
-if board.board_id == 'raspberry_pi_pico':
-  PIN_SDA = board.GP2
-  PIN_SCL = board.GP3
-#  PIN_SDA = board.GP16
-#  PIN_SCL = board.GP17
-elif board.board_id == 'adafruit_qtpy_esp32s2':
-  # use I2C from Stemma/Qt
-  PIN_SDA = board.SDA1
-  PIN_SCL = board.SCL1
-elif hasattr(board,'SDA'):
-  PIN_SDA = board.SDA
-  PIN_SCL = board.SCL
-else:
-  # adapt to your MCU
-  pass
-
-# for the SPI-display   ---------------------------------
-
-TFT_WIDTH  = 160
-TFT_HEIGHT = 128
-TFT_ROTATE = 270
-TFT_BGR    = True
-
-# SPI pins
-if board.board_id == 'raspberry_pi_pico':
-  PIN_CLK  = board.GP14
-  PIN_MOSI = board.GP15
-else:
-  if hasattr(board,'MOSI'):
-    PIN_MOSI = board.MOSI
+try:
+  if board.board_id.startswith("RASPBERRY_PI"):
+    sys.path.insert(0,"./RASPBERRY_PI")
   else:
-    # adapt to your MCU
-    PIN_MOSI = None
-  if hasattr(board,'SCLK'):
-    PIN_CLK = board.SCLK
-  elif hasattr(board,'SCK'):
-    PIN_CLK = board.SCK
-  else:
-    # adapt to your MCU
-    PIN_CLK = None
+    sys.path.insert(0,"./"+board.board_id)
+  from board_config import *
+except:
+  print("no board-specific config-file for %s, using defaults" % board.board_id)
 
-# additional pins for TFT
-if hasattr(board,'__blinka__'):
-  # assume Raspberry Pi, change if required
-  PIN_CS  = board.CE0
-  PIN_DC  = board.D25
-  PIN_RST = board.D24
-elif board.board_id == 'raspberry_pi_pico':
-  PIN_CS  = board.GP9
-  PIN_DC  = board.GP10
-  PIN_RST = board.GP11
-else:
-  # adapt to your MCU
-  PIN_CS  = None
-  PIN_DC  = None
-  PIN_RST = None
-
-# --- for UART-based components (e.g. ESP01, HC-05)   ------------------------
-# (this is for optional components, see docs)
-
-if board.board_id == 'raspberry_pi_pico':
-  PIN_TX = board.GP0
-  PIN_RX = board.GP1
-elif hasattr(board,'TX'):
-  PIN_TX = board.TX
-  PIN_RX = board.RX
-else:
-  # adapt to your MCU
-  PIN_TX = None
-  PIN_RX = None
+try:
+  from user_config import *
+except:
+  print("no user-specific config-file")
 
 # --- ValueHolder class   ----------------------------------------------------
 
