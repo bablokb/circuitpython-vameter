@@ -49,7 +49,7 @@ if [ -z "$1" ]; then
 
   echo "[INFO] installing packages for $PROJECT" 2>&1
   source runtime/bin/activate
-  pip3 install $PIP_PACKAGES
+  pip3 install --upgrade $PIP_PACKAGES
   deactivate
   popd >/dev/null
 
