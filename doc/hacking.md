@@ -13,12 +13,12 @@ installation relative to the root of the device.
 main.py
 -------
 
-Here you define pin-numbers and import classes. When implementing new
-versions, keep the class name and change the import statement. The class
-`FakeDataProvider` vs. `INA219DataProvider` is an example.
+The main application-file. It imports classes for specific features.
+When implementing new versions for features (e.g. data-provider, logging),
+keep the class name and change the import statement. The files
+`lib/FakeDataProvider.py` vs. `lib/INA219DataProvider.py` are an example:
+both files define the class `DataProvider`.
 
-The file also defines a number of global constants. This is useful for
-setups e.g. without a touchpad.
 
 lib/View.py
 -----------
@@ -57,14 +57,14 @@ temperature, pressure and humidity would be a candidate.
 
 An alternative implementation which is part of the project is the
 `FakeDataProvider.py`. It is useful during development and testing since it
-does neither need a real current-sensor, nor an existing load.
+neither needs a real current-sensor, nor an existing load.
 
 Other sensors would certainly need other characters within the font-set,
 so you must also update the fonts.
 
 If the data-provider is not targeted at sampling in the milliseconds realm,
 you should also change the constant `DEF_TM_SCALE` to `s` instead of `ms` in
-`main.py`.
+`src/user_config.py`.
 
 
 lib/SerialLogger.py
@@ -75,7 +75,14 @@ Alternative implementations must implement at least the `log()`-method.
 
 
 lib/ESP01Logger.py
--------------------
+------------------
 
 Implements the class `DataLogger` (logging via WLAN). For details, read
 the [ESP-01 logging HowTo](./esp01logger.md).
+
+
+lib/ESP32Logger.py
+------------------
+
+Implements the class `DataLogger` (logging via WLAN). For details, read
+the [ESP32 logging HowTo](./esp32logger.md).

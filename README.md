@@ -47,8 +47,7 @@ replaced by the load you want to measure.
 The mini-oled with 128x64 pixels is in the middle, on the right is a
 MPR121-based keypad with 12 keys. A template for the key-mapping is in
 `doc/keypad-template.png` and `doc/keypad-template.odg`.
-The latter also has a version for horizontal orientation but in this case
-you have to change the mapping code in `src/lib/Touchpad.py` as well.
+The latter also has a version for horizontal orientation.
 
 The INA219-breakout has two pins (next to the I2C-interface) and a
 screw-terminal for attachement of the power-source (V+) and the load (V-).
@@ -87,9 +86,8 @@ Steps:
 
   2. Clone the repository
 
-  3. If you are using a MCU which does not define board-pins for SDA and
-     SCL etc. (e.g. Raspberry Pi Pico): change the pin-values in `src/main.py`.
-     The SPI-display needs additional pins, these are also defined there.
+  3. Configure the software for your board and preferences. See
+     [Configuration](#configuration Configuration) below.
 
   4. Check `src/lib/INA219DataProvider.py` for the correct voltage range.
      The code uses the library-default of 32V/2A, but this can be changed
@@ -128,6 +126,27 @@ Also note that Blinka currently only supports SPI-displays with 16-bit
 colors.
 
 
+Configuration
+-------------
+
+Configuration is done using variables from three different files:
+
+  - `src/def_config.py`: default values
+  - `src/<board_id>/board_config.py`: board-specific overrides
+  - `src/user_config.py`: user-specific overrides
+
+This repository has support-files for a number of platforms. If you use
+a different MCU and that MCU does not provide the default pins, you should
+create a directory `src/<board_id>` with a file `board_config.py`. Please
+also create a pull-request in this case. `<board_id>` is the value
+of `board.board_id` which you can query in the REPL after importing
+the board-module.
+
+The user-specific configuration file `src/user_config.py` is not part
+of the repository. Copy `src/def_config.py` and keep only variables
+you actually change.
+
+
 Usage
 -----
 
@@ -136,7 +155,7 @@ _active_ and _config_. Possible transitions are _ready-active-ready_ and
 _ready-config-ready_.
 
 If no keypad is detected, the program runs exactly once using the
-defaults defined in `src/main.py`.
+defaults defined in the configuration files.
 
 To switch modes, use the keypad:
 
@@ -241,7 +260,7 @@ and memory) and can be disabled in `src/main.py` with the constant
 `DEF_PLOTS`.
 
 For ex-post data-visualization, save the data from the serial output
-to a file, remove comment-lines and then use the
+to a file and then use the
 [Python Datamonitor](https://github.com/bablokb/py-datamon) to create
 a plot. A ready to use configuration-file is in
 [doc/cp-vameter.json](./cp-vameter.json).
