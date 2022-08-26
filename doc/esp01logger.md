@@ -28,15 +28,18 @@ AMS1117 (or a similar 5V->3V3 regulator) to the VBUS-pin of the Pico and feed
 the ESP-01S from the output of the regulator.
 
 
-main.py
--------
+Configuration
+-------------
 
-Import `DataLogger` from `ESP01DataLogger` instead of from `SerialDataLogger`.
-You only need to toggle the comment before two lines for that.
+Add
+
+    import DataLogger from ESP01DataLogger
+
+to your `user_config.py`.
 
 Check the pin-configuration for `PIN_RX` and `PIN_TX`. Most MCUs will
 provide this from `board`, but the Pico is very flexible so you will have
-to adjust the defaults to your needs.
+to adjust the defaults to your needs (also within `user_config.py`).
 
 
 secrets.py

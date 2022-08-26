@@ -19,11 +19,14 @@ on a machine in the network and pass the ip and port of the machine in
 the file `secrets.py` (see below).
 
 
-main.py
--------
+Configuration
+-------------
 
-Import `DataLogger` from `ESP32DataLogger` instead of from `SerialDataLogger`.
-You only need to toggle the comment before two lines for that.
+Add
+
+    import DataLogger from ESP32DataLogger
+
+to your `user_config.py`.
 
 
 secrets.py

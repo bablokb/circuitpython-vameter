@@ -26,8 +26,8 @@ from INA219DataProvider import DataProvider
 from Touchpad           import KeyEventProvider
 
 from SerialLogger       import DataLogger
-#from ESP01Logger       import DataLogger
-#from ESP32Logger       import DataLogger
+#from ESP01Logger       import DataLogger    # add this to user_config.py
+#from ESP32Logger       import DataLogger    # add this to user_config.py
 
 if hasattr(board,'__blinka__'):
   # support functions for Blinka
