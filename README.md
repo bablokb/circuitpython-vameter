@@ -257,8 +257,13 @@ of display-updates.
 
 During active measurement, the default setup not only displays the
 values, but also plots of the data. This is also costly (in speed
-and memory) and can be disabled in `src/main.py` with the constant
+and memory) and can be disabled in `src/user_config.py` with the constant
 `DEF_PLOTS`.
+
+Note that the plots _don't_ show all measured values, but only the values
+during display-updates. I.e. the plots just show the values from the
+normal value-view across time. If you sample at 100ms and the display
+update is every second, you will see every tenth value.
 
 For ex-post data-visualization, save the data from the serial output
 to a file and then use the
