@@ -1,6 +1,7 @@
 Project circuitpython-vameter
 =============================
 
+![](doc/esp32-s2-with-case.jpg)
 
 Overview
 --------
