@@ -88,7 +88,7 @@ Steps:
   2. Clone the repository
 
   3. Configure the software for your board and preferences. See
-     [Configuration](#Configuration Configuration) below.
+     [Configuration](#configuration) below.
 
   4. Check `src/lib/INA219DataProvider.py` for the correct voltage range.
      The code uses the library-default of 32V/2A, but this can be changed
