@@ -20,11 +20,11 @@ the file `secrets.py` (see below).
 
 As an alternative, run
 
-   tools/cp-datalogger.py -t -o mydata.csv
+    tools/cp-datalogger.py -t -o mydata.csv
 
 The complete list of options for `cp-datalogger.py` are available via
 
-   tools/cp-datalogger.py -h
+    tools/cp-datalogger.py -h
 
 
 Wiring

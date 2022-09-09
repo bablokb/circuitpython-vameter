@@ -64,31 +64,31 @@ Steps:
   0. Install the current version of CircuitPython to your device
 
   1. Install the following libraries from the CircuitPython library-bundle to
-     the `lib`-directory of your device
+     the `lib`-directory of your device  
 
-    - adafruit_bitmap_font
-    - adafruit_displayio_ssd1306
-    - adafruit_st7735r
-    - adafruit_display_shapes
-    - adafruit_display_text
-    - adafruit_ina219
-    - adafruit_register
-    - adafruit_mpr121
-    - add adafruit_espatcontrol
-    - adafruit_requests
-    - asyncio
+       - adafruit_bitmap_font
+       - adafruit_displayio_ssd1306
+       - adafruit_st7735r
+       - adafruit_display_shapes
+       - adafruit_display_text
+       - adafruit_ina219
+       - adafruit_register
+       - adafruit_mpr121
+       - add adafruit_espatcontrol
+       - adafruit_requests
+       - asyncio  
 
-    The preferred way to do this is to use `circup` (note that the device
-    must be mounted):
+     The preferred way to do this is to use `circup` (note that the device
+     must be mounted):  
 
-        sudo apt-get -y install pip3
-        sudo pip3 install circup
-        circup --path /mountpoint/of/device install -r requirements.txt
+         sudo apt-get -y install pip3
+         sudo pip3 install circup
+         circup --path /mountpoint/of/device install -r requirements.txt
 
   2. Clone the repository
 
   3. Configure the software for your board and preferences. See
-     [Configuration](#configuration Configuration) below.
+     [Configuration](#Configuration Configuration) below.
 
   4. Check `src/lib/INA219DataProvider.py` for the correct voltage range.
      The code uses the library-default of 32V/2A, but this can be changed
