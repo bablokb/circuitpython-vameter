@@ -37,6 +37,8 @@ As an alternative, you could use plain 3.5mm screw-terminals.
 
 The pcb was ordered using JLCPCB.
 
+OpenSCAD-files for the case are available in the toplevel `3D`-directory.
+
 
 Supported MCUs
 --------------
