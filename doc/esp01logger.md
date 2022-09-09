@@ -18,6 +18,14 @@ To receive the data, run something like
 on a machine in the network and pass the ip and port of the machine in
 the file `secrets.py` (see below).
 
+As an alternative, run
+
+   tools/cp-datalogger.py -t -o mydata.csv
+
+The complete list of options for `cp-datalogger.py` are available via
+
+   tools/cp-datalogger.py -h
+
 
 Wiring
 ------
