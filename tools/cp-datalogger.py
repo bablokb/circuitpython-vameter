@@ -204,9 +204,10 @@ class Reader(object):
     if self.serial_baud:
       self.msg("Reader: serial-interface: reading from %s (%d)" %
                (self.tty,self.baud))
+      self._sep = "\r\n"
       try:
         tty = serial.Serial(self.tty,self.baud)
-        tty.timeout = Reader.TIMEOUT
+        tty.timeout = Reader.TIMEOUT_START
         if tty.isOpen():
           tty.close()
         tty.open()
@@ -217,6 +218,7 @@ class Reader(object):
     else:
       self.msg("Reader: UDP-interface: reading from port %d (%s)" %
                (self.port,self.net))
+      self._sep = "\n"
       # create UDP
       sock = socket.socket(socket.AF_INET, # Internet
                            socket.SOCK_DGRAM) # UDP
@@ -238,20 +240,28 @@ class Reader(object):
 
       # read data
       self.msg("Reader: buffer: %r" % buffer)
-      ind_nl = buffer.find("\n")
-      if ind_nl > 0:
-        msg    = buffer[:ind_nl]
-        buffer = buffer[ind_nl+1:]
+      ind_sep = buffer.find(self._sep)
+      if ind_sep > 0:
+        msg    = buffer[:ind_sep]
+        buffer = buffer[ind_sep+len(self._sep):]
         self.msg("Reader:   msg: %r" % msg)
         self.msg("Reader:   buf: %r" % buffer)
       else:
         if self.serial_baud:
           data = tty.read(size=Reader.MSG_LENGTH)
           if len(data) == 0:
-            self.msg("\nerror: serial timeout after %ds" % Reader.TIMEOUT,force=True)
+            if first:
+              self.msg("\nerror: serial timeout after %ds" % Reader.TIMEOUT,force=True)
+              return False
+            else:
+              self.msg("\nserial timeout after %ds" % Reader.TIMEOUT,force=True)
             tty.close()
             break
           else:
+            # take some timings for the report
+            self._ttime = time.perf_counter()-start - Reader.TIMEOUT
+            self._end_dt = (datetime.datetime.now() -
+                            datetime.timedelta(seconds=Reader.TIMEOUT))
             buffer = "".join([buffer,data.decode("utf-8",errors='ignore')])
             continue
         else:
@@ -277,7 +287,10 @@ class Reader(object):
         # take some timings for the report at start
         self._start_dt = datetime.datetime.now()
         start = time.perf_counter()
-        sock.settimeout(Reader.TIMEOUT)
+        if self.serial_baud:
+          tty.timeout = Reader.TIMEOUT
+        else:
+          sock.settimeout(Reader.TIMEOUT)
         first = False
       #print("elapsed: %f" % (time.perf_counter()-pstart),file=sys.stderr)
 
