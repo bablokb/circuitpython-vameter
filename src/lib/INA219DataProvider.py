@@ -46,14 +46,22 @@ class DataProvider:
     self._ina219   = INA219(i2c)
     self.reset()
 
+    # voltage and current ranges (resolution increases top-down):
+    # 32V/2A:   488µA
+    # 16V/1A:   244µA
+    # 16V/400mA: 98µA
+    # library default
+    self._ina219.set_calibration_32V_2A()     # ADCResolution.ADCRES_12BIT_1S
+    #self._ina219.set_calibration_16V_1A()    # ADCResolution.ADCRES_12BIT_1S
+    #self._ina219.set_calibration_16V_400mA() # ADCResolution.ADCRES_12BIT_1S
+
     # INA219 oversampling, see table above
+    # The resulting sampling time should be shorter than the minimum
+    # sampling time of the system. For the EPS32-S2 the minimum is about
+    # 5.5ms, thus 12BIT_8S (4.26ms) is optimal.
+    # For faster MCUs, you need to change this
     self._ina219.bus_adc_resolution   = ADCResolution.ADCRES_12BIT_8S
     self._ina219.shunt_adc_resolution = ADCResolution.ADCRES_12BIT_8S
-
-    # voltage and current ranges (resolution increases top-down)
-    self._ina219.set_calibration_32V_2A()         # library default
-    #self._ina219.set_calibration_16V_1A()
-    #self._ina219.set_calibration_16V_400mA()
 
   # --- reset data-provider   ------------------------------------------------
 
