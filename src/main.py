@@ -23,6 +23,8 @@ from ActiveState import ActiveState
 
 #from FakeDataProvider import DataProvider
 from INA219DataProvider import DataProvider
+#from INA260DataProvider import DataProvider
+
 from Touchpad           import KeyEventProvider
 
 from SerialLogger       import DataLogger

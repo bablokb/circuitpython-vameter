@@ -3,13 +3,21 @@ Project circuitpython-vameter
 
 ![](doc/esp32-s2-with-case.jpg)
 
+
+News
+----
+
+  - 10/2023: added support for INA260
+
+
 Overview
 --------
 
 This repository contains the necessary CircuitPyhon software to drive a
 voltage/current meter based on the following components:
 
-  - INA219 current-sensor breakout
+  - INA219 current-sensor breakout or
+  - INA260 current-sensor breakout
   - Mini OLED display with 128x64 (based on a SSD1306-chip) or
   - SPI TFT-1.8" display (based on a ST7735R-chip)
   - 4x3 touchpad (based on a MPR121-chip)
@@ -55,6 +63,10 @@ screw-terminal for attachement of the power-source (V+) and the load (V-).
 **Don't use the pins, use the screw-terminal** or else your results will
 be off by about 20%.
 
+The INA260 offers a larger measurment-range than the INA219 (up to 36V/15A
+compared to 32V/2A), but is more expensive and the resolution is a
+tad worse. See the relevant tutorials and datasheets for details.
+
 
 Installation (Pico or other MCU)
 --------------------------------
@@ -72,6 +84,7 @@ Steps:
        - adafruit_display_shapes
        - adafruit_display_text
        - adafruit_ina219
+       - adafruit_ina260
        - adafruit_register
        - adafruit_mpr121
        - add adafruit_espatcontrol
@@ -95,7 +108,8 @@ Steps:
      to 16V/1A or 16V/400mA. The additional precision is probably not
      worth the effort. Also, you can change the chip-internal oversampling
      of the ADC. The Default uses 8x oversampling resulting in a minimal
-     sampling time of 4.26ms.
+     sampling time of 4.26ms. Defaults for the INA260 are in
+     `src/lib/INA260DataProvider.py`
 
   5. Copy all files from below `src` to your device.
 
