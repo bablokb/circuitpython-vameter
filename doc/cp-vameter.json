@@ -1,5 +1,5 @@
 { "cols": 1,
-  "width":  800,
+  "width":  1920,
   "height": 400,
   "title":  "cp-vameter: Voltage/Current",
   "x": {"col":   0, "type": "time", "normalize": true, "scale": 0.001},
