@@ -11,6 +11,9 @@
 # ----------------------------------------------------------------------------
 
 import board
+#from ESP01Logger       import DataLogger    # add this to user_config.py
+#from ESP32Logger       import DataLogger    # add this to user_config.py
+#from SDCardLogger      import DataLogger    # add this to user_config.py
 
 DEF_INT_SCALE  = 'ms'    # interval-scale: ms|s:    ms
 DEF_INTERVAL   = 100     # sampling-interval:       100 in the given scale
@@ -43,12 +46,10 @@ TFT_HEIGHT = 128
 TFT_ROTATE = 270
 TFT_BGR    = True
 
-if hasattr(board,'MOSI'):
-  PIN_MOSI = board.MOSI
-if hasattr(board,'SCLK'):
-  PIN_CLK = board.SCLK
-elif hasattr(board,'SCK'):
-  PIN_CLK = board.SCK
+PIN_MOSI = getattr(board,'MOSI',None)
+PIN_CLK  = getattr(board,'SCLK',None)
+if not PIN_CLK:
+  PIN_CLK  = getattr(board,'SCK',None)
 
 # --- no defaults: must be set in board_config.py or in user_config.py   ------
 
@@ -61,3 +62,10 @@ PIN_RST = None
 if hasattr(board,'TX'):
   PIN_TX = board.TX
   PIN_RX = board.RX
+
+# --- SPI-SD-card   -----------------------------------------------------------
+
+PIN_SD_MISO = getattr(board,'MISO',None)
+PIN_SD_MOSI = PIN_MOSI
+PIN_SD_CLK  = PIN_CLK
+PIN_SD_CS   = None   # set in board_config.py or user_config.py

@@ -30,6 +30,7 @@ from Touchpad           import KeyEventProvider
 from SerialLogger       import DataLogger
 #from ESP01Logger       import DataLogger    # add this to user_config.py
 #from ESP32Logger       import DataLogger    # add this to user_config.py
+#from SDCardLogger      import DataLogger    # add this to user_config.py
 
 if hasattr(board,'__blinka__'):
   # support functions for Blinka
@@ -52,6 +53,7 @@ try:
   from user_config import *
 except:
   print("no user-specific config-file")
+  raise
 
 # --- ValueHolder class   ----------------------------------------------------
 
@@ -91,8 +93,12 @@ class VAMeter:
       # change defaults from commandline arguments
       BlinkaExtensions.update_settings(self.settings)
 
-    self.settings.pin_tx     = PIN_TX
-    self.settings.pin_rx     = PIN_RX
+    self.settings.pin_tx      = PIN_TX
+    self.settings.pin_rx      = PIN_RX
+    self.settings.pin_sd_miso = PIN_SD_MISO
+    self.settings.pin_sd_mosi = PIN_SD_MOSI
+    self.settings.pin_sd_clk  = PIN_SD_CLK
+    self.settings.pin_sd_cs   = PIN_SD_CS
 
     self.data_provider  = DataProvider(i2c,self.settings)
     self.logger         = DataLogger(self)
@@ -179,3 +185,8 @@ except KeyboardInterrupt:
     pass
   else:
     raise
+finally:
+  try:
+    app.logger.close()
+  except:
+    pass

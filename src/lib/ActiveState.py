@@ -176,6 +176,7 @@ class ActiveState:
     key_task  = asyncio.create_task(self._check_key())
     view_task = asyncio.create_task(self._show_view())
 
+    self._logger.open()
     self._logger.log_settings()
     m_data = DataAggregator(self._dim)
     c_view = 0
@@ -246,6 +247,7 @@ class ActiveState:
     self._app.results.values  = m_data.get()
 
     self._logger.log_summary(samples)
+    self._logger.close()
 
     self._stop = True
     await asyncio.gather(key_task,view_task)

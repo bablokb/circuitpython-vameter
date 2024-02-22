@@ -23,6 +23,18 @@ class LogWriter:
     self.app = app
     self._fmt = "{0:.1f},"+app.data_provider.get_fmt()+"\n"
 
+  # --- open logger   --------------------------------------------------------
+
+  def open(self):
+    """ open logger (implement in subclass if necessary) """
+    pass
+
+  # --- close logger   -------------------------------------------------------
+
+  def close(self):
+    """ close logger (implement in subclass if necessary) """
+    pass
+
   # --- print settings   -----------------------------------------------------
 
   def log_settings(self):

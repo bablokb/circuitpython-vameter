@@ -12,3 +12,10 @@ import board
 
 PIN_SDA = board.SDA1
 PIN_SCL = board.SCL1
+
+# use standard pins of SD-card BFF
+
+PIN_SD_MISO = board.MISO
+PIN_SD_MOSI = board.MOSI
+PIN_SD_CLK  = board.SCK
+PIN_SD_CS   = board.TX

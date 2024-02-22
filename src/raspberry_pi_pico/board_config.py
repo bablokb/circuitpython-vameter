@@ -27,3 +27,10 @@ PIN_RST  = board.GP11
 
 PIN_TX = board.GP0
 PIN_RX = board.GP1
+
+# SPI-SD-card
+
+PIN_SD_MISO = board.GP12
+PIN_SD_MOSI = PIN_MOSI
+PIN_SD_CLK  = PIN_CLK
+PIN_SD_CS   = board.GP8

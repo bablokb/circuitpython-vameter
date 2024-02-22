@@ -7,6 +7,7 @@ Project circuitpython-vameter
 News
 ----
 
+  - 02/2024: addes support for logging to SD-card
   - 10/2023: added support for INA260
 
 
@@ -299,3 +300,13 @@ to the UART of the Pico. For details, read the
 
 If the program runs on an ESP32 you can use the builtin wifi for
 data-logging. See [ESP32 logging HowTo](doc/esp32logger.md) for details.
+Also works with a Pico-W.
+
+You can also log to a file on a SD-card. Add the following line to
+your `user_config.py`:
+
+    from SDCardLogger import DataLogger
+
+This is useful for autonomous long-term logging, e.g. when charging a
+battery. Tested with a Qt-Py-RP2040 with SD-card BFF. Fastest logging
+interval was 7ms.
