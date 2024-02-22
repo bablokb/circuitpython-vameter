@@ -41,7 +41,7 @@ Configuration
 
 Add
 
-    import DataLogger from ESP01DataLogger
+    from ESP01DataLogger import DataLogger
 
 to your `user_config.py`.
 

@@ -32,7 +32,7 @@ Configuration
 
 Add
 
-    import DataLogger from ESP32DataLogger
+    from ESP32DataLogger import DataLogger
 
 to your `user_config.py`.
 
