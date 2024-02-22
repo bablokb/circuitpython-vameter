@@ -53,7 +53,6 @@ try:
   from user_config import *
 except:
   print("no user-specific config-file")
-  raise
 
 # --- ValueHolder class   ----------------------------------------------------
 
