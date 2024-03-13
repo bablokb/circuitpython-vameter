@@ -43,6 +43,9 @@ class App(object):
     parser.add_argument('-c', '--cumulative', metavar='cumsum.csv',
                         dest='cumsum_file', default=None,
                         help='create new csv with cumulative sum of energy')
+    parser.add_argument('-C', '--comments', action='store_true',
+      dest='comments', default=False,
+      help="assume comments starting with #")
 
     parser.add_argument('-d', '--debug', action='store_true',
       dest='debug', default=False,
@@ -63,7 +66,10 @@ class App(object):
     """ read data and prepare dataframe """
 
     infile = self.input
-    self._data = pd.read_csv(infile,header=None,sep=',')
+    if self.comments:
+      self._data = pd.read_csv(infile,header=None,sep=',',comment='#')
+    else:
+      self._data = pd.read_csv(infile,header=None,sep=',')
 
     # add column labels
     if len(self._data.columns) == 3:
