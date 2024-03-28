@@ -1,5 +1,5 @@
 # ----------------------------------------------------------------------------
-# board_config.py: board-specific configuration for pico_pi_base_w_rev2
+# board_config.py: board-specific configuration for picow_pi_base_rev2
 #
 # Author: Bernhard Bablok
 # License: GPL3
