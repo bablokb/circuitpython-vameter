@@ -25,10 +25,6 @@ class DataProvider:
   def __init__(self,i2c,settings):
     """ constructor """
 
-    if not hasattr(settings,'v_min'):
-      settings.v_min = 1.0                # set default threshold to 1V
-    if not hasattr(settings,'a_min'):
-      settings.a_min = 0                  # set default threshold to 0mA
     self._settings = settings
     self._ina260   = INA260(i2c)
 

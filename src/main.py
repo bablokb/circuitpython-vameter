@@ -84,6 +84,8 @@ class VAMeter:
     self.settings.int_scale  = DEF_INT_SCALE
     self.settings.oversample = DEF_OVERSAMPLE
     self.settings.duration   = DEF_DURATION
+    self.settings.v_min      = DEF_VMIN
+    self.settings.a_min      = DEF_AMIN
     self.settings.update     = DEF_UPDATE
     self.settings.plots      = DEF_PLOTS
     self.settings.exit       = DEF_EXIT
