@@ -51,8 +51,8 @@ except:
 
 try:
   from user_config import *
-except:
-  print("no user-specific config-file")
+except Exception as ex:
+  print(f"no user-specific config-file: {ex}")
 
 # --- ValueHolder class   ----------------------------------------------------
 
