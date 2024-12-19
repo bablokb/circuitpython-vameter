@@ -39,31 +39,72 @@ class DataProvider:
     """ constructor """
 
     self._settings = settings
-    self._ina219   = INA219(i2c)
+    if not hasattr(self._settings,"ina219_calib"):
+      setattr(self._settings,"ina219_calib",1)
+    if not hasattr(self._settings,"ina219_adc"):
+      setattr(self._settings,"ina219_adc",6)   # ADCResolution.ADCRES_12BIT_8S
+
+    self._ina219 = INA219(i2c)
     self.reset()
 
-    # voltage and current ranges (resolution increases top-down):
-    # 32V/2A:   488µA
-    # 16V/1A:   244µA
-    # 16V/400mA: 98µA
-    # library default
-    self._ina219.set_calibration_32V_2A()     # ADCResolution.ADCRES_12BIT_1S
-    #self._ina219.set_calibration_16V_1A()    # ADCResolution.ADCRES_12BIT_1S
-    #self._ina219.set_calibration_16V_400mA() # ADCResolution.ADCRES_12BIT_1S
+  # --- set configuration-data   ---------------------------------------------
 
-    # INA219 oversampling, see table above
+  def _set_config_data(self):
+    """ set configuration. """
+
+    # voltage and current ranges (resolution increases top-down):
+    # everything that is neither 1 or 2 will be interpreted as 16V/400mA!
+    # 2: 32V/2A:   488µA
+    # 1: 32V/1A:   244µA
+    # ?: 16V/400mA: 98µA
+
+    if self._settings.ina219_calib == 2:
+      self._ina219.set_calibration_32V_2A()
+    elif self._settings.ina219_calib == 1:
+      self._ina219.set_calibration_32V_1A()
+    else:
+      self._ina219.set_calibration_16V_400mA()
+
+    # INA219 oversampling
     # The resulting sampling time should be shorter than the minimum
     # sampling time of the system. For the EPS32-S2 the minimum is about
     # 5.5ms, thus 12BIT_8S (4.26ms) is optimal.
-    # For faster MCUs, you need to change this
-    self._ina219.bus_adc_resolution   = ADCResolution.ADCRES_12BIT_8S
-    self._ina219.shunt_adc_resolution = ADCResolution.ADCRES_12BIT_8S
+
+    ADC_RESOLUTION = [
+      ADCResolution.ADCRES_9BIT_1S,    #  0
+      ADCResolution.ADCRES_10BIT_1S,   #  1
+      ADCResolution.ADCRES_11BIT_1S,   #  2
+      ADCResolution.ADCRES_12BIT_1S,   #  3
+      ADCResolution.ADCRES_12BIT_2S,   #  4
+      ADCResolution.ADCRES_12BIT_4S,   #  5
+      ADCResolution.ADCRES_12BIT_8S,   #  6
+      ADCResolution.ADCRES_12BIT_16S,  #  7
+      ADCResolution.ADCRES_12BIT_32S,  #  8
+      ADCResolution.ADCRES_12BIT_64S,  #  9
+      ADCResolution.ADCRES_12BIT_128S, # 10
+      ]
+
+    if self._settings.ina219_adc < 0 or self._settings.ina219_adc > 10:
+      self._settings.ina219_adc = 6
+    self._ina219.bus_adc_resolution   = ADC_RESOLUTION[self._settings.ina219_adc]
+    self._ina219.shunt_adc_resolution = ADC_RESOLUTION[self._settings.ina219_adc]
+
+  # --- return config-data   -------------------------------------------------
+
+  def get_config_data(self):
+    """ return list of tuples (heading,unit,attribute) for configuration """
+
+    return [
+      ("Calibration","ina219_calib","A"),
+      ("ADC-Overs.","ina219_adc",""),
+      ]
 
   # --- reset data-provider   ------------------------------------------------
 
   def reset(self):
     """ reset data-provider """
     self._start = False
+    self._set_config_data()
 
   # --- return dimensions of data   ------------------------------------------
 

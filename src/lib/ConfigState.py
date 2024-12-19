@@ -30,6 +30,16 @@ class ConfigState:
       headings.append('Oversample:')
       units.append('X')
       self._attr.append('oversample')
+    try:
+      config_data = app.data_provider.get_config_data()
+      for heading, attribute, unit in config_data:
+        headings.append(heading)
+        units.append(unit)
+        self._attr.append(attribute)
+    except Exception as ex:
+      # no config-views defined?!
+      print(f"exception creating provider-specific config-views: {ex}")
+      pass
     self._views = [ConfigView(app.display,app.border,
                               headings[i],
                               units[i])

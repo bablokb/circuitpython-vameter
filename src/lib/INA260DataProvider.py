@@ -26,12 +26,29 @@ class DataProvider:
     """ constructor """
 
     self._settings = settings
-    self._ina260   = INA260(i2c)
+    if not hasattr(self._settings,"ina260_count"):
+      setattr(self._settings,"ina260_count",16)
+    if not hasattr(self._settings,"ina260_ctime"):
+      setattr(self._settings,"ina260_ctime",1)      # ConversionTime.TIME_204_us
+
+    self._ina260 = INA260(i2c)
+    self.reset()
+
+  # --- set configuration-data   ---------------------------------------------
+
+  def _set_config_data(self):
+    """ set configuration. """
+
+    # fix illegal values to defaults
+    if not hasattr(AveragingCount,f"COUNT_{self._settings.ina260_count}"):
+      self._settings.ina260_count = 16
+    if self._settings.ina260_ctime < 0 or self._settings.ina260_ctime > 7:
+      self._settings.ina260_ctime = 1
 
     # optimize speed vs. noise:
     # measurement-duration is count*(v_conf_time+c_conv_time)
     # chip defaults: 2.2ms
-    # program defaults: 6.5ms
+    # program defaults: count=16, conf_time=202µs => 6.5ms
     # The resulting sampling time should be shorter than the minimum
     # sampling time of the system. For the EPS32-S2 the minimum is about
     # 5.7ms (serial) or 6.7ms (udp).
@@ -45,29 +62,39 @@ class DataProvider:
     # COUNT_256
     # COUNT_512
     # COUNT_1024
-    #self._ina260.averaging_count = AveragingCount.COUNT_1
-    self._ina260.averaging_count = AveragingCount.COUNT_16
+    self._ina260.averaging_count = (
+      getattr(AveragingCount,f"COUNT_{self._settings.ina260_count}"))
 
     # conversion time for measurement
-    # TIME_140_us
-    # TIME_204_us
-    # TIME_332_us
-    # TIME_588_us
-    # TIME_1_1_ms
-    # TIME_2_116_ms
-    # TIME_4_156_ms
-    # TIME_8_244_ms
-    #self._ina260.current_conversion_time = ConversionTime.TIME_1_1_ms
-    self._ina260.current_conversion_time = ConversionTime.TIME_204_us
-    self._ina260.voltage_conversion_time = ConversionTime.TIME_204_us
+    CONV_TIME = [
+      ConversionTime.TIME_140_us,     # 0
+      ConversionTime.TIME_204_us,     # 1
+      ConversionTime.TIME_332_us,     # 2
+      ConversionTime.TIME_588_us,     # 3
+      ConversionTime.TIME_1_1_ms,     # 4
+      ConversionTime.TIME_2_116_ms,   # 5
+      ConversionTime.TIME_4_156_ms,   # 6
+      ConversionTime.TIME_8_244_ms,   # 7
+      ]
+    self._ina260.current_conversion_time = CONV_TIME[self._settings.ina260_ctime]
+    self._ina260.voltage_conversion_time = CONV_TIME[self._settings.ina260_ctime]
 
-    self.reset()
+  # --- return config-data   -------------------------------------------------
+
+  def get_config_data(self):
+    """ return list of tuples (heading,unit,attribute) for configuration """
+
+    return [
+      ("AVG-Count","ina260_count",""),
+      ("Conv-Time","ina260_ctime",""),
+      ]
 
   # --- reset data-provider   ------------------------------------------------
 
   def reset(self):
     """ reset data-provider """
     self._start = False
+    self._set_config_data()
 
   # --- return dimensions of data   ------------------------------------------
 
