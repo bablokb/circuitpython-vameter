@@ -27,6 +27,10 @@ The program uses the following text strings:
   - min:
   - mean:
   - max:
+  - Calibration:
+  - ADC-Overs.:
+  - AVG-Count:
+  - Conv-Time:
 
 
 Values and Units
@@ -53,7 +57,7 @@ from the table are contained in the font.
 |------|------|-------|-------|
 | sp   |   X  |   X   |   X   |
 | .    |   X  |   X   |   X   |
-| -    |      |   X   |       |
+| -    |      |   X   |   X   |
 | 0    |   X  |   X   |   X   |
 | 1    |   X  |   X   |   X   |
 | 2    |   X  |   X   |   X   |
@@ -66,7 +70,9 @@ from the table are contained in the font.
 | 9    |   X  |   X   |   X   |
 | :    |   X  |   X   |   X   |
 | A    |   X  |   X   |   X   |
+| C    |      |   X   |       |
 | D    |      |   X   |       |
+| G    |      |   X   |       |
 | I    |      |   X   |       |
 | M    |   X  |   X   |   X   |
 | O    |      |   X   |       |
@@ -75,6 +81,7 @@ from the table are contained in the font.
 | V    |   X  |   X   |   X   |
 | W    |   X  |   X   |       |
 | a    |      |   X   |       |
+| b    |      |   X   |       |
 | c    |      |   X   |       |
 | d    |      |   X   |   X   |
 | e    |      |   X   |       |
