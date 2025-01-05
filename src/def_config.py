@@ -11,6 +11,12 @@
 # ----------------------------------------------------------------------------
 
 import board
+
+# select Dataprovider and DataLogger
+
+#from INA219DataProvider import DataProvider # add this to user_config.py
+#from INA260DataProvider import DataProvider # add this to user_config.py
+
 #from ESP01Logger       import DataLogger    # add this to user_config.py
 #from ESP32Logger       import DataLogger    # add this to user_config.py
 #from SDCardLogger      import DataLogger    # add this to user_config.py
