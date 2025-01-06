@@ -7,7 +7,8 @@ Project circuitpython-vameter
 News
 ----
 
-  - 02/2024: addes support for logging to SD-card
+  - 01/2025: added support for DataProvider-specific configuration screens
+  - 02/2024: added support for logging to SD-card
   - 10/2023: added support for INA260
 
 
@@ -223,9 +224,16 @@ Once the program is in configuration mode, you can enter various parameters:
     value of `interval`. Setting the value to zero will disable
     updates of the display during measurement.  
     ![](doc/config-upd-view.png)
+  - **DataProvider specific Configuration**: additional configurations for
+    the DataProvider in use.
 
 The "Next"-button will navigate through the configuration screens, after the
 last item the system switches back to ready-mode.
+
+DataProvider specific configuration is available for:
+
+  - [`INA219Dataprovider`](./ina219-config.md)
+  - [`INA219Dataprovider`](./ina260-config.md)
 
 
 Active-Mode
