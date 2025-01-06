@@ -37,7 +37,7 @@ class ReadyState:
       return active
 
     # add plots to our list of views
-    if (self._app.settings.plots and
+    if (self._app.settings.plots and self._app.settings.update and
         len(self._views) == len(self._app.results.values)):
       self._views.extend(self._app.results.plots)
 
