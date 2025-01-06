@@ -233,7 +233,7 @@ last item the system switches back to ready-mode.
 DataProvider specific configuration is available for:
 
   - [`INA219Dataprovider`](./doc/ina219-config.md)
-  - [`INA219Dataprovider`](./doc/ina260-config.md)
+  - [`INA260Dataprovider`](./doc/ina260-config.md)
 
 
 Active-Mode
