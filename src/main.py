@@ -100,6 +100,7 @@ class VAMeter:
     self.settings.pin_sd_mosi = PIN_SD_MOSI
     self.settings.pin_sd_clk  = PIN_SD_CLK
     self.settings.pin_sd_cs   = PIN_SD_CS
+    self.settings.pins_app    = PINS_APP
 
     self.data_provider  = DataProvider(i2c,self.settings)
     self.logger         = DataLogger(self)
