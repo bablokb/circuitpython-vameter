@@ -7,6 +7,7 @@ Project circuitpython-vameter
 News
 ----
 
+  - 02/2025: added support for recording gpio-state during sampling
   - 01/2025: added support for DataProvider-specific configuration screens
   - 02/2024: added support for logging to SD-card
   - 10/2023: added support for INA260
@@ -257,6 +258,26 @@ Using the "View"-button you cycle through various views:
     ![](doc/plot-view-v.png)
   - plot-view of current  
     ![](doc/plot-view-a.png)
+
+
+Recording State during Sampling
+-------------------------------
+
+To record application state during sampling, you need extra pins
+that the application sets to high or low depending on the state. These
+pins have to be connected to the driving MUC and should be operated in
+push-pull mode by the device under test.
+
+In addition, you need to set e.g.
+
+    PINS_APP = [(board.GPx,1), (board.GPy,0)]
+
+in your `src/user_config.py`. `board.GPx` and `board.GPy` are gpios of
+the MCU running circuitpython-vameter, not the gpios of the device under
+test.
+
+The example uses one state-pins that is active high and a second that is
+active low.
 
 
 Tips and Tricks
