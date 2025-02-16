@@ -129,7 +129,7 @@ class DataProvider:
 
       if v >= self._settings.v_min and a >= self._settings.a_min:
         self._start = True
-        return (v,a,1000*p) if WITH_POWER else (v,a)
+        return [v,a,1000*p] if WITH_POWER else [v,a]
       elif self._start:
         # voltage dropped below threshold, so we stop
         raise StopIteration
