@@ -64,7 +64,7 @@ if not PIN_CLK:
 PIN_CS  = None
 PIN_DC  = None
 PIN_RST = None
-PINS_APP = []
+PINS_APP = []    # list of (pin,active_state)
 
 # --- UART-pins (only necessary for ESP-01)   ---------------------------------
 
