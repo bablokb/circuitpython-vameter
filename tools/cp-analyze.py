@@ -43,6 +43,9 @@ class App(object):
     parser.add_argument('-c', '--cumulative', metavar='cumsum.csv',
                         dest='cumsum_file', default=None,
                         help='create new csv with cumulative sum of energy')
+    parser.add_argument('-r', '--relative', action='store_true',
+      dest='relative', default=False,
+      help="create additional column with relative cumulative sum of energy")
     parser.add_argument('-C', '--comments', action='store_true',
       dest='comments', default=False,
       help="assume comments starting with #")
@@ -157,6 +160,10 @@ class App(object):
 
     # append to data
     self._data['E_SUM'] = self._esum
+
+    if self.relative:
+      max_esum = self._stats['E']*3600
+      self._data['E_SUM_R'] = self._esum/max_esum
 
     # write to new csv
     outfile = pathlib.Path(self.cumsum_file)
