@@ -12,6 +12,8 @@ import gc
 import time
 import sys
 import asyncio
+import digitalio
+
 from View import ValuesView, PlotView
 from Data import DataAggregator
 from Scales import *
@@ -28,6 +30,7 @@ class ActiveState:
     self._settings = app.settings
     self._logger   = app.logger
     self._dim      = app.data_provider.get_dim()
+    self._dios     = []
 
     self._stop       = False    # global stop for all tasks
     self._new_sample = False    # toggle after each sample
@@ -43,13 +46,39 @@ class ActiveState:
           self._views.append(plot)
           app.results.plots.append(plot)
 
+  # --- init digital IOs for state-sampling   --------------------------------
+
+  def _init_dios(self):
+    """ initialize optional state-GPIOs (read during sampling) """
+    self._dios = []
+    for pin,active in self._settings.pins_app:
+      dio = digitalio.DigitalInOut(pin)
+      dio.pull = digitalio.PULL.UP if not active else digitialio.PULL.DOWN
+      self._dios.append(dio)
+
+  # --- deinit digital IOs   -------------------------------------------------
+
+  def _deinit_dios(self):
+    """ de-initialize optional state-GPIOs """
+    for dio in self._dios:
+      dio.deinit()
+    self._dios = []
+    gc.collect()
+
+  # --- read digital IOs   ---------------------------------------------------
+
+  def _read_dios(self):
+    """ read state of digital IOs """
+    return [dio.value for dio in self._dios]
+
   # --- get data   -----------------------------------------------------------
 
   def _get_data(self):
     """ get data using oversampling """
 
     if self._settings.oversample < 2:
-      return (time.monotonic(),self._app.data_provider.get_data())
+      return (time.monotonic(),
+              self._app.data_provider.get_data().extend(self._read_dios()))
 
     d_sum = [0 for i in range(self._dim)]
     for o in range(self._settings.oversample):
@@ -57,7 +86,8 @@ class ActiveState:
       for i in range(self._dim):
         d_sum[i] += data[i]
     return (time.monotonic(),
-            [d_sum[i]/self._settings.oversample for i in range(self._dim)])
+            [d_sum[i]/self._settings.oversample
+             for i in range(self._dim)].extend(self._read_dios()))
 
   # --- check for key-press   ------------------------------------------------
 
@@ -181,6 +211,10 @@ class ActiveState:
     m_data = DataAggregator(self._dim)
     c_view = 0
 
+    # create digitalio objects for state-sampling
+    if self._settings.pins_app:
+      self._init_dios()
+
     # reset data-provider and wait for first sample
     self._app.data_provider.reset()
     try:
@@ -251,3 +285,8 @@ class ActiveState:
 
     self._stop = True
     await asyncio.gather(key_task,view_task)
+
+    # release digitalio objects for state-sampling
+    if self._settings.pins_app:
+      self._deinit_dios()
+
