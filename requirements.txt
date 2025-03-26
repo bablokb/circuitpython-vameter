@@ -10,7 +10,6 @@ adafruit_ina260
 adafruit_mpr121
 adafruit_register
 adafruit_requests
-adafruit_sdcard
 adafruit_st7735r
 adafruit_ticks
 asyncio
