@@ -9,7 +9,7 @@
 
 import time
 from adafruit_ina3221 import CONV_TIME as ConversionTime
-from adafruit_ina3221 import AVG_COUNT as AveragingCount
+from adafruit_ina3221 import AVG_MODE as AveragingCount
 from adafruit_ina3221 import INA3221
 
 # rolling average count
@@ -22,7 +22,7 @@ AVG_COUNT = {
    256: AveragingCount.AVG_256_SAMPLES,
    512: AveragingCount.AVG_512_SAMPLES,
   1024: AveragingCount.AVG_1024_SAMPLES,
-  ]
+  }
 
 # conversion time for measurement
 CONV_TIME = [
@@ -88,7 +88,7 @@ class DataProvider:
     channels = int(str(self._settings.ina3221_channels),2)
     for index,b in enumerate([0b001,0b010, 0b100]):
       if b & channels:
-        self._ina3221.enable(index)
+        self._ina3221[index].enable()
     # set averaging count
     self._ina3221.averaging_mode = (AVG_COUNT[self._settings.ina3221_count])
     self._ina3221.shut_voltage_conv_time = CONV_TIME[self._settings.ina3221_ctime]
