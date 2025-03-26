@@ -327,9 +327,9 @@ Logging via WLAN is possible with an additional ESP-01 MCU connected
 to the UART of the Pico. For details, read the
 [ESP-01 logging HowTo](doc/esp01logger.md).
 
-If the program runs on an ESP32 you can use the builtin wifi for
-data-logging. See [ESP32 logging HowTo](doc/esp32logger.md) for details.
-Also works with a Pico-W.
+If the program runs on an device with native WIFI you can use the
+builtin wifi for data-logging. See [UDP logging
+HowTo](doc/udplogger.md) for details.
 
 You can also log to a file on a SD-card. Add the following line to
 your `user_config.py`:

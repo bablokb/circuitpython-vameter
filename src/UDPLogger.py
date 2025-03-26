@@ -1,5 +1,5 @@
 # ----------------------------------------------------------------------------
-# ESP32Logger.py: log values using (builtin) ESP32. Tested with Qt Py ESP32-S2
+# UDPLogger.py: log values using UDP.
 #
 # Author: Bernhard Bablok
 # License: GPL3
@@ -20,19 +20,19 @@ except ImportError:
 
 
 class DataLogger(LogWriter):
-  """ log data using an ESP32 """
+  """ log data using UDP """
 
   # --- constructor   --------------------------------------------------------
 
   def __init__(self,app):
     """ constructor: """
     super(DataLogger,self).__init__(app)
-    self._init_esp32()
+    self._init()
 
-  # --- initialze ESP32, connect to AP   -------------------------------------
+  # --- initialze wifi   -----------------------------------------------------
 
-  def _init_esp32(self):
-    """ initialize ESP32 """
+  def _init(self):
+    """ initialize wifi """
 
     # try to connect
     retry = secrets["retry"]
@@ -48,24 +48,16 @@ class DataLogger(LogWriter):
 
     # setup connection
     pool = socketpool.SocketPool(wifi.radio)
-    self._transport = secrets["transport"]
-    if self._transport == 'UDP':
-      self._socket = pool.socket(family=socketpool.SocketPool.AF_INET,
+    self._socket = pool.socket(family=socketpool.SocketPool.AF_INET,
                                  type=socketpool.SocketPool.SOCK_DGRAM)
-      self._dest = (secrets["remote_ip"],secrets["remote_port"])
-    else:
-      self._socket = pool.socket(family=socketpool.SocketPool.AF_INET,
-                                 type=socketpool.SocketPool.SOCK_STREAM)
+    self._dest = (secrets["remote_ip"],secrets["remote_port"])
 
   # --- send data   ----------------------------------------------------------
 
   def log(self,msg):
     """ send the given message """
     try:
-      if self._transport == 'UDP':
-        self._socket.sendto(msg.encode('utf-8'),self._dest)
-      else:
-        pass
+      self._socket.sendto(msg.encode('utf-8'),self._dest)
     except:
       # can't do much here, go on so local measurement continues
       pass

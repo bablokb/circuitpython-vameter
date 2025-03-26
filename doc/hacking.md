@@ -74,15 +74,8 @@ Implements the class `DataLogger` (logging to the serial console).
 Alternative implementations must implement at least the `log()`-method.
 
 
-lib/ESP01Logger.py
+lib/UDPLogger.py
 ------------------
 
 Implements the class `DataLogger` (logging via WLAN). For details, read
-the [ESP-01 logging HowTo](./esp01logger.md).
-
-
-lib/ESP32Logger.py
-------------------
-
-Implements the class `DataLogger` (logging via WLAN). For details, read
-the [ESP32 logging HowTo](./esp32logger.md).
+the [UDP logging HowTo](./udplogger.md).

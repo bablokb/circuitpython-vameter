@@ -1,15 +1,16 @@
-Howto use the ESP32Datalogger
-=============================
+Howto use the UDPLogger
+=======================
 
 Overview
 --------
 
-This class allows data-logging via WLAN on devices with the ESP32-chip
-(e.g. Qt Py ESP32-S2 from Adafruit). This is not for devices that
-have an ESP32 as a coprocessor, e.g. a PyPortal!
+This class allows data-logging via WLAN on devices with native WIFI.
+This is not for devices that have an ESP32 as a coprocessor, e.g. a
+PyPortal!
 
-Compared to the ESP-01, the setup time (connection to AP) is quite long,
-but the overhead during logging is only about 1ms.
+UDP works even if no remote host is listening and thus more robust
+than TCP. The setup time (connection to AP) is quite long, but the
+overhead during logging is only about 1ms.
 
 To receive the data, run something like
 
@@ -32,7 +33,7 @@ Configuration
 
 Add
 
-    from ESP32DataLogger import DataLogger
+    from UDPLogger import DataLogger
 
 to your `user_config.py`.
 
@@ -45,10 +46,7 @@ Create the file `secrets.py` with the following content:
     secrets = {
       'ssid' :        'ssid-of-accesss-point',
       'password' :    'PSK-2 shared key',
-      'transport':    'UDP or TCP',
       'retry':        number-of-retries,
       'remote_ip':    'IP of remote host receiving the logs',
       'remote_port' : port-number
     }
-
-UDP works even if no remote host is listening and is a bit faster.
