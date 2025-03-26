@@ -11,8 +11,8 @@
 import os
 import busio
 import digitalio
+import sdcardio
 import storage
-import adafruit_sdcard
 
 from LogWriter import LogWriter
 
@@ -30,7 +30,7 @@ class DataLogger(LogWriter):
                        app.settings.pin_sd_mosi,
                        app.settings.pin_sd_miso)
     cs     = digitalio.DigitalInOut(app.settings.pin_sd_cs)
-    sdcard = adafruit_sdcard.SDCard(spi,cs)
+    sdcard = sdcardio.SDCard(spi,cs,1_000_000)
     vfs    = storage.VfsFat(sdcard)
     storage.mount(vfs, "/sd")
     self._sdfile = None
