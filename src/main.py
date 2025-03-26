@@ -101,6 +101,7 @@ class VAMeter:
     self.settings.pin_sd_clk  = PIN_SD_CLK
     self.settings.pin_sd_cs   = PIN_SD_CS
     self.settings.pins_app    = PINS_APP
+    self._merge_user_settings()
 
     self.data_provider  = DataProvider(i2c,self.settings)
     self.logger         = DataLogger(self)
@@ -118,6 +119,18 @@ class VAMeter:
     self._ready  = ReadyState(self)
     self._active = ActiveState(self)
     self._config = ConfigState(self)
+
+  # --- merge generic user settings   ----------------------------------------
+
+  def _merge_user_settings(self):
+    """ merge generic user settings """
+
+    u_settings = globals().get('user_settings',ValueHolder())
+    for attr in u_settings.__dict__:
+      print(f"processing {attr}...")
+      if attr[:2] == '__':
+        continue
+      setattr(self.settings,attr,getattr(u_settings,attr))
 
   # --- initialize display   -------------------------------------------------
 
