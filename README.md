@@ -90,7 +90,6 @@ Steps:
        - adafruit_ina260
        - adafruit_register
        - adafruit_mpr121
-       - add adafruit_espatcontrol
        - adafruit_requests
        - asyncio  
 
@@ -323,9 +322,10 @@ In this file you can also change some additional settings, e.g. sample
 frequency and voltage/current range as well as the cutoff-values used
 for detecting start and stop of measurements.
 
-Logging via WLAN is possible with an additional ESP-01 MCU connected
-to the UART of the Pico. For details, read the
-[ESP-01 logging HowTo](doc/esp01logger.md).
+Logging via WLAN is possible either with native WIFI (for those boards
+with builtin WIFI) or an additional ESP-01 MCU connected to the UART
+of the device. For details, read the [ESP-01 logging
+HowTo](doc/esp01logger.md).
 
 If the program runs on an device with native WIFI you can use the
 builtin wifi for data-logging. See [UDP logging
