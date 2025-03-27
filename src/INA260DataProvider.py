@@ -31,7 +31,8 @@ class DataProvider:
     if not hasattr(self._settings,"ina260_ctime"):
       setattr(self._settings,"ina260_ctime",1)      # ConversionTime.TIME_204_us
 
-    self._ina260 = INA260(i2c)
+    addr = getattr(self._settings,"ina260_addr",0x40)
+    self._ina260 = INA260(i2c,addr)
     self.reset()
 
   # --- set configuration-data   ---------------------------------------------

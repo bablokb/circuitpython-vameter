@@ -44,7 +44,8 @@ class DataProvider:
     if not hasattr(self._settings,"ina219_adc"):
       setattr(self._settings,"ina219_adc",6)   # ADCResolution.ADCRES_12BIT_8S
 
-    self._ina219 = INA219(i2c)
+    addr = getattr(self._settings,"ina219_addr",0x40)
+    self._ina219 = INA219(i2c,addr)
     self.reset()
 
   # --- set configuration-data   ---------------------------------------------
