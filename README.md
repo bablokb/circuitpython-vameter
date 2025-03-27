@@ -82,16 +82,20 @@ Steps:
      the `lib`-directory of your device  
 
        - adafruit_bitmap_font
-       - adafruit_displayio_ssd1306
-       - adafruit_st7735r
+       - adafruit_bus_device
+       - adafruit_connection_manager
        - adafruit_display_shapes
        - adafruit_display_text
+       - adafruit_displayio_ssd1306
+       - adafruit_espatcontrol
        - adafruit_ina219
        - adafruit_ina260
-       - adafruit_register
        - adafruit_mpr121
+       - adafruit_register
        - adafruit_requests
-       - asyncio  
+       - adafruit_st7735r
+       - adafruit_ticks
+       - asyncio
 
      The preferred way to do this is to use `circup` (note that the device
      must be mounted):  
