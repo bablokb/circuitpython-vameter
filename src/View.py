@@ -29,7 +29,6 @@ class View:
     """ constructor """
 
     self._display = display
-    self._border  = 1
     if display:
       self._group   = displayio.Group()
       self._offset = border + 2 if border else 0
