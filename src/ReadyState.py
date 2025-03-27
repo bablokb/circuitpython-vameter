@@ -25,7 +25,7 @@ class ReadyState:
     self._views   = []
     units = app.data_provider.get_units()
     for unit in units:
-      self._views.append(ResultView(app.display,app.border,unit))
+      self._views.append(ResultView(app.display,app.settings.border,unit))
 
   # --- loop during ready-state   --------------------------------------------
 

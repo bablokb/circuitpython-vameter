@@ -36,13 +36,13 @@ class ActiveState:
     self._new_sample = False    # toggle after each sample
 
     if self._app.display:
-      self._views = [ValuesView(app.display,app.border,
+      self._views = [ValuesView(app.display,app.settings.border,
                                 app.data_provider.get_units()),
-                     ValuesView(app.display,app.border,['s','s'])   # elapsed
+                     ValuesView(app.display,app.settings.border,['s','s'])   # elapsed
                      ]
       if self._settings.plots:
         for unit in app.data_provider.get_units():
-          plot = PlotView(app.display,app.border,[unit])
+          plot = PlotView(app.display,app.settings.border,[unit])
           self._views.append(plot)
           app.results.plots.append(plot)
 

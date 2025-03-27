@@ -40,7 +40,7 @@ class ConfigState:
       # no config-views defined?!
       print(f"exception creating provider-specific config-views: {ex}")
       pass
-    self._views = [ConfigView(app.display,app.border,
+    self._views = [ConfigView(app.display,app.settings.border,
                               headings[i],
                               units[i])
                    for i in range(len(headings))]
