@@ -22,6 +22,8 @@ class ReadyState:
     """ constructor """
 
     self._app     = app
+    if not app.display:
+      return
     self._views   = []
     units = app.data_provider.get_units()
     for unit in units:
