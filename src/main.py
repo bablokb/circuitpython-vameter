@@ -126,7 +126,10 @@ class VAMeter:
 
     self._ready  = ReadyState(self)
     self._active = ActiveState(self)
-    self._config = ConfigState(self)
+    if self.display:
+      self._config = ConfigState(self)
+    else:
+      self._config = None
 
   # --- merge generic user settings   ----------------------------------------
 
@@ -142,6 +145,9 @@ class VAMeter:
 
   def _get_display(self):
     """ initialize hardware """
+
+    if not self.settings.display:  # run headless
+      return None
 
     if self.settings.display == 'ssd1306':
       display_bus = displayio.I2CDisplay(

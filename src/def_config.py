@@ -42,7 +42,7 @@ settings.update     = 1000    # display update-interval: 1000ms
 settings.plots      = True    # create plots
 settings.exit       = False   # blinka: exit after measurement
 settings.tp_orient  = 'P'     # touchpad orientation P|L
-settings.display    = 'auto'  # auto|ssd1306|st7735r
+settings.display    = 'auto'  # auto|ssd1306|st7735r|None
 settings.border     = 1       # draw 1px border on display
 
 # --- pins   -----------------------------------------------------------------
