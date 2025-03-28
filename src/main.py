@@ -21,23 +21,20 @@ from ReadyState  import ReadyState
 from ConfigState import ConfigState
 from ActiveState import ActiveState
 
-#from FakeDataProvider import DataProvider
-from INA219DataProvider import DataProvider
-#from INA260DataProvider import DataProvider
-
 from Touchpad           import KeyEventProvider
-
-from SerialLogger       import DataLogger
-#from UDPLogger         import DataLogger    # add this to user_config.py
-#from SDCardLogger      import DataLogger    # add this to user_config.py
 
 if hasattr(board,'__blinka__'):
   # support functions for Blinka
   import BlinkaExtensions
 
+# --- ValueHolder class   ----------------------------------------------------
+
+class ValueHolder:
+  pass
+
 # --- configuration   --------------------------------------------------------
 
-from def_config import *
+from def_config import settings as def_settings
 
 try:
   if board.board_id.startswith("RASPBERRY_PI"):
@@ -49,14 +46,22 @@ except:
   print("no board-specific config-file for %s, using defaults" % board.board_id)
 
 try:
-  from user_config import *
+  from user_config import settings as user_settings
 except Exception as ex:
-  print(f"no user-specific config-file: {ex}")
+  print("no user-configuration found, using defaults")
+  user_settings = ValueHolder()
 
-# --- ValueHolder class   ----------------------------------------------------
+try:
+  from user_config import DataProvider
+except Exception as ex:
+  print("no user-specific data-provider, using INA219DataProvider")
+  from INA219DataProvider import DataProvider
 
-class ValueHolder:
-  pass
+try:
+  from user_config import DataLogger
+except Exception as ex:
+  print("no user-specific data-logger, using SerialLogger")
+  from SerialLogger import DataLogger
 
 # --- application class   ----------------------------------------------------
 
@@ -68,47 +73,51 @@ class VAMeter:
   def __init__(self):
     """ constructor """
 
-    if not hasattr(board,'DISPLAY'):
-      displayio.release_displays()
-
-    i2c = busio.I2C(sda=PIN_SDA,scl=PIN_SCL,frequency=400000)
-
-    self.display = self._get_display(i2c)
-    if self.display:
-      self.display.auto_refresh = False
-    self.border  = BORDER
-
-    self.settings = ValueHolder()
-    self.settings.interval   = DEF_INTERVAL
-    self.settings.int_scale  = DEF_INT_SCALE
-    self.settings.oversample = DEF_OVERSAMPLE
-    self.settings.duration   = DEF_DURATION
-    self.settings.v_min      = DEF_VMIN
-    self.settings.a_min      = DEF_AMIN
-    self.settings.update     = DEF_UPDATE
-    self.settings.plots      = DEF_PLOTS
-    self.settings.exit       = DEF_EXIT
-    self.settings.tp_orient  = DEF_TP_ORIENT
+    # merge default and user-settings
+    self.settings = def_settings
+    self._merge_settings(user_settings)
     if hasattr(board,'__blinka__'):
       # change defaults from commandline arguments
       BlinkaExtensions.update_settings(self.settings)
 
-    self.settings.pin_tx      = PIN_TX
-    self.settings.pin_rx      = PIN_RX
-    self.settings.pin_sd_miso = PIN_SD_MISO
-    self.settings.pin_sd_mosi = PIN_SD_MOSI
-    self.settings.pin_sd_clk  = PIN_SD_CLK
-    self.settings.pin_sd_cs   = PIN_SD_CS
-    self.settings.pins_app    = PINS_APP
-    self._merge_user_settings()
+    # set pins from board-configuration if not already set
+    g_dict = globals()
+    for attr in ['pin_scl', 'pin_sda', 'pin_tx', 'pin_rx',
+                 'pind_miso', 'pin_mosi', 'pin_clk',
+                 'pin_sd_miso', 'pin_sd_mosi', 'pin_sd_clk', 'pin_sd_cs',
+                 'pin_tft_mosi', 'pin_tft_clk', 'pin_tft_cs',
+                 'pin_tft_dc', 'pin_tft_rst',
+                 'pin_app'
+                 ]:
+      if not getattr(self.settings,attr,None) and attr.upper() in g_dict:
+        setattr(self.settings,attr,g_dict[attr.upper()])
 
-    self.data_provider  = DataProvider(i2c,self.settings)
+    # initialize hardware and software objects
+    if not hasattr(board,'DISPLAY'):
+      displayio.release_displays()
+
+    self.i2c = busio.I2C(sda=self.settings.pin_sda,
+                         scl=self.settings.pin_scl,frequency=400000)
+
+    if self.settings.shared_spi and self.settings.pin_clk:
+      self.spi = busio.SPI(clock=self.settings.pin_clk,
+                           MOSI=self.settings.pin_mosi,
+                           MISO=self.settings.pin_miso)
+    else:
+      self.spi = None
+
+    self.data_provider  = DataProvider(self.i2c,self.settings)
     self.logger         = DataLogger(self)
 
+    # create value-holder for results
     self.results        = ValueHolder()
     self.results.values = [[0,0,0] for i in range(self.data_provider.get_dim())]
     self.results.time   = 0
     self.results.plots  = []
+
+    self.display = self._get_display()
+    if self.display:
+      self.display.auto_refresh = False
 
     try:
       self.key_events = KeyEventProvider(i2c,self.settings)
@@ -121,55 +130,73 @@ class VAMeter:
 
   # --- merge generic user settings   ----------------------------------------
 
-  def _merge_user_settings(self):
+  def _merge_settings(self,u_settings):
     """ merge generic user settings """
 
-    u_settings = globals().get('user_settings',ValueHolder())
     for attr in u_settings.__dict__:
-      print(f"processing {attr}...")
       if attr[:2] == '__':
         continue
       setattr(self.settings,attr,getattr(u_settings,attr))
 
   # --- initialize display   -------------------------------------------------
 
-  def _get_display(self,i2c):
+  def _get_display(self):
     """ initialize hardware """
 
-    if DEF_DISPLAY == 'ssd1306':
-      display_bus = displayio.I2CDisplay(i2c, device_address=OLED_ADDR)
-      return adafruit_displayio_ssd1306.SSD1306(display_bus,
-                                                width=OLED_WIDTH,
-                                                height=OLED_HEIGHT)
-    elif DEF_DISPLAY == 'st7735r':
-      spi = busio.SPI(clock=PIN_CLK,MOSI=PIN_MOSI)
-      bus = displayio.FourWire(spi,command=PIN_DC,chip_select=PIN_CS,
-                               reset=PIN_RST)
-      return ST7735R(bus,width=TFT_WIDTH,height=TFT_HEIGHT,
-                     rotation=TFT_ROTATE,bgr=TFT_BGR)
-    elif DEF_DISPLAY == 'auto':
+    if self.settings.display == 'ssd1306':
+      display_bus = displayio.I2CDisplay(
+        self.i2c,
+        device_address=self.settings.oled_addr)
+      return adafruit_displayio_ssd1306.SSD1306(
+        display_bus,
+        width=self.settings.oled_width,
+        height=self.settings.oled_height)
+    elif self.settings.display == 'st7735r':
+      if self.spi:
+        spi = self.spi
+      else:
+        spi = busio.SPI(clock=self.settings.pin_tft_clk,
+                        MOSI=self.settings.pin_tft_mosi)
+      bus = displayio.FourWire(spi,command=self.settings.pin_tft_dc,
+                               chip_select=self.settings.pin_tft_cs,
+                               reset=self.settings.pin_tft_rst)
+      return ST7735R(bus,width=self.settings.tft_width,
+                     height=self.settings.tft_height,
+                     rotation=self.settings.tft_rotate,
+                     bgr=self.settings.tft_bgr)
+    elif self.settings.display == 'auto':
       if hasattr(board,'DISPLAY') and board.DISPLAY:
         return board.DISPLAY
       else:
         # try OLED display first
         try:
-          display_bus = displayio.I2CDisplay(i2c, device_address=OLED_ADDR)
-          return adafruit_displayio_ssd1306.SSD1306(display_bus,
-                                                    width=OLED_WIDTH,
-                                                    height=OLED_HEIGHT)
+          display_bus = displayio.I2CDisplay(
+            self.i2c, device_address=self.settings.oled_addr)
+          return adafruit_displayio_ssd1306.SSD1306(
+            display_bus,
+            width=self.settings.oled_width,
+            height=self.settings.oled_height)
         except:
           pass
         # then try SPI-display
         try:
-          spi = busio.SPI(clock=PIN_CLK,MOSI=PIN_MOSI)
-          bus = displayio.FourWire(spi,command=PIN_DC,chip_select=PIN_CS,
-                                   reset=PIN_RST)
-          return ST7735R(bus,width=TFT_WIDTH,height=TFT_HEIGHT,
-                         rotation=TFT_ROTATE,bgr=TFT_BGR)
+          if self.spi:
+            spi = self.spi
+          else:
+            spi = busio.SPI(clock=self.settings.pin_tft_clk,
+                            MOSI=self.settings.pin_tft_mosi)
+          bus = displayio.FourWire(spi,
+                                   command=self.settings.pin_tft_dc,
+                                   chip_select=self.settings.pin_tft_cs,
+                                   reset=self.settings.pin_tft_rst)
+          return ST7735R(bus,width=self.settings.tft_width,
+                         height=self.settings.tft_height,
+                         rotation=self.settings.tft_rotate,
+                         bgr=self.settings.tft_bgr)
         except:
           return None
     else:
-      print("invalid value of DEF_DISPLAY: %s" % DEF_DISPLAY)
+      print(f"invalid value of settings.display: {self.settings.display}")
       return None
 
   # --- main loop   ----------------------------------------------------------
