@@ -59,7 +59,7 @@ class DataProvider:
       setattr(self._settings,"ina3221_ctime",1)      # ConversionTime.TIME_204_us
 
     addr = getattr(self._settings,"ina3221_addr",0x40)
-    self._ina3221 = INA3221(i2c,addr)
+    self._ina3221 = INA3221(i2c,addr,enable=[])      # all channels disabled
     self.reset()
 
   # --- set configuration-data   ---------------------------------------------
@@ -142,4 +142,4 @@ class DataProvider:
         results.append(self._ina3221[i].current_amps)
       else:
         results.extend([0,0])
-      return results
+    return results
