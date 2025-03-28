@@ -92,7 +92,7 @@ class View:
     """ show the view """
 
     if self._display:
-      self._display.show(self._group)
+      self._display.root_group = self._group
       self._display.refresh()
 
 # ----------------------------------------------------------------------------
