@@ -28,7 +28,7 @@ class DataAggregator:
     """ reset data to initial state """
 
     self._n   = 0
-    self._data = [[1e6,-1,0] for i in range(self._dim)]
+    self._data = [[1e6,0,-1e6] for i in range(self._dim)]
 
   # --- add data   -----------------------------------------------------------
 
