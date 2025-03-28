@@ -14,7 +14,6 @@ import sys
 import asyncio
 import digitalio
 
-from View import ValuesView, PlotView
 from Data import DataAggregator
 from Scales import *
 
@@ -36,6 +35,7 @@ class ActiveState:
     self._new_sample = False    # toggle after each sample
 
     if self._app.display:
+      from View import ValuesView, PlotView
       self._views = [ValuesView(app.display,app.settings.border,
                                 app.data_provider.get_units()),
                      ValuesView(app.display,app.settings.border,['s','s'])   # elapsed
@@ -77,17 +77,16 @@ class ActiveState:
     """ get data using oversampling """
 
     if self._settings.oversample < 2:
-      return (time.monotonic(),
-              self._app.data_provider.get_data().extend(self._read_dios()))
-
-    d_sum = [0 for i in range(self._dim)]
-    for o in range(self._settings.oversample):
       data = self._app.data_provider.get_data()
-      for i in range(self._dim):
-        d_sum[i] += data[i]
-    return (time.monotonic(),
-            [d_sum[i]/self._settings.oversample
-             for i in range(self._dim)].extend(self._read_dios()))
+    else:
+      d_sum = [0]*self._dim
+      for _ in range(self._settings.oversample):
+        data = self._app.data_provider.get_data()
+        for i in range(self._dim):
+          d_sum[i] += data[i]
+      data = [d_sum[i]/self._settings.oversample for i in range(self._dim)]
+    data.extend(self._read_dios())
+    return (time.monotonic(),data)
 
   # --- check for key-press   ------------------------------------------------
 
@@ -219,9 +218,11 @@ class ActiveState:
     self._app.data_provider.reset()
     try:
       self._app.data_provider.get_data()
-    except:
+    except StopIteration:
       print("\n#data-provider timed out")
       return
+    except:
+      raise
 
     if self._settings.duration:
       end_t = time.monotonic() + self._settings.duration*self._dur_fac
