@@ -43,7 +43,7 @@ class DataProvider:
 
   _dim   = 6
   _units = ['V','mA']*3
-  _fmt   = ["{1:.3f}","{2:.3f}"]*3
+  _fmt   = [f"{{{i}:.3f}}" for i in range(1,6)]
 
   # --- constructor   --------------------------------------------------------
 
