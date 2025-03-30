@@ -10,10 +10,8 @@
 
 import board
 
-DEF_DISPLAY = 'st7735r'
+# define pins from non-standard board-pins
+# other pins are user-specific
+# requires (default) settings.shared_spi = True
 
-# SPI/TFT pins
-
-PIN_CS  = board.CE0
-PIN_DC  = board.D25
-PIN_RST = board.D24
+PIN_TFT_CS = board.CE0
