@@ -7,6 +7,9 @@ Project circuitpython-vameter
 News
 ----
 
+  - 04/2025: added support for INA3221.<br>
+    Changed configuration-setup (incompatible, see below)<br>
+    Changed support for ESP-01S (see [ESP-01S logging HowTo](doc/esp01logger.md))
   - 02/2025: added support for recording gpio-state during sampling
   - 01/2025: added support for DataProvider-specific configuration screens
   - 02/2024: added support for logging to SD-card
@@ -19,6 +22,7 @@ Overview
 This repository contains the necessary CircuitPyhon software to drive a
 voltage/current meter based on the following components:
 
+  - INA3221 current-sensor breakout or
   - INA219 current-sensor breakout or
   - INA260 current-sensor breakout
   - Mini OLED display with 128x64 (based on a SSD1306-chip) or
@@ -70,6 +74,9 @@ The INA260 offers a larger measurment-range than the INA219 (up to 36V/15A
 compared to 32V/2A), but is more expensive and the resolution is a
 tad worse. See the relevant tutorials and datasheets for details.
 
+The INA3221 is a three-channel chip and measures up to 26V/3.2A with a
+resolution of 0.4mA.
+
 
 Installation (Pico or other MCU)
 --------------------------------
@@ -87,9 +94,9 @@ Steps:
        - adafruit_display_shapes
        - adafruit_display_text
        - adafruit_displayio_ssd1306
-       - adafruit_espatcontrol
        - adafruit_ina219
        - adafruit_ina260
+       - adafruit_ina3221
        - adafruit_mpr121
        - adafruit_register
        - adafruit_requests
@@ -152,9 +159,16 @@ Configuration
 
 Configuration is done using variables from three different files:
 
+  - `src/<board_id>/board_config.py`: board-specific pins
   - `src/def_config.py`: default values
-  - `src/<board_id>/board_config.py`: board-specific overrides
   - `src/user_config.py`: user-specific overrides
+
+A board-specific configuration file is usually not necessary. There
+are some seldom cases where the board uses different names for some
+pins (e.g. `board.SCLK` instead of `board.SCK`). In this case a
+board-specifc file is necessary. Other cases could be boards with
+hard-wired displays/SD-slots that use specific pins for these
+peripherals.
 
 This repository has support-files for a number of platforms. If you use
 a different MCU and that MCU does not provide the default pins, you should
@@ -166,6 +180,10 @@ the board-module.
 The user-specific configuration file `src/user_config.py` is not part
 of the repository. Copy `src/def_config.py` and keep only variables
 you actually change.
+
+**Note: starting with version 04/2025, the format of the configuration
+file has changed.** Be sure to update any exiting user-specific
+configuration files to match the format of `src/def_config.py`.
 
 
 Usage
@@ -327,8 +345,8 @@ frequency and voltage/current range as well as the cutoff-values used
 for detecting start and stop of measurements.
 
 Logging via WLAN is possible either with native WIFI (for those boards
-with builtin WIFI) or an additional ESP-01 MCU connected to the UART
-of the device. For details, read the [ESP-01 logging
+with builtin WIFI) or an additional ESP-01S MCU connected to the UART
+of the device. For details, read the [ESP-01S logging
 HowTo](doc/esp01logger.md).
 
 If the program runs on an device with native WIFI you can use the
