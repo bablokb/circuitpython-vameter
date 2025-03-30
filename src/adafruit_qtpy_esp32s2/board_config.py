@@ -14,5 +14,5 @@ import board
 
 PIN_SD_MISO = board.MISO
 PIN_SD_MOSI = board.MOSI
-PIN_SD_CLK  = board.SCK
+PIN_SD_SCK  = board.SCK
 PIN_SD_CS   = board.TX

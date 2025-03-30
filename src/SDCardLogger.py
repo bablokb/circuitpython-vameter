@@ -26,7 +26,7 @@ class DataLogger(LogWriter):
     super(DataLogger,self).__init__(app)
 
     # mount SD-card and open logfile
-    spi    = busio.SPI(app.settings.pin_sd_clk,
+    spi    = busio.SPI(app.settings.pin_sd_sck,
                        app.settings.pin_sd_mosi,
                        app.settings.pin_sd_miso)
     cs     = digitalio.DigitalInOut(app.settings.pin_sd_cs)

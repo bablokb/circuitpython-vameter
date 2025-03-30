@@ -14,6 +14,6 @@ import board
 # other pins are user-specific
 # requires (default) settings.shared_spi = True
 
-PIN_CLK    = board.SCLK
+PIN_SCK    = board.SCLK
 PIN_TFT_CS = board.CE0
 PIN_SD_CS  = board.SD_CS

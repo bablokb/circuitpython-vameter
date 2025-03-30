@@ -61,15 +61,15 @@ settings.pin_rx      = None
 settings.shared_spi  = True  # a shared SPI-bus will use the following pins
 settings.pin_miso    = None
 settings.pin_mosi    = None
-settings.pin_clk     = None
+settings.pin_sck     = None
 
 settings.pin_sd_miso = None  # only needed for non-shared SPI-bus
 settings.pin_sd_mosi = None  # only needed for non-shared SPI-bus
-settings.pin_sd_clk  = None  # only needed for non-shared SPI-bus
+settings.pin_sd_sck  = None  # only needed for non-shared SPI-bus
 settings.pin_sd_cs   = None
 
 settings.pin_tft_mosi = None  # only needed for non-shared SPI-bus
-settings.pin_tft_clk  = None  # only needed for non-shared SPI-bus
+settings.pin_tft_sck  = None  # only needed for non-shared SPI-bus
 settings.pin_tft_cs   = None
 settings.pin_tft_dc   = None
 settings.pin_tft_rst  = None
