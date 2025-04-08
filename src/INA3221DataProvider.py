@@ -43,7 +43,7 @@ class DataProvider:
 
   _dim   = 6
   _units = ['V','mA']*3
-  _fmt   = [f"{{{i}:.3f}}" for i in range(1,6)]
+  _fmt   = [f"{{{i}:.3f}}" for i in range(1,7)]
 
   # --- constructor   --------------------------------------------------------
 
@@ -54,9 +54,9 @@ class DataProvider:
     if not hasattr(self._settings,"ina3221_channels"):
       setattr(self._settings,"ina3221_channels",111)
     if not hasattr(self._settings,"ina3221_count"):
-      setattr(self._settings,"ina3221_count",16)
+      setattr(self._settings,"ina3221_count",4)
     if not hasattr(self._settings,"ina3221_ctime"):
-      setattr(self._settings,"ina3221_ctime",1)      # ConversionTime.TIME_204_us
+      setattr(self._settings,"ina3221_ctime",2)      # ConversionTime.TIME_332_us
 
     addr = getattr(self._settings,"ina3221_addr",0x40)
     self._ina3221 = INA3221(i2c,addr,enable=[])      # all channels disabled
@@ -72,26 +72,27 @@ class DataProvider:
     if self._settings.ina3221_channels not in CHANNELS:
       self._settings.ina3221_channels = 111
     if self._settings.ina3221_count not in AVG_COUNT:
-      self._settings.ina3221_count = 16
+      self._settings.ina3221_count = 4
     if self._settings.ina3221_ctime < 0 or self._settings.ina3221_ctime > 7:
-      self._settings.ina3221_ctime = 1
+      self._settings.ina3221_ctime = 2
 
     # optimize speed vs. noise:
-    # measurement-duration is enabled_channels*count*(v_conf_time+c_conv_time)
-    # chip defaults: ???
-    # program defaults: count=16, conf_time=202µs => ???ms
+    # measurement-duration is enabled_channels*count*(v_conv_time+c_conv_time)
+    # chip defaults: count=1, conv_time=1.1ms  => 1.1ms*channels
+    # lib  defaults: count=64, conv_time=8.244ms => 527,6ms*channels
+    # program defaults: count=4, conv_time=332µs => 1.3ms*channels
     # The resulting sampling time should be shorter than the minimum
     # sampling time of the system. For the EPS32-S2 the minimum is about
     # 5.7ms (serial) or 6.7ms (udp).
 
     # convert integer channel to binary and activate selected channels
     channels = int(str(self._settings.ina3221_channels),2)
-    for index,b in enumerate([0b001,0b010, 0b100]):
-      if b & channels:
-        self._ina3221[index].enable()
-    # set averaging count
+    for index,b in enumerate([0b001,0b010,0b100]):
+      self._ina3221[index].enable(bool(b&channels))
+
+    # set averaging count and conversion times
     self._ina3221.averaging_mode = (AVG_COUNT[self._settings.ina3221_count])
-    self._ina3221.shut_voltage_conv_time = CONV_TIME[self._settings.ina3221_ctime]
+    self._ina3221.shunt_voltage_conv_time = CONV_TIME[self._settings.ina3221_ctime]
     self._ina3221.bus_voltage_conv_time = CONV_TIME[self._settings.ina3221_ctime]
 
   # --- return config-data   -------------------------------------------------
@@ -109,7 +110,6 @@ class DataProvider:
 
   def reset(self):
     """ reset data-provider """
-    self._start = False
     self._set_config_data()
 
   # --- return dimensions of data   ------------------------------------------
@@ -139,7 +139,7 @@ class DataProvider:
     for i in range(3):
       if self._ina3221[i].enabled:
         results.append(self._ina3221[i].bus_voltage)
-        results.append(self._ina3221[i].current_amps)
+        results.append(self._ina3221[i].current)
       else:
         results.extend([0,0])
     return results
