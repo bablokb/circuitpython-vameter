@@ -83,14 +83,22 @@ class VAMeter:
     # set pins from board-configuration if not already set
     g_dict = globals()
     for attr in ['pin_scl', 'pin_sda', 'pin_tx', 'pin_rx',
-                 'pind_miso', 'pin_mosi', 'pin_clk',
-                 'pin_sd_miso', 'pin_sd_mosi', 'pin_sd_clk', 'pin_sd_cs',
-                 'pin_tft_mosi', 'pin_tft_clk', 'pin_tft_cs',
+                 'pin_miso', 'pin_mosi', 'pin_sck',
+                 'pin_sd_miso', 'pin_sd_mosi', 'pin_sd_sck', 'pin_sd_cs',
+                 'pin_tft_mosi', 'pin_tft_sck', 'pin_tft_cs',
                  'pin_tft_dc', 'pin_tft_rst',
                  'pin_app'
                  ]:
-      if not getattr(self.settings,attr,None) and attr.upper() in g_dict:
-        setattr(self.settings,attr,g_dict[attr.upper()])
+      if not getattr(self.settings,attr,None):
+        attr_uc = attr.upper()
+        if attr_uc in g_dict:
+          # already imported via board_config
+          setattr(self.settings,attr,g_dict[attr_uc])
+        elif hasattr(board,attr_uc[4:]):
+          # use default pin-definition of board (remove leading "pin_")
+          setattr(self.settings,attr,getattr(board,attr_uc[4:]))
+
+    #self._dump_settings()
 
     # initialize hardware and software objects
     if not hasattr(board,'DISPLAY'):
@@ -99,8 +107,8 @@ class VAMeter:
     self.i2c = busio.I2C(sda=self.settings.pin_sda,
                          scl=self.settings.pin_scl,frequency=400000)
 
-    if self.settings.shared_spi and self.settings.pin_clk:
-      self.spi = busio.SPI(clock=self.settings.pin_clk,
+    if self.settings.shared_spi and self.settings.pin_sck:
+      self.spi = busio.SPI(clock=self.settings.pin_sck,
                            MOSI=self.settings.pin_mosi,
                            MISO=self.settings.pin_miso)
     else:
@@ -120,8 +128,9 @@ class VAMeter:
       self.display.auto_refresh = False
 
     try:
-      self.key_events = KeyEventProvider(i2c,self.settings)
-    except:
+      self.key_events = KeyEventProvider(self.i2c,self.settings)
+    except Exception as ex:
+      print(f"warning: no KeyEventProvider: ({ex})")
       self.key_events = None
 
     self._ready  = ReadyState(self)
@@ -130,6 +139,15 @@ class VAMeter:
       self._config = ConfigState(self)
     else:
       self._config = None
+
+  # --- dump settings   ------------------------------------------------------
+
+  def _dump_settings(self):
+    """ dump settings """
+    for attr in self.settings.__dict__:
+      if attr[:2] == '__':
+        continue
+      print(f"{attr:>10}: {getattr(self.settings,attr)}")
 
   # --- merge generic user settings   ----------------------------------------
 
@@ -161,7 +179,7 @@ class VAMeter:
       if self.spi:
         spi = self.spi
       else:
-        spi = busio.SPI(clock=self.settings.pin_tft_clk,
+        spi = busio.SPI(clock=self.settings.pin_tft_sck,
                         MOSI=self.settings.pin_tft_mosi)
       bus = displayio.FourWire(spi,command=self.settings.pin_tft_dc,
                                chip_select=self.settings.pin_tft_cs,
@@ -182,14 +200,15 @@ class VAMeter:
             display_bus,
             width=self.settings.oled_width,
             height=self.settings.oled_height)
-        except:
+        except Exception as ex:
+          print(f"info: no SSD1306 in auto mode ({ex})")
           pass
         # then try SPI-display
         try:
           if self.spi:
             spi = self.spi
           else:
-            spi = busio.SPI(clock=self.settings.pin_tft_clk,
+            spi = busio.SPI(clock=self.settings.pin_tft_sck,
                             MOSI=self.settings.pin_tft_mosi)
           bus = displayio.FourWire(spi,
                                    command=self.settings.pin_tft_dc,
@@ -199,10 +218,11 @@ class VAMeter:
                          height=self.settings.tft_height,
                          rotation=self.settings.tft_rotate,
                          bgr=self.settings.tft_bgr)
-        except:
+        except Exception as ex:
+          print(f"info: no ST7735R in auto mode ({ex})")
           return None
     else:
-      print(f"invalid value of settings.display: {self.settings.display}")
+      print(f"error: invalid value of settings.display: {self.settings.display}")
       return None
 
   # --- main loop   ----------------------------------------------------------
