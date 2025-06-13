@@ -81,6 +81,9 @@ class Reader(object):
         dest='serial_baud', default=None, const=Reader.SERIAL_BAUD, nargs='?',
         help='use serial instead of UDP (default : %s)' % Reader.SERIAL_BAUD)
 
+    parser.add_argument('-c', '--columns', metavar='columns',
+      dest='columns', type=int, default=Reader.MSG_COLUMNS,
+      help='number of columns (default: %d)' % Reader.MSG_COLUMNS)
     parser.add_argument('-V', '--volt-filter', metavar='volt',
       dest='volt', type=int, default=Reader.V_MIN,
       help='lower filter-limit for voltage (mV, default: %d)' % Reader.V_MIN)
@@ -310,7 +313,7 @@ class Reader(object):
       value = data
     else:
       words = data.split(',')
-      if len(words) != Reader.MSG_COLUMNS:
+      if len(words) != self.columns:
         self.msg("Reader: ignoring incomplete message: %s" % data)
         self._incomplete += 1
         return False
