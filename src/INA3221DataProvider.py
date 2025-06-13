@@ -77,10 +77,10 @@ class DataProvider:
       self._settings.ina3221_ctime = 2
 
     # optimize speed vs. noise:
-    # measurement-duration is enabled_channels*count*(v_conv_time+c_conv_time)
-    # chip defaults: count=1, conv_time=1.1ms  => 1.1ms*channels
-    # lib  defaults: count=64, conv_time=8.244ms => 527,6ms*channels
-    # program defaults: count=4, conv_time=332µs => 1.3ms*channels
+    # measurement-duration is: enabled_channels*count*(v_conv_time+c_conv_time)
+    # chip defaults: count=1, conv_time=1.1ms  => 2.2ms*channels
+    # lib  defaults: count=64, conv_time=8.244ms => 1055,2ms*channels
+    # program defaults: count=4, conv_time=204µs => 1.6ms*channels
     # The resulting sampling time should be shorter than the minimum
     # sampling time of the system. For the EPS32-S2 the minimum is about
     # 5.7ms (serial) or 6.7ms (udp).

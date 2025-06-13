@@ -105,5 +105,5 @@ settings.ina260_ctime = 1    # ConversionTime.TIME_204_us
 
 settings.ina3221_addr     = 0x40  # default I2C-address
 settings.ina3221_channels = 111   # channel-mask: all three channels
-settings.ina3221_count    = 16    # internal oversampling
+settings.ina3221_count    = 4     # internal oversampling
 settings.ina3221_ctime    = 1     # ConversionTime.TIME_204_us
