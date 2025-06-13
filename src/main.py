@@ -48,18 +48,21 @@ except:
 try:
   from user_config import settings as user_settings
 except Exception as ex:
+  print(f"exception in user_config: {ex}")
   print("no user-configuration found, using defaults")
   user_settings = ValueHolder()
 
 try:
   from user_config import DataProvider
 except Exception as ex:
+  print(f"exception in user_config: {ex}")
   print("no user-specific data-provider, using INA219DataProvider")
   from INA219DataProvider import DataProvider
 
 try:
   from user_config import DataLogger
 except Exception as ex:
+  print(f"exception in user_config: {ex}")
   print("no user-specific data-logger, using SerialLogger")
   from SerialLogger import DataLogger
 
