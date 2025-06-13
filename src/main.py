@@ -171,7 +171,8 @@ class VAMeter:
       return None
 
     if self.settings.display == 'ssd1306':
-      display_bus = displayio.I2CDisplay(
+      import i2cdisplaybus
+      display_bus = i2cdisplaybus.I2CDisplayBus(
         self.i2c,
         device_address=self.settings.oled_addr)
       return adafruit_displayio_ssd1306.SSD1306(
@@ -179,12 +180,13 @@ class VAMeter:
         width=self.settings.oled_width,
         height=self.settings.oled_height)
     elif self.settings.display == 'st7735r':
+      import fourwire
       if self.spi:
         spi = self.spi
       else:
         spi = busio.SPI(clock=self.settings.pin_tft_sck,
                         MOSI=self.settings.pin_tft_mosi)
-      bus = displayio.FourWire(spi,command=self.settings.pin_tft_dc,
+      bus = fourwire.FourWire(spi,command=self.settings.pin_tft_dc,
                                chip_select=self.settings.pin_tft_cs,
                                reset=self.settings.pin_tft_rst)
       return ST7735R(bus,width=self.settings.tft_width,
@@ -197,7 +199,8 @@ class VAMeter:
       else:
         # try OLED display first
         try:
-          display_bus = displayio.I2CDisplay(
+          import i2cdisplaybus
+          display_bus = i2cdisplaybus.I2CDisplayBus(
             self.i2c, device_address=self.settings.oled_addr)
           return adafruit_displayio_ssd1306.SSD1306(
             display_bus,
@@ -208,12 +211,13 @@ class VAMeter:
           pass
         # then try SPI-display
         try:
+          import fourwire
           if self.spi:
             spi = self.spi
           else:
             spi = busio.SPI(clock=self.settings.pin_tft_sck,
                             MOSI=self.settings.pin_tft_mosi)
-          bus = displayio.FourWire(spi,
+          bus = fourwire.FourWire(spi,
                                    command=self.settings.pin_tft_dc,
                                    chip_select=self.settings.pin_tft_cs,
                                    reset=self.settings.pin_tft_rst)
