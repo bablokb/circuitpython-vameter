@@ -1,0 +1,29 @@
+{ "cols": 1,
+  "width":  1920,
+  "height": 400,
+  "title":  "cp-vameter: Voltage/Current",
+  "x": {"col":   0, "type": "time", "normalize": true, "scale": 0.001},
+  "xaxis": {"text": "time (sec)", "rescale": {"min": "+30", "max": "+60"}},
+  "yaxis": {"text": "mA", "color": "red"},
+  "legend": {"loc": null},
+  "plots": [
+    {"values": [{"col":   1, "axis": 2, "label": "Voltage", "color": "blue"},
+                {"col":   2,            "label": "Current", "color": "red"}
+               ],
+     "yaxis2": {"text": "V",  "color": "blue"},
+     "title": "Voltage and Current Channel 0"
+    },
+    {"values": [{"col":   3, "axis": 2, "label": "Voltage", "color": "blue"},
+                {"col":   4,            "label": "Current", "color": "red"}
+               ],
+     "yaxis2": {"text": "V",  "color": "blue"},
+     "title": "Voltage and Current Channel 1"
+    },
+    {"values": [{"col":   5, "axis": 2, "label": "Voltage", "color": "blue"},
+                {"col":   6,            "label": "Current", "color": "red"}
+               ],
+     "yaxis2": {"text": "V",  "color": "blue"},
+     "title": "Voltage and Current Channel 2"
+    }
+   ]
+}
