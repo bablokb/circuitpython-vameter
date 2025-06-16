@@ -16,6 +16,15 @@ from   argparse import ArgumentParser
 import pathlib
 import pandas as pd
 
+COLUMN_HEADERS = [
+  None, None, None,
+  ['ts','V1','I1'],                               # for INA219 and INA260
+  ['ts','V1','I1','ts_iso'],
+  None, None,
+  ['ts','V1','I1','V2','I2','V3','I3'],           # for INA3221
+  ['ts','V1','I1','V2','I2','V3','I3','ts_iso'],
+  ]
+
 # --- application class   ----------------------------------------------------
 
 class App(object):
@@ -75,11 +84,8 @@ class App(object):
       self._data = pd.read_csv(infile,header=None,sep=',')
 
     # add column labels
-    if len(self._data.columns) == 3:
-      self._data.columns = ['ts','V','I']
-    else:
-      # we have a second timestamp at the end
-      self._data.columns = ['ts','V','I','ts_iso']
+    self._data.columns = COLUMN_HEADERS[len(self._data.columns)]
+    self._channels = 3 if len(self._data.columns) > 4 else 1
       
   # --- normalize data   -----------------------------------------------------
 
@@ -87,7 +93,8 @@ class App(object):
 
     self._data['ts']    -= self._data['ts'][0]
     self._data['ts']    *= 0.001
-    self._data['P']      = self._data['I']*self._data['V']
+    for i in range(1,self._channels+1):
+      self._data[f'P{i}'] = self._data[f'I{i}']*self._data[f'V{i}']
 
   # --- calcuate statistics   -------------------------------------------------
 
@@ -96,24 +103,29 @@ class App(object):
 
     # calculate cumulative sum of energy-consumption
     t = self._data['ts']   # shortcut to ts-column
-    self._esum  = (t.diff()*self._data['P']).cumsum()
+    self._esum = [None]
+    for i in range(1,self._channels+1):
+      self._esum.append((t.diff()*self._data[f'P{i}']).cumsum())
 
     self._stats = {
-      'duration': t.max(),
-      'A': {'min': float(self._data['I'].min()),
-            'avg': float(self._data['I'].mean()),
-            'max': float(self._data['I'].max())
-            },
-      'V': {'min': float(self._data['V'].min()),
-            'avg': float(self._data['V'].mean()),
-            'max': float(self._data['V'].max())
-            },
-      'P': {'min': float(self._data['P'].min()),
-            'avg': float(self._data['P'].mean()),
-            'max': float(self._data['P'].max())
-            },
-      'E': self._esum.max()/3600 
-      }
+      'duration': t.max()
+    }
+    for i in range(1,self._channels+1):
+      self._stats.update({
+        f'A{i}': {'min': float(self._data[f'I{i}'].min()),
+                  'avg': float(self._data[f'I{i}'].mean()),
+                  'max': float(self._data[f'I{i}'].max())
+                 },
+        f'V{i}': {'min': float(self._data[f'V{i}'].min()),
+                  'avg': float(self._data[f'V{i}'].mean()),
+                  'max': float(self._data[f'V{i}'].max())
+                 },
+        f'P{i}': {'min': float(self._data[f'P{i}'].min()),
+                  'avg': float(self._data[f'P{i}'].mean()),
+                  'max': float(self._data[f'P{i}'].max())
+                 },
+        f'E{i}': self._esum[i].max()/3600
+      })
 
   # --- print results   -------------------------------------------------------
 
@@ -122,14 +134,16 @@ class App(object):
     
     print("\nmeasurement-duration: %5.1f sec" % self._stats['duration'])
 
-    print("\n--------------------------------")
-    for attr,label,unit in [
-      ('A','current','mA'),('V','voltage','V'),('P','power','mW')]:
-      for stat in ['min','avg','max']:
-        print("  {0:s} {1:s} {2:6.3f} {3:s}".format(stat,label,
-                                                    self._stats[attr][stat],unit))
-    print("  tot energy %6.3f mWh" % self._stats['E'])
-    print("----------------------------\n")
+    print("\n--------------------------------\n")
+    for i in range(1,self._channels+1):
+      print(f"Channel {i}:")
+      for attr,label,unit in [
+        (f'A{i}','current','mA'),(f'V{i}','voltage','V'),(f'P{i}','power','mW')]:
+        for stat in ['min','avg','max']:
+          print("  {0:s} {1:s} {2:6.3f} {3:s}".format(stat,label,
+                                                      self._stats[attr][stat],unit))
+      print("  tot energy %6.3f mWh" % self._stats[f'E{i}'])
+      print("----------------------------\n")
 
   # --- dump results as json   ------------------------------------------------
 
@@ -143,14 +157,21 @@ class App(object):
   def _print_csv(self):
     """ print summary results in csv-format"""
 
-    print("#duration,A_min,A_avg,A_max,V_min,V_avg,V_max,P_min,P_avg,P_max,E")
+    # csv-header
+    print("#duration",end="")
+    for i in range(1,self._channels+1):
+      print(f",A{i}_min,A{i}_avg,A{i}_max", end="")
+      print(f",V{i}_min,V{i}_avg,V{i}_max", end="")
+      print(f",P{i}_min,P{i}_avg,P{i}_max,E{i}", end="")
+    print()
+
+    # csv-values
     print("{0:5.1f}".format(self._stats['duration']),end='')
-
-    for attr in ['A','V','P']:
-      for stat in ['min','avg','max']:
-        print(",{0:6.3f}".format(self._stats[attr][stat]),end='')
-    print(",{0:6.3f}".format(self._stats['E']),end='')
-
+    for i in range(1,self._channels+1):
+      for attr in [f'A{i}',f'V{i}',f'P{i}']:
+        for stat in ['min','avg','max']:
+          print(",{0:6.3f}".format(self._stats[attr][stat]),end='')
+      print(",{0:6.3f}".format(self._stats[f'E{i}']),end='')
     print()
 
   # --- create csv with cumsum-data   ----------------------------------------
@@ -159,11 +180,12 @@ class App(object):
     """ create new csv with added cumsum-data """
 
     # append to data
-    self._data['E_SUM'] = self._esum
+    for i in range(1,self._channels+1):
+      self._data[f'E_SUM{i}'] = self._esum[i]
 
-    if self.relative:
-      max_esum = self._stats['E']*3600
-      self._data['E_SUM_R'] = self._esum/max_esum
+      if self.relative:
+        max_esum = self._stats[f'E{i}']*3600
+        self._data[f'E_SUM_R{i}'] = self._esum[i]/max_esum
 
     # write to new csv
     outfile = pathlib.Path(self.cumsum_file)
