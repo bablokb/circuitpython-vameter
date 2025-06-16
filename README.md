@@ -7,7 +7,7 @@ Project circuitpython-vameter
 News
 ----
 
-  - 04/2025: added support for INA3221.<br>
+  - 06/2025: added support for INA3221.<br>
     Changed configuration-setup (incompatible, see below)<br>
     Changed support for ESP-01S (see [ESP-01S logging HowTo](doc/esp01logger.md))
   - 02/2025: added support for recording gpio-state during sampling
