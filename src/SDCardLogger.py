@@ -10,7 +10,6 @@
 
 import os
 import busio
-import digitalio
 import sdcardio
 import storage
 
@@ -26,11 +25,13 @@ class DataLogger(LogWriter):
     super(DataLogger,self).__init__(app)
 
     # mount SD-card and open logfile
-    spi    = busio.SPI(app.settings.pin_sd_sck,
-                       app.settings.pin_sd_mosi,
-                       app.settings.pin_sd_miso)
-    cs     = digitalio.DigitalInOut(app.settings.pin_sd_cs)
-    sdcard = sdcardio.SDCard(spi,cs,1_000_000)
+    if app.settings.shared_spi:
+      spi = app.spi
+    else:
+      spi = busio.SPI(app.settings.pin_sd_sck,
+                      app.settings.pin_sd_mosi,
+                      app.settings.pin_sd_miso)
+    sdcard = sdcardio.SDCard(spi,app.settings.pin_sd_cs,1_000_000)
     vfs    = storage.VfsFat(sdcard)
     storage.mount(vfs, "/sd")
     self._sdfile = None
